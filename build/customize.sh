@@ -16,7 +16,7 @@ echo "atkbd i8042 libps2 serio serio_raw" > /etc/modules-load.d/v86.conf
 # recon kit mount
 mkdir -p /mnt/kit
 cat >> /etc/fstab <<'EOF'
-/dev/sdb  /mnt/kit  ext2  ro,nofail  0  0
+/dev/sdb  /mnt/kit  ext4  ro,nofail  0  0
 EOF
 
 E=$(printf '\033')
@@ -136,8 +136,7 @@ chmod +x /usr/local/bin/msfconsole
 for svc in chronyd crond hwclock klogd networking syslog acpid \
            machine-id save-keymaps save-termencoding urandom \
            swap modules sysctl modloop firstboot save-entropy \
-           seedrng cgroups dmesg mdev mdev-init mdev-trigger \
-           keymaps hostname; do
+           seedrng cgroups dmesg keymaps; do
   rc-update del $svc default 2>/dev/null || true
   rc-update del $svc boot    2>/dev/null || true
   rc-update del $svc sysinit 2>/dev/null || true
@@ -146,8 +145,9 @@ done
 # parallel service startup
 sed -i 's|^#*rc_parallel=.*|rc_parallel="YES"|' /etc/rc.conf
 
-# minimum services to mount + get to a shell
+# minimum services to mount + apply hostname + get to a shell
 rc-update add devfs       sysinit
+rc-update add hostname    boot
 rc-update add bootmisc    boot
 rc-update add localmount  boot
 

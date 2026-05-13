@@ -10,7 +10,7 @@ SIZE_MB=2
 mkdir -p "$ROOT/build/out"
 rm -f "$OUT"
 truncate -s "${SIZE_MB}M" "$OUT"
-mkfs.ext2 -F -L M0USUNET_KIT "$OUT"
+mkfs.ext4 -F -O ^has_journal -L M0USUNET_KIT "$OUT"
 
 TMP=$(mktemp -d)
 LOOP=$(losetup -f --show "$OUT")
