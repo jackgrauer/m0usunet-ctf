@@ -40,131 +40,185 @@ body { background: #000; }
 }
 .meta-page.active { display: block; }
 
+/* All meta pages render like terminal output: black bg, mono, left-
+   aligned, no card chrome. Each page ends in a shell prompt the
+   player types into. */
 .meta-content {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2rem 1.2rem 4rem;
+  max-width: 86ch;
+  margin: 0;
+  padding: 0.8rem 1rem 2rem;
   font-family: var(--retro);
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--fg);
 }
 
-.meta-content h1 {
-  font-family: var(--display);
-  font-size: 2.6rem;
-  color: var(--green);
-  margin: 0 0 0.25rem 0;
-  letter-spacing: 0.03em;
-  text-shadow: 0 0 6px rgba(0,255,102,0.3);
-}
+.meta-content h1,
 .meta-content h2 {
-  font-family: var(--display);
-  font-size: 2rem;
-  color: var(--gold);
-  margin: 1.4rem 0 0.5rem;
+  font-family: var(--retro);
+  font-size: inherit;
+  font-weight: normal;
+  margin: 1.2em 0 0 0;
+  letter-spacing: 0;
+  text-shadow: none;
 }
+.meta-content h1 { color: var(--green); }
+.meta-content h2 { color: var(--gold); }
+.meta-content h1:first-child,
+.meta-content h2:first-child { margin-top: 0; }
+
 .meta-content .subhead {
   color: var(--green-dim);
-  font-size: 1.1rem;
-  letter-spacing: 0.05em;
-  margin: 0 0 1.5rem 0;
+  font-size: inherit;
+  margin: 0 0 0.8em 0;
 }
 .meta-content p {
-  font-size: 1.3rem;
-  line-height: 1.4;
-  margin: 0 0 1rem 0;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0.6em 0 0 0;
   color: var(--fg);
 }
 .meta-content .dim { color: var(--green-dim); }
+
 .meta-content ol.aptitudes {
-  font-size: 1.3rem;
-  line-height: 1.6;
-  margin: 0 0 1.4rem 0;
-  padding-left: 2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.6em 0;
+  counter-reset: aptitude;
+}
+.meta-content ol.aptitudes li {
+  font-size: inherit;
   color: var(--gold);
+  padding-left: 2ch;
+  position: relative;
+  counter-increment: aptitude;
+}
+.meta-content ol.aptitudes li::before {
+  content: counter(aptitude) ") ";
+  color: var(--gold);
+  position: absolute;
+  left: 0;
 }
 
-/* Password gate (input + button + error line). */
+/* Section divider used between heading and body */
+.meta-content h1 + .subhead,
+.meta-content h1 {
+  position: relative;
+}
+.meta-content h1::after {
+  content: "══════════════════════════════════════════════════════════════════";
+  display: block;
+  color: var(--green-dim);
+  font-size: inherit;
+  margin-top: 0.1em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* PASSWORD GATE = a shell prompt at the end of the page. */
 .pwgate {
-  margin-top: 2rem;
-  padding-top: 1.4rem;
-  border-top: 1px dashed var(--green-dim);
+  margin: 2em 0 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--retro);
+  font-size: 18px;
+  color: var(--fg);
+}
+.pwgate::before {
+  content: "operator@mouse-bites:~$ ";
+  color: var(--green);
 }
 .pwgate label {
-  display: block;
-  color: var(--green);
-  font-size: 1.3rem;
-  margin-bottom: 0.6rem;
-  letter-spacing: 0.03em;
+  display: inline;
+  color: var(--green-dim);
+  font-size: inherit;
+  margin: 0;
 }
 .pwgate input {
-  width: 9rem;
-  padding: 0.5rem 0.8rem;
-  background: #050505;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--green-dim);
   color: var(--gold);
-  border: 1px solid var(--green-dim);
-  border-radius: 0;
-  font-family: var(--retro);
-  font-size: 1.6rem;
-  letter-spacing: 0.2em;
-  text-align: center;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0 0.2em;
   outline: none;
+  caret-color: var(--green);
+  letter-spacing: 0.15em;
+  width: 7ch;
+  border-radius: 0;
+  margin-left: 0.4ch;
 }
 .pwgate input:focus { border-color: var(--green); }
-.pwgate button {
-  margin-left: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--green-dim);
-  color: #000;
-  border: 0;
-  font-family: var(--retro);
-  font-size: 1.3rem;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-}
-.pwgate button:hover { background: var(--green); }
+.pwgate input::placeholder { color: var(--green-dim); }
+.pwgate button { display: none; }
 .pwgate .pwerror {
+  display: block;
   color: var(--red);
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-  letter-spacing: 0.05em;
+  font-size: inherit;
+  margin-top: 0.3em;
 }
 
-/* Plain next button (TASK 3 → TASK 4) */
+/* Next "button" — looks like a shell command you can run by clicking. */
 .meta-next {
-  margin-top: 2rem;
-  padding: 0.6rem 1.4rem;
-  background: var(--green-dim);
-  color: #000;
+  display: inline-block;
+  margin-top: 1.5em;
+  padding: 0;
+  background: transparent;
   border: 0;
   font-family: var(--retro);
-  font-size: 1.4rem;
-  letter-spacing: 0.05em;
+  font-size: 18px;
+  color: var(--gold);
   cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
-.meta-next:hover { background: var(--green); }
+.meta-next::before {
+  content: "operator@mouse-bites:~$ ";
+  color: var(--green);
+  text-decoration: none;
+}
+.meta-next:hover { color: var(--green); }
 
-/* Reflection form (TASK 4) */
-.reflection { margin-top: 1.4rem; }
+/* Reflection form: each label is a heredoc-style heading + textarea */
+.reflection {
+  margin-top: 1.5em;
+  font-family: var(--retro);
+  font-size: 18px;
+}
 .reflection label {
   display: block;
   color: var(--green);
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+  margin: 0.8em 0 0.2em 0;
   letter-spacing: 0.05em;
 }
+.reflection label::before { content: "> "; color: var(--green-dim); }
 .reflection textarea {
   display: block;
   width: 100%;
-  margin-top: 0.4rem;
-  background: #050505;
+  margin-top: 0.2em;
+  background: transparent;
   color: var(--fg);
   border: 1px solid var(--green-dim);
   font-family: var(--retro);
-  font-size: 1.3rem;
-  padding: 0.5rem 0.7rem;
+  font-size: 18px;
+  padding: 0.3em 0.5em;
   resize: vertical;
   outline: none;
+  caret-color: var(--green);
 }
 .reflection textarea:focus { border-color: var(--green); }
+
+/* Phone: tighter type so 80-col output doesn't overflow. */
+@media (max-width: 600px) {
+  .meta-content { font-size: 16px; padding: 0.6rem 0.8rem 2rem; }
+  .pwgate, .meta-next, .reflection,
+  .reflection textarea, .reflection label { font-size: 16px; }
+  .pwgate::before, .meta-next::before { font-size: 16px; }
+  .meta-content h1::after,
+  .pwgate input { font-size: 16px; }
+}
 
 /* TASK 2 — the game page. Fills the viewport. */
 .task2-frame {
@@ -195,25 +249,15 @@ body { background: #000; }
   display: flex;
   min-height: 0;
 }
+/* Task-2 password gate sits as a shell prompt right under the
+   terminal, sharing the same retro look. */
 .pwgate.inline {
   flex: 0 0 auto;
   border-top: 1px solid var(--green-dim);
   margin: 0;
-  padding: 0.6rem 0.8rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
+  padding: 0.5rem 0.8rem;
   background: #050505;
 }
-.pwgate.inline label {
-  margin: 0;
-  font-size: 1.1rem;
-  flex: 1;
-  min-width: 14rem;
-}
-.pwgate.inline input { width: 7rem; }
-.pwgate.inline .pwerror { margin: 0; }
 
 /* PHONE / NARROW: terminal fills the task-2 stage. */
 #screen-wrap {
