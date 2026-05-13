@@ -20,17 +20,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch v86 release artifacts
+      - name: Fetch v86 artifacts
         run: |
           set -euo pipefail
           mkdir -p site/v86
-          # copy/v86 publishes a rolling release tagged "latest" with libv86.js,
-          # v86.wasm, seabios.bin, vgabios.bin. Pull them straight from the
-          # release asset URLs.
-          BASE="https://github.com/copy/v86/releases/download/latest"
-          for f in libv86.js v86.wasm seabios.bin vgabios.bin; do
+          # libv86.js + v86.wasm come from the copy/v86 rolling "latest" release.
+          REL="https://github.com/copy/v86/releases/download/latest"
+          for f in libv86.js v86.wasm; do
             echo "fetching $f"
-            curl -fsSL "$BASE/$f" -o "site/v86/$f"
+            curl -fsSL "$REL/$f" -o "site/v86/$f"
+          done
+          # SeaBIOS + VGA BIOS aren't in the release — pull from the source tree.
+          RAW="https://raw.githubusercontent.com/copy/v86/master/bios"
+          for f in seabios.bin vgabios.bin; do
+            echo "fetching $f"
+            curl -fsSL "$RAW/$f" -o "site/v86/$f"
           done
           ls -lh site/v86/
 
