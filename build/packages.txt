@@ -10,7 +10,6 @@ gawk
 util-linux
 file
 less
-linux-lts
 linux-firmware-none
 agetty
 openrc
