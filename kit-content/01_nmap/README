@@ -1,0 +1,21 @@
+PHASE 1 — RECON
+═══════════════
+tool:  nmap
+
+The Crazy Ants run on 10.4.12.0/24. Hit it with nmap and find the
+host you want — the back-office one that's accidentally reachable
+from outside.
+
+  nmap 10.4.12.0/24           full sweep, all 256 addresses
+  nmap 10.4.12.88             zoom on one host
+  nmap --help                 if you're lost
+
+The output is long. Pipe it through less if you want to page it:
+
+  nmap 10.4.12.0/24 | less    space = next page, q = quit
+
+When you've got the address:
+
+  apply m0use{HOST:PORT}
+
+Stuck?  cat hint  — no penalty.

@@ -1,19 +1,46 @@
 
-OPERATION: PARMESAN
+OPERATION: PARMESAN ROSE
+═══════════════════════════════════════════════════════════════════
 
-Mouse Bites Inc. requires intel from a competing concern, crazy.ants.
-Their external surface has been mapped (stage 1). A handful of captured
-requests show what's exposed (stage 2). A working exploit library is
-loaded on this terminal (stage 3).
+Mouse Bites Inc. has received intel that the Crazy Ants, our rival
+concern, are planning something major.
 
-Find the access point. Find the vulnerability. Pick the right exploit.
-Fire it. Bring back what's on their server.
+We suspect a private equity roll-up play in the fragmented hotel
+fragrances and potpourri sector in FY Q3 2026.
 
-Three stages. Three tools. Thirty minutes. The Editor is watching.
+What we know so far:
 
-  01_nmap/          recon: their external network map
-  02_burp/          recon: captured HTTP traffic against the target
-  03_metasploit/    operations: exploit library + harness
+  • Respiratory therapists at local urgent care clinics report
+    clusters of new-onset reactive airway cases in residents of
+    three subway-accessible facilities this year.
 
-  cat hint          in any folder, costs nothing
-  apply m0use{...}  submit a finding
+  • A Department of State filing cross-references institutional
+    purchasing data via a RTK request to the Bucks County purchasing
+    office, and matches the Crazy Ants Fragrance Compounder
+    Subsidiary SDS sheets (obtained through an OSHA 300 log FOIA on
+    the contract facility) against the Protected Substances List.
+
+  • "SAME ARTISAN QUALITY, NEW OWNERSHIP" signs are popping up at
+    mom-and-pop crafters and aging Yankee Candle mall kiosks across
+    Mischief City.
+
+Right now we can see the shape. We need the blueprint. That's where
+you come in, Sniffer Cadet. We need to cripple the Ants' deck before
+they start yoking investors.
+
+Your first assignment: scan the Crazy Ants network with nmap and
+find the back-office host that's accidentally exposed to the
+outside — the one wired into their fragrance compounding subsidiary.
+
+═══════════════════════════════════════════════════════════════════
+HOW TO USE THIS TERMINAL
+═══════════════════════════════════════════════════════════════════
+
+  nmap <target>         scan an IP or a range
+  cat <file>            print a file
+  less <file>           page through a long file       (q to quit)
+  grep <pattern> <f>    find lines matching a pattern
+  ls                    list files in the current folder
+
+  apply m0use{...}      ship a finding to the Editor
+  cat hint              real help, no penalty   (in any phase folder)

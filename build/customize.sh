@@ -28,43 +28,55 @@ ${E}[1;32mm0usunet${E}[0m ${E}[2m—${E}[0m ${E}[37mField Operations Terminal${E
 EOF
 
 # motd — colored. login(1) preserves ANSI escapes when piping to tty.
-# Each mouse-art line is DECDHL'd (ESC # 3 / ESC # 4) so it renders
-# at 2x height — the Canadian Syllabics codepoints we tried first
-# weren't in the framebuffer console font and showed as boxes.
 cat > /etc/motd <<EOF
-${E}[1;36m${E}#3   __(.)__(.)__${E}[0m
-${E}[1;36m${E}#4   __(.)__(.)__${E}[0m
-${E}[1;36m${E}#3  (___________)${E}[0m
-${E}[1;36m${E}#4  (___________)${E}[0m
+  ${E}[1;32mm0usunet v0.9.7${E}[0m  ${E}[2m•${E}[0m  ${E}[1;37mField Operations Terminal${E}[0m
+  ${E}[2mtarget:${E}[0m ${E}[1;31mcrazy.ants${E}[0m  ${E}[2m•  window:${E}[0m ${E}[1;33m00:30:00${E}[0m  ${E}[2m•  Editor: watching${E}[0m
 
-  ${E}[1;32mm 0 u s u n e t${E}[0m   ${E}[1;33mv0.9.7${E}[0m   ${E}[1;32mMOUSE BITES INC.${E}[0m ${E}[2m—${E}[0m ${E}[1;37mField Operations Terminal${E}[0m
-  target: ${E}[1;31mcrazy.ants${E}[0m  •  window: ${E}[1;33m00:30:00${E}[0m  •  Editor: ${E}[1;35mwatching${E}[0m
+  ${E}[1;33mOPERATION: PARMESAN${E}[0m — three phases, thirty minutes total. Start here:
 
-  ${E}[1;33mOPERATION: PARMESAN${E}[0m ${E}[2m—${E}[0m three stages, three tools, thirty minutes.
-
-    ${E}[1;36m01_nmap/${E}[0m         ${E}[37mrecon: their external surface${E}[0m
-    ${E}[1;36m02_burp/${E}[0m         ${E}[37mrecon: captured HTTP exchanges${E}[0m
-    ${E}[1;36m03_metasploit/${E}[0m   ${E}[37moperations: exploit library + harness${E}[0m
-
-  ${E}[1;32mcat /mnt/kit/BRIEFING${E}[0m    ${E}[1;32mcat hint${E}[0m    ${E}[1;32mapply m0use{...}${E}[0m    ${E}[1;32mmsfconsole "..."${E}[0m
+    ${E}[1;32mcat /mnt/kit/BRIEFING${E}[0m
 
 EOF
 
-# shell environment — chatty first-login banner. Don't cat /etc/motd
-# here; login(1) already prints it once before profile.d runs.
+# shell environment — first-login flow:
+#   1. Prompt for operator handle (saved to /root/.operator)
+#   2. Show briefing
+#   3. Gate on "PRESS ENTER AND GET TO SNIFFING, CADET"
+#   4. cd into phase 1 + show its README
+# Subsequent shells skip all that and just use the saved handle.
 cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
-  printf '\033[32m[+]\033[0m authenticated as operator (uid=0, ring=0)\n'
-  printf '\033[32m[+]\033[0m granting Editor.read, Editor.write, Editor.scurry\n'
-  printf '\033[32m[+]\033[0m attaching to operation: PARMESAN\n'
-  printf '\033[32m[+]\033[0m kit mounted at /mnt/kit  —  3 stages located\n'
-  printf '\033[1;33m[!]\033[0m window opens in 00:30:00 — clock starts NOW\n'
-  printf '\n'
-  cd /mnt/kit 2>/dev/null || cd /
-  export PS1='\[\e[1;31m\]operator\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ '
+
+  if [ ! -f /root/.operator ]; then
+    printf '\033[1;32m[+]\033[0m m0usunet handshake complete\n'
+    printf '\033[1;32m[+]\033[0m attaching to operation: \033[1;33mPARMESAN ROSE\033[0m\n'
+    printf '\033[1;32m[+]\033[0m kit mounted at /mnt/kit\n\n'
+    printf '\033[1;36moperator handle (your name on the wire):\033[0m '
+    read -r HANDLE
+    HANDLE=$(echo "$HANDLE" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
+    [ -z "$HANDLE" ] && HANDLE="cadet$$"
+    echo "$HANDLE" > /root/.operator
+    printf '\n\033[1;32m[+]\033[0m welcome, \033[1;33m%s\033[0m. window opens NOW.\n\n' "$HANDLE"
+  fi
+
+  HANDLE=$(cat /root/.operator)
+  export HANDLE
+  export PS1="\[\e[1;31m\]$HANDLE\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ "
   alias ll='ls -la'
   alias l='ls'
+
+  # Briefing — only on the very first shell. Set a flag so we don't
+  # re-run it if the operator opens a new tty.
+  if [ ! -f /root/.briefed ]; then
+    touch /root/.briefed
+    cat /mnt/kit/BRIEFING
+    printf '\n  \033[1;33mPRESS ENTER AND GET TO SNIFFING, CADET. YOU GOT THIS.\033[0m\n\n'
+    read -r _
+    cd /mnt/kit/01_nmap 2>/dev/null && cat README
+  else
+    cd /mnt/kit 2>/dev/null || cd /
+  fi
 fi
 EOF
 chmod +x /etc/profile.d/01-m0usunet.sh
@@ -81,6 +93,60 @@ fi
 EOF
 chmod +x /usr/local/bin/apply
 ln -s /usr/local/bin/apply /usr/local/bin/check
+
+# fake nmap — stage 1 recon. Reads pre-baked scan data from
+# /etc/m0use-nmap.dat (injected by build-alpine.sh) and prints
+# the right slice based on the target argument.
+cat > /usr/local/bin/nmap <<'NMAP'
+#!/bin/sh
+DAT=/etc/m0use-nmap.dat
+
+case "$1" in
+  ""|--help|-h|help)
+    cat <<'EOF'
+Usage: nmap <target>
+
+  nmap 10.4.12.0/24       scan the whole Crazy Ants network
+  nmap 10.4.12.88         zoom on a single host
+  nmap --help             show this
+
+Tip: pipe long scans through less    nmap 10.4.12.0/24 | less
+EOF
+    exit 0
+    ;;
+  10.4.12.0/24|10.4.12.0|10.4.12.*/24)
+    cat "$DAT"
+    exit 0
+    ;;
+  10.4.12.*)
+    # Slice out the report for one host. Each host report starts
+    # with "Nmap scan report for" and ends at a blank line.
+    awk -v T="$1" '
+      /^Nmap scan report for/ {
+        if (in_block) { print block; print ""; in_block=0 }
+        block = $0; for (i=1;i<=NF;i++) {
+          ip = $i; gsub(/[()]/,"",ip)
+          if (ip == T) in_block = 1
+        }
+        next
+      }
+      /^$/ {
+        if (in_block) { print block; print ""; in_block=0; block="" }
+        next
+      }
+      { if (in_block) block = block "\n" $0 }
+      END { if (in_block) print block }
+    ' "$DAT"
+    exit 0
+    ;;
+  *)
+    echo "nmap: cannot resolve target: $1" >&2
+    echo "      (try 10.4.12.0/24 for a full sweep)" >&2
+    exit 1
+    ;;
+esac
+NMAP
+chmod +x /usr/local/bin/nmap
 
 # fake msfconsole — stage 3 harness
 cat > /usr/local/bin/msfconsole <<'EOF'

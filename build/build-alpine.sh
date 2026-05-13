@@ -33,8 +33,9 @@ TMP=$(mktemp -d)
 LOOP=$(losetup -f --show "$OUT/alpine.img")
 mount "$LOOP" "$TMP"
 
-cp "$ROOT/kit-content/flags.txt"   "$TMP/etc/m0use.flags"
-cp "$ROOT/kit-content/exploit.sh"  "$TMP/etc/m0use.exploit"
+cp "$ROOT/kit-content/flags.txt"     "$TMP/etc/m0use.flags"
+cp "$ROOT/kit-content/exploit.sh"    "$TMP/etc/m0use.exploit"
+cp "$ROOT/kit-content/nmap-data.txt" "$TMP/etc/m0use-nmap.dat"
 
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
