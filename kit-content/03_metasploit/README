@@ -1,17 +1,49 @@
-This terminal has a synthetic Metasploit harness loaded. Run:
+PHASE 3 — OPERATIONS
+════════════════════
+tool:  curl   (yes, just curl)
 
-  msfconsole "RHOST=... RPORT=... TARGETURI=... PAYLOAD=..."
+You found the bug in phase 2: jenkins-old serves the
+descriptorByName/checkScript endpoint without authentication, and
+it actually evaluates expressions sent in the `value` parameter.
+That's the door. Now we walk through it.
 
-You'll need four values:
+The blueprint we want is stored on jenkins-old at:
 
-  RHOST       — from stage 1
-  RPORT       — from stage 1
-  TARGETURI   — from stage 2 (the captured request that didn't 403)
-  PAYLOAD     — read modules/ to find the right exploit, then
-                pick from its COMPATIBLE PAYLOADS list. Check
-                payloads/ to confirm architecture compatibility.
+    /var/m0use/blueprint.txt
 
-The harness will tell you why if it fails. Read its output.
+Your job: use the unauth Groovy endpoint to read that file and
+print its contents back to your screen. Then submit the flag from
+inside the file.
 
-Tip: the right module matches stage 2's CVE AND it's the *exploit*,
-not the detector. There are two hits for the CVE.
+
+THE EXPLOIT, IN PLAIN ENGLISH
+─────────────────────────────
+The vulnerable endpoint accepts a parameter called `value`. Whatever
+you put in `value`, the server evaluates as Groovy code and prints
+the result. So if you ask it to read a file, it'll read the file.
+
+A Groovy expression that reads a file's contents:
+
+    new File("/var/m0use/blueprint.txt").text
+
+You need to pass that expression as the `value=` parameter on the
+checkScript URL. Spaces and quotes have to be URL-encoded.
+
+
+YOUR FIRST CURL
+───────────────
+Try this — start small. Ask the server to print a number:
+
+    curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=println(42)'
+
+That URL is one continuous string, no spaces. If it works you'll
+see "Result: 42" — proof the server evaluated your code without
+asking who you were.
+
+Now do the same thing but ask it to read the blueprint file.
+
+Read the response carefully. The flag is inside the file's text.
+
+    apply m0use{...}
+
+Stuck?  cat hint  — no penalty.

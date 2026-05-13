@@ -39,8 +39,15 @@ cp "$ROOT/kit-content/flags-phase3.txt" "$TMP/etc/m0use.flags3"
 cp "$ROOT/kit-content/phase1-done.txt"  "$TMP/etc/m0use.phase1.done"
 cp "$ROOT/kit-content/phase2-done.txt"  "$TMP/etc/m0use.phase2.done"
 cp "$ROOT/kit-content/phase3-done.txt"  "$TMP/etc/m0use.phase3.done"
-cp "$ROOT/kit-content/exploit.sh"       "$TMP/etc/m0use.exploit"
-cp "$ROOT/kit-content/nmap-data.txt"    "$TMP/etc/m0use-nmap.dat"
+
+# Fake-network services + DNS + blueprint flag file.
+cp "$ROOT/build/m0use-banners.py"   "$TMP/usr/local/bin/m0use-banners"
+cp "$ROOT/build/m0use-jenkins.py"   "$TMP/usr/local/bin/m0use-jenkins"
+cp "$ROOT/build/m0use-dnsmasq.conf" "$TMP/etc/m0use-dnsmasq.conf"
+cp "$ROOT/build/m0usenet.initd"     "$TMP/etc/init.d/m0usenet"
+mkdir -p "$TMP/var/m0use"
+cp "$ROOT/build/m0use-blueprint.txt" "$TMP/var/m0use/blueprint.txt"
+chmod 644 "$TMP/var/m0use/blueprint.txt"
 
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }

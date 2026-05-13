@@ -113,128 +113,44 @@ EOF
 chmod +x /usr/local/bin/apply
 ln -s /usr/local/bin/apply /usr/local/bin/check
 
-# fake nmap — stage 1 recon. Reads pre-baked scan data from
-# /etc/m0use-nmap.dat. Adds color, pages through less for long scans,
-# always prints a cheat-sheet footer when less exits.
-cat > /usr/local/bin/nmap <<'NMAP'
+# The fake nmap and msfconsole stubs are gone — players use real
+# nmap (from apk) and real curl against a real fake-network running
+# inside the VM. See /etc/init.d/m0usenet which brings up the lo
+# aliases and starts dnsmasq + banner responder + fake-Jenkins.
+
+# replay — replays a captured burp request against the live target
+# using real curl, so the player can verify the bug still works.
+cat > /usr/local/bin/replay <<'REPLAY'
 #!/bin/sh
-DAT=/etc/m0use-nmap.dat
-E=$(printf '\033')
-
-colorize() {
-  sed -E "
-    s/(open)([[:space:]])/${E}[1;32m\1${E}[0m\2/g;
-    s/(filtered)/${E}[2;33m\1${E}[0m/g;
-    s/(closed)/${E}[2;31m\1${E}[0m/g;
-    s/^(Nmap scan report for[[:space:]]+)([^ ]+)([[:space:]]+)\((.+)\)/\1${E}[1;36m\2${E}[0m\3(${E}[1;33m\4${E}[0m)/g;
-    s/^(PORT[[:space:]]+STATE[[:space:]]+SERVICE.*)$/${E}[1;37m\1${E}[0m/g;
-    s/(rDNS record for [^:]+:[[:space:]]*)(\S+)/\1${E}[1;31m\2${E}[0m/g;
-    s/(Port forwarding.*)/${E}[1;35m\1${E}[0m/g;
-    s/(8080\/tcp -> 10\.4\.12\.88:8080)/${E}[1;35m\1${E}[0m/g;
-  "
-}
-
-footer() {
-  printf '\n${E}[2m──────────────────────────────────────────────────────────────────${E}[0m\n'
-  printf '  ${E}[1;36mnmap 10.4.12.X${E}[0m         zoom on a single host\n'
-  printf '  ${E}[1;36mapply m0use{HOST:PORT}${E}[0m  when you have the address\n'
-  printf '  ${E}[1;36mcat hint${E}[0m              if you are stuck\n'
-  printf '${E}[2m──────────────────────────────────────────────────────────────────${E}[0m\n'
-}
-
-case "$1" in
-  ""|--help|-h|help)
-    cat <<EOF
-${E}[1;37mUsage:${E}[0m ${E}[1;36mnmap${E}[0m <target>
-
-  ${E}[1;36mnmap 10.4.12.0/24${E}[0m       scan the whole Crazy Ants network
-  ${E}[1;36mnmap 10.4.12.88${E}[0m         zoom on a single host
-  ${E}[1;36mnmap --help${E}[0m             show this
-EOF
-    exit 0
-    ;;
-  10.4.12.0/24|10.4.12.0|10.4.12.*/24)
-    cat "$DAT" | colorize | less -R
-    footer
-    exit 0
-    ;;
-  10.4.12.*)
-    awk -v T="$1" '
-      /^Nmap scan report for/ {
-        if (in_block) { print block; print ""; in_block=0 }
-        block = $0; for (i=1;i<=NF;i++) {
-          ip = $i; gsub(/[()]/,"",ip)
-          if (ip == T) in_block = 1
-        }
-        next
-      }
-      /^$/ {
-        if (in_block) { print block; print ""; in_block=0; block="" }
-        next
-      }
-      { if (in_block) block = block "\n" $0 }
-      END { if (in_block) print block }
-    ' "$DAT" | colorize
-    footer
-    exit 0
-    ;;
-  *)
-    printf "${E}[1;31mnmap:${E}[0m cannot resolve target: %s\n" "$1" >&2
-    printf "      (try ${E}[1;36mnmap 10.4.12.0/24${E}[0m for a full sweep)\n" >&2
-    exit 1
-    ;;
-esac
-NMAP
-chmod +x /usr/local/bin/nmap
-
-# fake msfconsole — stage 3 harness
-cat > /usr/local/bin/msfconsole <<'EOF'
-#!/bin/sh
-# Mouse Bites Inc. — synthetic Metasploit harness, v0.9
-[ -z "$1" ] && { echo "usage: msfconsole \"RHOST=... RPORT=... TARGETURI=... PAYLOAD=...\""; exit 1; }
-
-CFG="$1"
-RHOST=$(echo "$CFG" | tr ' ' '\n' | sed -n 's/^RHOST=//p')
-RPORT=$(echo "$CFG" | tr ' ' '\n' | sed -n 's/^RPORT=//p')
-URI=$(echo "$CFG"   | tr ' ' '\n' | sed -n 's/^TARGETURI=//p')
-PAY=$(echo "$CFG"   | tr ' ' '\n' | sed -n 's/^PAYLOAD=//p')
-
-. /etc/m0use.exploit
-
-if [ "$RHOST" != "$X_RHOST" ]; then
-  echo "[-] Exploit failed: target unreachable ($RHOST)"; exit 1
+[ -z "$1" ] && { echo "usage: replay <N>          (N = capture number, e.g. 17)"; exit 1; }
+N=$(printf '%03d' "$1" 2>/dev/null) || N="$1"
+FILE="/mnt/kit/02_burp/req_${N}.txt"
+if [ ! -f "$FILE" ]; then
+  echo "replay: no capture matching #$N"; exit 1
 fi
-if [ "$RPORT" != "$X_RPORT" ]; then
-  echo "[-] Exploit failed: connection refused on port $RPORT"; exit 1
-fi
-if [ "$URI" != "$X_URI" ]; then
-  echo "[-] Exploit failed: target endpoint returned 404"; exit 1
-fi
-if [ "$PAY" != "$X_PAY" ]; then
-  case "$PAY" in
-    *windows*)        echo "[-] Exploit failed: payload incompatible with target architecture";;
-    *x86_64*|*amd64*) echo "[-] Exploit failed: payload incompatible with target architecture";;
-    *meterpreter*)    echo "[-] Exploit failed: payload too large for target memory";;
-    *)                echo "[-] Exploit failed: payload rejected by target";;
-  esac
-  exit 1
-fi
+# Extract method + path from the captured request line.
+LINE=$(grep -m1 -E '^(GET|POST|PUT|DELETE|HEAD) ' "$FILE")
+METHOD=$(echo "$LINE" | awk '{print $1}')
+PATH_=$(echo "$LINE" | awk '{print $2}')
+# Was there an Authorization line in the capture's request half?
+HASAUTH=$(awk '/^====== RESPONSE ======/{exit} /^Authorization:/{print "yes"; exit}' "$FILE")
 
-cat <<'BANNER'
-[*] Started reverse TCP handler on 10.4.99.7:4444
-[*] Sending stage (38382 bytes) to target...
-[*] Meterpreter session 1 opened (10.4.99.7:4444 -> target:8080)
-meterpreter > shell
-[+] Spawning shell on target
+printf '\033[1;36mreplaying capture #%s against live target\033[0m\n' "$N"
+printf '  %s http://10.4.12.1:8080%s   (auth %s)\n\n' "$METHOD" "$PATH_" "${HASAUTH:-NO}"
 
-$ whoami
-root
-$ cat /root/.ssh/authorized_keys
-m0use{jenkins_was_a_mistake}
-$ exit
-BANNER
-EOF
-chmod +x /usr/local/bin/msfconsole
+if [ "$HASAUTH" = "yes" ]; then
+  curl -isS -X "$METHOD" -H 'Authorization: Basic YW5hbHlzdDpodW50ZXIy' \
+       "http://10.4.12.1:8080${PATH_}" | head -20
+else
+  curl -isS -X "$METHOD" "http://10.4.12.1:8080${PATH_}" | head -20
+fi
+REPLAY
+chmod +x /usr/local/bin/replay
+
+# Install the m0usenet service files (sourced from /etc/m0use/* on
+# the rootfs; build-alpine.sh copies them in alongside the flag files).
+chmod +x /usr/local/bin/m0use-banners /usr/local/bin/m0use-jenkins
+chmod +x /etc/init.d/m0usenet
 
 # kill every service we don't strictly need — boot inside v86 should
 # go from kernel handoff to shell in a couple of seconds.
@@ -255,6 +171,10 @@ rc-update add devfs       sysinit
 rc-update add hostname    boot
 rc-update add bootmisc    boot
 rc-update add localmount  boot
+
+# our fake network — runs after localmount, before agetty respawns
+# so by the time the player gets a prompt, nmap returns real results.
+rc-update add m0usenet    boot
 
 # trim documentation, locale, and other dead weight
 rm -rf /usr/share/man /usr/share/doc /usr/share/info \

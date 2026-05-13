@@ -2,12 +2,16 @@ PHASE 1 — RECON
 ═══════════════
 tool:  nmap
 
-The Crazy Ants run on 10.4.12.0/24. Hit it with nmap and scan their
-whole network.
+The Crazy Ants run on 10.4.12.0/24. The terminal you're on has real
+nmap installed, real DNS resolving their hostnames, and a real
+network connection into their range. Hit it.
 
-    nmap 10.4.12.0/24       full sweep
+    nmap 10.4.12.0/24       full sweep, all addresses
+    nmap -sV 10.4.12.0/24   same, but ask each host its software version
     nmap 10.4.12.88         zoom on a single host
-    nmap --help             if you're lost
+    nmap --help             real nmap help (it's long)
+
+Long output? Pipe through less:    nmap -sV 10.4.12.0/24 | less
 
 
 WHAT YOU'RE ACTUALLY LOOKING FOR

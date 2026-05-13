@@ -7,3 +7,8 @@ less
 linux-firmware-none
 agetty
 openrc
+nmap
+curl
+python3
+dnsmasq
+iproute2
