@@ -43,7 +43,9 @@ losetup -d "$LOOP"
 rmdir "$TMP"
 
 # Diagnostics — figure out whether we got a partitioned image or a raw fs.
-file "$OUT/alpine.img"
+echo "=== first 8 bytes (hex) ==="
+hexdump -C -n 64 "$OUT/alpine.img" || true
+echo "=== sfdisk dump ==="
 sfdisk -d "$OUT/alpine.img" 2>&1 || true
 
 echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
