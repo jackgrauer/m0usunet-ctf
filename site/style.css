@@ -5,8 +5,11 @@
   --green-dim: #008844;
   --red: #ff4040;
   --gold: #ffcc33;
-  --mono:  ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
-  --retro: "VT323", ui-monospace, "Courier New", monospace;
+  --paper: #f1ecdc;
+  --paper-ink: #1a1a1a;
+  --mono:    ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  --retro:   "Share Tech Mono", ui-monospace, "Courier New", monospace;
+  --display: "VT323", "Share Tech Mono", ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -16,30 +19,203 @@ html, body {
   padding: 0;
   background: #000;
   color: var(--fg);
-  font-family: var(--mono);
+  font-family: var(--retro);
   font-size: 14px;
   overscroll-behavior: none;
   min-height: 100vh;
   min-height: 100dvh;
 }
 
-body {
+body { background: #000; }
+
+/* Meta-frame: stack of pages, only the .active one is shown. */
+.meta-page {
+  display: none;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  background: #000;
+  color: var(--fg);
+  z-index: 1;
+}
+.meta-page.active { display: block; }
+
+.meta-content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem 4rem;
+  font-family: var(--retro);
+}
+
+.meta-content h1 {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  color: var(--green);
+  margin: 0 0 0.25rem 0;
+  letter-spacing: 0.03em;
+  text-shadow: 0 0 6px rgba(0,255,102,0.3);
+}
+.meta-content h2 {
+  font-family: var(--display);
+  font-size: 2rem;
+  color: var(--gold);
+  margin: 1.4rem 0 0.5rem;
+}
+.meta-content .subhead {
+  color: var(--green-dim);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  margin: 0 0 1.5rem 0;
+}
+.meta-content p {
+  font-size: 1.3rem;
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+  color: var(--fg);
+}
+.meta-content .dim { color: var(--green-dim); }
+.meta-content ol.aptitudes {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  margin: 0 0 1.4rem 0;
+  padding-left: 2rem;
+  color: var(--gold);
+}
+
+/* Password gate (input + button + error line). */
+.pwgate {
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px dashed var(--green-dim);
+}
+.pwgate label {
+  display: block;
+  color: var(--green);
+  font-size: 1.3rem;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.03em;
+}
+.pwgate input {
+  width: 9rem;
+  padding: 0.5rem 0.8rem;
+  background: #050505;
+  color: var(--gold);
+  border: 1px solid var(--green-dim);
+  border-radius: 0;
+  font-family: var(--retro);
+  font-size: 1.6rem;
+  letter-spacing: 0.2em;
+  text-align: center;
+  outline: none;
+}
+.pwgate input:focus { border-color: var(--green); }
+.pwgate button {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--green-dim);
+  color: #000;
+  border: 0;
+  font-family: var(--retro);
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.pwgate button:hover { background: var(--green); }
+.pwgate .pwerror {
+  color: var(--red);
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+/* Plain next button (TASK 3 → TASK 4) */
+.meta-next {
+  margin-top: 2rem;
+  padding: 0.6rem 1.4rem;
+  background: var(--green-dim);
+  color: #000;
+  border: 0;
+  font-family: var(--retro);
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.meta-next:hover { background: var(--green); }
+
+/* Reflection form (TASK 4) */
+.reflection { margin-top: 1.4rem; }
+.reflection label {
+  display: block;
+  color: var(--green);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+.reflection textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  background: #050505;
+  color: var(--fg);
+  border: 1px solid var(--green-dim);
+  font-family: var(--retro);
+  font-size: 1.3rem;
+  padding: 0.5rem 0.7rem;
+  resize: vertical;
+  outline: none;
+}
+.reflection textarea:focus { border-color: var(--green); }
+
+/* TASK 2 — the game page. Fills the viewport. */
+.task2-frame {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  background: #000;
 }
+.task2-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.7rem;
+  background: #050505;
+  color: var(--green);
+  font-family: var(--retro);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--green-dim);
+}
+.task2-bar .task2-tag  { color: var(--gold); font-weight: 700; letter-spacing: 0.05em; }
+.task2-bar .task2-sep  { color: var(--green-dim); }
+.task2-bar .task2-hint { color: var(--green-dim); letter-spacing: 0.04em; }
 
-main {
+.task2-stage {
   flex: 1;
   display: flex;
-  background: #000;
   min-height: 0;
 }
+.pwgate.inline {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--green-dim);
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  background: #050505;
+}
+.pwgate.inline label {
+  margin: 0;
+  font-size: 1.1rem;
+  flex: 1;
+  min-width: 14rem;
+}
+.pwgate.inline input { width: 7rem; }
+.pwgate.inline .pwerror { margin: 0; }
 
-/* PHONE / NARROW: the terminal IS the screen. No aspect ratio, no
-   max width, no padding. Fills every available pixel. The on-screen
-   keyboard pushes the terminal up via the dynamic viewport unit. */
+/* PHONE / NARROW: terminal fills the task-2 stage. */
 #screen-wrap {
   position: relative;
   width: 100%;
@@ -47,20 +223,17 @@ main {
   background: #000;
   min-height: 0;
 }
-
-/* DESKTOP / WIDE: bound the terminal so it doesn't blow up across an
-   ultrawide monitor. Centered, 4:3, capped. */
 @media (min-width: 900px) {
-  main {
-    align-items: center;
-    justify-content: center;
+  .task2-stage {
     padding: 0.75rem;
+    justify-content: center;
+    align-items: center;
   }
   #screen-wrap {
     flex: 0 0 auto;
     width: 100%;
     max-width: 1400px;
-    max-height: 88vh;
+    max-height: 100%;
     aspect-ratio: 4 / 3;
   }
 }
@@ -70,8 +243,19 @@ main {
   inset: 0;
   background: #000;
 }
+#terminal .xterm-viewport,
+#terminal .xterm-screen { background: #000 !important; }
+#terminal .xterm,
+#terminal .xterm * {
+  font-family: var(--retro) !important;
+  font-feature-settings: "kern" 0, "calt" 0, "liga" 0, "dlig" 0, "clig" 0 !important;
+  font-variant-ligatures: none !important;
+  font-kerning: none !important;
+  text-rendering: optimizeSpeed !important;
+  letter-spacing: 0 !important;
+}
 
-/* v86 needs a screen_container; we don't show it. */
+/* v86 wants a screen_container; we hide it. */
 #v86-headless {
   position: absolute;
   width: 1px;
@@ -82,27 +266,15 @@ main {
   left: -9999px;
   pointer-events: none;
 }
-#terminal .xterm-viewport,
-#terminal .xterm-screen { background: #000 !important; }
-#terminal .xterm,
-#terminal .xterm * {
-  font-family: var(--retro) !important;
-  /* xterm renders in a cell grid; any kerning/ligatures break it,
-     so disable every typographic feature that adjusts spacing. */
-  font-feature-settings: "kern" 0, "calt" 0, "liga" 0, "dlig" 0, "clig" 0 !important;
-  font-variant-ligatures: none !important;
-  font-kerning: none !important;
-  text-rendering: optimizeSpeed !important;
-  letter-spacing: 0 !important;
-}
 
+/* Splash */
 #splash {
   position: fixed;
   inset: 0;
   background: #000;
   color: var(--green);
   font-family: var(--retro);
-  z-index: 20;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,6 +287,7 @@ main {
   text-align: center;
   letter-spacing: 0.03em;
   max-width: 100%;
+  font-family: var(--display);
 }
 .splash-mouse {
   display: block;
@@ -122,9 +295,6 @@ main {
   height: 4rem;
   margin: 0 auto 1.25rem;
   filter: drop-shadow(0 0 6px rgba(255,255,255,0.15));
-}
-@media (min-width: 700px) {
-  .splash-mouse { width: 6rem; height: 6rem; margin-bottom: 1.75rem; }
 }
 .splash-line1 { font-size: 1.6rem; color: var(--green); }
 .splash-line2 { font-size: 2.2rem; color: var(--gold); }
@@ -135,8 +305,8 @@ main {
   color: var(--green-dim);
   letter-spacing: 0.05em;
 }
-
 @media (min-width: 700px) {
+  .splash-mouse { width: 6rem; height: 6rem; margin-bottom: 1.75rem; }
   .splash-line1 { font-size: 2.4rem; }
   .splash-line2 { font-size: 3.2rem; }
   .splash-rule  { font-size: 2rem; }

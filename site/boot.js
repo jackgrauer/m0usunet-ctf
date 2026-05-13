@@ -14,11 +14,12 @@
     return;
   }
 
-  // Wait for VT323 to finish loading before initializing xterm —
+  // Wait for the terminal font to load before initializing xterm —
   // otherwise xterm measures the fallback font's metrics and the
-  // VT323 swap-in renders with wrong kerning.
+  // web font swap-in renders with wrong character widths.
   if (document.fonts && document.fonts.ready) {
     try {
+      await document.fonts.load('20px "Share Tech Mono"');
       await document.fonts.load('20px "VT323"');
       await document.fonts.ready;
     } catch (_) {}
@@ -33,9 +34,9 @@
 
   // ── xterm.js terminal ──────────────────────────────────────────────
   const term = new Terminal({
-    fontFamily: '"VT323", "Courier New", monospace',
-    fontSize: 20,
-    lineHeight: 1.05,
+    fontFamily: '"Share Tech Mono", ui-monospace, "Courier New", monospace',
+    fontSize: 18,
+    lineHeight: 1.1,
     letterSpacing: 0,
     scrollback: 8000,
     cursorBlink: true,
