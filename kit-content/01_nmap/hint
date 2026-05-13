@@ -1,9 +1,14 @@
-The interesting host isn't the one with the most open ports.
-It's the one whose information disagrees with itself.
+Twelve hosts, eleven decoys. The one you want has something
+unusual that none of the others have. Read top to bottom.
 
-Try:  grep -i rdns scan.txt
-And:  grep -i forward scan.txt
+If you're still stuck:
+  - Look at the lines that start with something other than "PORT"
+    or "Not shown" or "Host is up". Those are extra notes nmap
+    only emits for hosts that have something special.
+  - One host has TWO names — its forward DNS says one thing, its
+    rDNS says something else. That contradiction is the clue.
 
-Two lines, in different parts of the file, point at the same host.
-The flag is HOST:PORT — the externally reachable one, not the
-internal one.
+The flag is HOST:PORT — the address an attacker would actually
+connect to from outside. Not the internal address where the
+service really lives (that's behind the gateway and only has ssh
+exposed directly).

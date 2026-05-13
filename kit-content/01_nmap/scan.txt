@@ -11,8 +11,7 @@ PORT     STATE SERVICE    VERSION
 | ssl-cert: Subject: commonName=*.crazy.ants
 |_ Not valid before: 2025-11-04
 | Port forwarding (from --script port-forwarding):
-|   8080/tcp -> 10.4.12.88:8080
-|_  (Jenkins; see CVE-2018-1000861)
+|_  8080/tcp -> 10.4.12.88:8080
 | http-title: crazy.ants — corporate
 |_OS: Linux 5.x
 Service Info: OS: Linux
@@ -105,7 +104,6 @@ Not shown: 999 filtered tcp ports
 PORT   STATE SERVICE VERSION
 22/tcp open  ssh     OpenSSH 7.4p1
 OS detection: Linux 4.x (likely Debian); kernel reports i686
-Service Info: Host: jenkins-old; OS: Linux
 
 Nmap scan report for assets.crazy.ants (10.4.12.99)
 Host is up (0.0007s latency).
