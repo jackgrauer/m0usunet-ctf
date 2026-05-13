@@ -1,7 +1,7 @@
 // boot.js — wires v86's serial port to an xterm.js terminal in the page.
 // v86 runs invisible; xterm is what the player actually interacts with.
 
-(function () {
+(async function () {
   "use strict";
 
   const splash       = document.getElementById("splash");
@@ -12,6 +12,16 @@
   if (typeof V86 === "undefined" || typeof Terminal === "undefined") {
     say("required libraries missing — check site/ assets");
     return;
+  }
+
+  // Wait for VT323 to finish loading before initializing xterm —
+  // otherwise xterm measures the fallback font's metrics and the
+  // VT323 swap-in renders with wrong kerning.
+  if (document.fonts && document.fonts.ready) {
+    try {
+      await document.fonts.load('20px "VT323"');
+      await document.fonts.ready;
+    } catch (_) {}
   }
 
   // Append ?bust=<param> from the page URL to fetched asset URLs.

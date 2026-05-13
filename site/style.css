@@ -87,6 +87,13 @@ main {
 #terminal .xterm,
 #terminal .xterm * {
   font-family: var(--retro) !important;
+  /* xterm renders in a cell grid; any kerning/ligatures break it,
+     so disable every typographic feature that adjusts spacing. */
+  font-feature-settings: "kern" 0, "calt" 0, "liga" 0, "dlig" 0, "clig" 0 !important;
+  font-variant-ligatures: none !important;
+  font-kerning: none !important;
+  text-rendering: optimizeSpeed !important;
+  letter-spacing: 0 !important;
 }
 
 #splash {
@@ -108,6 +115,16 @@ main {
   text-align: center;
   letter-spacing: 0.03em;
   max-width: 100%;
+}
+.splash-mouse {
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1.25rem;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.15));
+}
+@media (min-width: 700px) {
+  .splash-mouse { width: 6rem; height: 6rem; margin-bottom: 1.75rem; }
 }
 .splash-line1 { font-size: 1.6rem; color: var(--green); }
 .splash-line2 { font-size: 2.2rem; color: var(--gold); }
