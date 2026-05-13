@@ -17,10 +17,19 @@
     return;
   }
 
+  // Append ?bust=<param> to fetched URLs when the page URL includes
+  // ?bust=, so testing/iteration can force a fresh fetch past the
+  // GitHub Pages CDN cache. Empty string in production.
+  const bust = (() => {
+    const p = new URLSearchParams(location.search).get("bust");
+    return p ? `?bust=${encodeURIComponent(p)}` : "";
+  })();
+  const u = (path) => path + bust;
+
   // Fetch the kernel cmdline from the build, then boot the kernel + initrd
   // directly. The disk images supply userspace; we don't go through the
   // SYSLINUX bootloader on the disk.
-  fetch("cmdline.txt")
+  fetch(u("cmdline.txt"))
     .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
     .then(start, err => start("modules=ext4 root=/dev/sda rw"))
     .catch(e => say("boot config error: " + e));
@@ -31,13 +40,13 @@
     const emulator = new V86({
       wasm_path: "v86/v86.wasm",
       screen_container: document.getElementById("screen"),
-      bios:     { url: "v86/seabios.bin" },
-      vga_bios: { url: "v86/vgabios.bin" },
-      bzimage:  { url: "vmlinuz-virt",   async: false },
-      initrd:   { url: "initramfs-virt", async: false },
+      bios:     { url: u("v86/seabios.bin") },
+      vga_bios: { url: u("v86/vgabios.bin") },
+      bzimage:  { url: u("vmlinuz-virt"),   async: false },
+      initrd:   { url: u("initramfs-virt"), async: false },
       cmdline:  cmdline,
-      hda:      { url: "alpine.img", async: false },
-      hdb:      { url: "kit.img",    async: false },
+      hda:      { url: u("alpine.img"), async: false },
+      hdb:      { url: u("kit.img"),    async: false },
       memory_size:     128 * 1024 * 1024,
       vga_memory_size:   8 * 1024 * 1024,
       autostart: true,
