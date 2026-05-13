@@ -40,15 +40,21 @@ sync
 umount "$TMP"
 
 # Shrink the filesystem to minimum, then truncate the image to fit.
-e2fsck -fy "$LOOP" >/dev/null
+echo "=== before shrink ==="
+ls -lh "$OUT/alpine.img"
+e2fsck -fy "$LOOP"
 resize2fs -M "$LOOP"
 
+dumpe2fs -h "$LOOP" 2>/dev/null | grep -E 'Block count|Block size'
 BCOUNT=$(dumpe2fs -h "$LOOP" 2>/dev/null | awk -F: '/Block count/{print $2}' | tr -d ' ')
 BSIZE=$(dumpe2fs  -h "$LOOP" 2>/dev/null | awk -F: '/Block size/{print $2}'  | tr -d ' ')
 FSBYTES=$(( BCOUNT * BSIZE ))
+echo "computed FSBYTES=$FSBYTES (BCOUNT=$BCOUNT * BSIZE=$BSIZE)"
 
 losetup -d "$LOOP"
 truncate -s "$FSBYTES" "$OUT/alpine.img"
+echo "=== after truncate ==="
+ls -lh "$OUT/alpine.img"
 rmdir "$TMP"
 
 echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
