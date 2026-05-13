@@ -338,6 +338,8 @@ body { background: #000; }
   width: 4rem;
   height: 4rem;
   margin: 0 auto 1.25rem;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
   filter: drop-shadow(0 0 6px rgba(255,255,255,0.15));
 }
 .splash-line1 { font-size: 1.6rem; color: var(--green); }

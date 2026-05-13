@@ -1,6 +1,26 @@
 // boot.js — wires v86's serial port to an xterm.js terminal in the page.
 // v86 runs invisible; xterm is what the player actually interacts with.
 
+// Pixelate the splash mouse — render the smooth SVG into a tiny
+// canvas, scale that up with image-rendering:pixelated. Chunky vibe.
+(function pixelateMouse() {
+  const img = document.querySelector(".splash-mouse");
+  if (!img || img.tagName !== "IMG") return;
+  const src = new Image();
+  src.onload = () => {
+    const SIZE = 32;
+    const c = document.createElement("canvas");
+    c.width = SIZE; c.height = SIZE;
+    c.className = "splash-mouse";
+    c.setAttribute("aria-hidden", "true");
+    const g = c.getContext("2d");
+    g.imageSmoothingEnabled = false;
+    g.drawImage(src, 0, 0, SIZE, SIZE);
+    img.replaceWith(c);
+  };
+  src.src = img.getAttribute("src");
+})();
+
 (async function () {
   "use strict";
 
