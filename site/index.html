@@ -4,132 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0a">
-  <title>Mouse Bites Inc. — Junior Sniffer Aptitude Battery</title>
+  <title>m0usunet // Mouse Bites Inc.</title>
   <link rel="icon" type="image/svg+xml" href="mouse.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=block" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/xterm@5.3.0/css/xterm.css">
-  <link rel="stylesheet" href="style.css?v=20260514">
+  <link rel="stylesheet" href="style.css?v=20260514b">
 </head>
 <body>
-  <!-- Cold-open: the Dear Applicant letter. PASSWORD1 = 4123 -->
-  <section class="meta-page active" data-page="letter">
-    <article class="meta-content">
-      <h1>Mouse Bites Inc.</h1>
-      <p class="subhead">Office of Junior Sniffer Recruitment</p>
-
-      <h2>Dear Applicant,</h2>
-
-      <p>Thank you for your interest in the Junior Sniffer position at Mouse Bites Inc.</p>
-
-      <p>Due to the number of applications we receive — daily, every second, while you are probably sleeping or on the toilet, and generally how much everyone loves our company and it's so fucking incredible — we will not be able to directly respect, or even conceive of, your individual personal agency, let alone your skills or value as a prospective employee.</p>
-
-      <p>Regardless of performance during the assessment, the CEO's son-in-law will receive the position anyway. Save your energy. Don't try very hard. Enjoy yourself. You think you deserve this pain. You don't.</p>
-
-      <p>OPERATION PARMESAN will consist of four parts. Each targets one aptitude expected of Mouse Bites Inc. Junior Sniffers:</p>
-
-      <ol class="aptitudes">
-        <li>resourcefulness</li>
-        <li>intuition</li>
-        <li>the culinary art</li>
-        <li>emotional intelligence</li>
-      </ol>
-
-      <form class="pwgate" data-expects="4123" data-next="task1">
-        <label for="pw1">Enter PASSWORD1 to proceed to TASK 1</label>
-        <input type="text" id="pw1" name="pw1" autocomplete="off" autocapitalize="off"
-               spellcheck="false" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
-        <button type="submit">continue</button>
-        <div class="pwerror" hidden>incorrect.</div>
-      </form>
-    </article>
-  </section>
-
-  <!-- TASK 1: resourcefulness. PASSWORD2 = 5123 -->
-  <section class="meta-page" data-page="task1">
-    <article class="meta-content">
-      <h1>TASK 1 — resourcefulness</h1>
-
-      <p>Proceed to a store you think sells the item you have been tasked to supply. If inclined, buy a second item with which you like to cook.</p>
-
-      <p>If you're fucking Austin Horse or whatever, buy shit at HMart or Sabzi Mandi at 69th &amp; Market St. I don't care.</p>
-
-      <p>If you're cheap, present receipt to Mouse Bites Inc. Craft Services Accounting Unit staff for reimbursement.</p>
-
-      <form class="pwgate" data-expects="5123" data-next="task2">
-        <label for="pw2">Enter PASSWORD2 to proceed to TASK 2</label>
-        <input type="text" id="pw2" name="pw2" autocomplete="off" autocapitalize="off"
-               spellcheck="false" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
-        <button type="submit">continue</button>
-        <div class="pwerror" hidden>incorrect.</div>
-      </form>
-    </article>
-  </section>
-
-  <!-- TASK 2: intuition. This is the m0usunet hack game. -->
-  <section class="meta-page" data-page="task2">
-    <div class="task2-frame">
-      <header class="task2-bar">
-        <span class="task2-tag">TASK 2 — intuition</span>
-        <span class="task2-sep">•</span>
-        <span class="task2-hint">m0usunet mainframe access</span>
-      </header>
-      <main class="task2-stage">
-        <div id="screen-wrap">
-          <div id="terminal"></div>
-        </div>
-      </main>
-      <form class="pwgate inline" data-expects="6123" data-next="task3">
-        <label for="pw3">Got PASSWORD3 from the m0usunet terminal? Enter to proceed.</label>
-        <input type="text" id="pw3" name="pw3" autocomplete="off" autocapitalize="off"
-               spellcheck="false" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
-        <button type="submit">continue</button>
-        <div class="pwerror" hidden>incorrect.</div>
-      </form>
-    </div>
-  </section>
-
-  <!-- TASK 3: the culinary art -->
-  <section class="meta-page" data-page="task3">
-    <article class="meta-content">
-      <h1>TASK 3 — the culinary art</h1>
-
-      <p>Proceed to HQ.</p>
-
-      <p>Upon arrival at HQ, you will be provided a tofu and rice. Using ingredients supplied by fellow applicants and yourself, prepare a visually appealing dish that tastes like something.</p>
-
-      <p>Your dish will be assessed via blind peer review.</p>
-
-      <button class="meta-next" data-next="task4" type="button">next</button>
-    </article>
-  </section>
-
-  <!-- TASK 4: emotional intelligence -->
-  <section class="meta-page" data-page="task4">
-    <article class="meta-content">
-      <h1>TASK 4 — emotional intelligence</h1>
-
-      <p>Reflect on the evening's events. Write a statement, in this format, directed to a fellow participant:</p>
-
-      <form class="reflection" onsubmit="return false;">
-        <label>WHEN YOU<textarea rows="2" placeholder="…"></textarea></label>
-        <label>I FEEL<textarea rows="2" placeholder="…"></textarea></label>
-        <label>I NEED<textarea rows="2" placeholder="…"></textarea></label>
-        <label>WOULD YOU<textarea rows="2" placeholder="…"></textarea></label>
-        <button class="meta-next" data-next="done" type="submit">submit</button>
-      </form>
-    </article>
-  </section>
-
-  <!-- Done -->
-  <section class="meta-page" data-page="done">
-    <article class="meta-content">
-      <h1>Assessment complete.</h1>
-      <p>Thank you for your application. The Editor will be in touch.</p>
-      <p class="dim">A reminder: the CEO's son-in-law will receive the position anyway.</p>
-    </article>
-  </section>
+  <main>
+    <div id="terminal"></div>
+  </main>
 
   <!-- v86 wants a screen_container; we keep it offscreen. -->
   <div id="v86-headless" aria-hidden="true">
@@ -141,7 +27,6 @@
   <script src="https://unpkg.com/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
   <script src="v86/libv86.js"></script>
   <script src="nicks.js"></script>
-  <script src="meta.js"></script>
   <script src="boot.js"></script>
 </body>
 </html>

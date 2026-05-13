@@ -49,6 +49,12 @@ mkdir -p "$TMP/var/m0use"
 cp "$ROOT/build/m0use-blueprint.txt" "$TMP/var/m0use/blueprint.txt"
 chmod 644 "$TMP/var/m0use/blueprint.txt"
 
+# Portal flow (4-task aptitude battery)
+cp "$ROOT/build/m0use-portal.sh"    "$TMP/usr/local/bin/m0use-portal"
+cp "$ROOT/build/m0use-game-rc"      "$TMP/etc/m0use-game-rc"
+chmod 755 "$TMP/usr/local/bin/m0use-portal"
+chmod 644 "$TMP/etc/m0use-game-rc"
+
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
 

@@ -1,64 +1,38 @@
-// boot.js — wires v86's serial port to an xterm.js terminal in the page.
-// v86 runs invisible; xterm is what the player actually interacts with.
-
-// Pixelate the splash mouse — render the smooth SVG into a tiny
-// canvas, scale that up with image-rendering:pixelated. Chunky vibe.
-(function pixelateMouse() {
-  const img = document.querySelector(".splash-mouse");
-  if (!img || img.tagName !== "IMG") return;
-  const src = new Image();
-  src.onload = () => {
-    const SIZE = 32;
-    const c = document.createElement("canvas");
-    c.width = SIZE; c.height = SIZE;
-    c.className = "splash-mouse";
-    c.setAttribute("aria-hidden", "true");
-    const g = c.getContext("2d");
-    g.imageSmoothingEnabled = false;
-    g.drawImage(src, 0, 0, SIZE, SIZE);
-    img.replaceWith(c);
-  };
-  src.src = img.getAttribute("src");
-})();
+// boot.js — wire v86's emulated serial port to an xterm.js terminal.
+// xterm fills the page; v86 runs headless. All meta-frame flow lives
+// inside the VM (see /usr/local/bin/m0use-portal), not here.
 
 (async function () {
   "use strict";
 
-  const splash       = document.getElementById("splash");
-  const splashStatus = document.getElementById("splash-status");
-  function say(msg) { if (splashStatus) splashStatus.innerHTML = msg; }
-  function hideSplash() { if (splash) splash.hidden = true; }
-
   if (typeof V86 === "undefined" || typeof Terminal === "undefined") {
-    say("required libraries missing — check site/ assets");
+    document.body.textContent = "required libraries missing";
     return;
   }
 
-  // Wait for the terminal font to load before initializing xterm —
-  // otherwise xterm measures the fallback font's metrics and the
-  // web font swap-in renders with wrong character widths.
-  if (document.fonts && document.fonts.ready) {
-    try {
-      await document.fonts.load('20px "Share Tech Mono"');
-      await document.fonts.load('20px "VT323"');
-      await document.fonts.ready;
-    } catch (_) {}
-  }
-
-  // Append ?bust=<param> from the page URL to fetched asset URLs.
+  // ?bust= on the page URL propagates to fetched VM assets so the
+  // GitHub Pages CDN can be forced to re-serve.
   const bust = (() => {
     const p = new URLSearchParams(location.search).get("bust");
     return p ? `?bust=${encodeURIComponent(p)}` : "";
   })();
   const u = (path) => path + bust;
 
+  // Wait for the terminal font so xterm doesn't measure a fallback.
+  if (document.fonts && document.fonts.ready) {
+    try {
+      await document.fonts.load('20px "Share Tech Mono"');
+      await document.fonts.ready;
+    } catch (_) {}
+  }
+
   // ── xterm.js terminal ──────────────────────────────────────────────
   const term = new Terminal({
     fontFamily: '"Share Tech Mono", ui-monospace, "Courier New", monospace',
-    fontSize: 18,
+    fontSize: 17,
     lineHeight: 1.1,
     letterSpacing: 0,
-    scrollback: 8000,
+    scrollback: 10000,
     cursorBlink: true,
     cursorStyle: "block",
     convertEol: true,
@@ -97,76 +71,72 @@
 
   function refit() { if (fitAddon) try { fitAddon.fit(); } catch (_) {} }
   window.addEventListener("resize", refit);
-  window.visualViewport && window.visualViewport.addEventListener("resize", refit);
-
-  // ── boot v86 with serial console ───────────────────────────────────
-  fetch(u("cmdline.txt"))
-    .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
-    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet console=ttyS0,115200 console=tty0"))
-    .catch(e => say("boot config error: " + e));
-
-  function start(rawCmdline) {
-    let cmdline = (rawCmdline || "").trim();
-
-    if (window.M0useNicks) {
-      const handle = window.M0useNicks.get();
-      if (handle) {
-        const clean = handle.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 24);
-        if (clean) cmdline += " m0use.handle=" + clean;
-      }
-    }
-
-    say('<span class="spinner"></span> booting m0usunet&hellip;');
-
-    const emulator = new V86({
-      wasm_path: "v86/v86.wasm",
-      // v86 wants a screen_container; we give it a hidden one and
-      // ignore its output, reading everything via serial instead.
-      screen_container: document.getElementById("v86-headless"),
-      bios:     { url: u("v86/seabios.bin") },
-      vga_bios: { url: u("v86/vgabios.bin") },
-      bzimage:  { url: u("vmlinuz-virt"),   async: false },
-      initrd:   { url: u("initramfs-virt"), async: false },
-      cmdline:  cmdline,
-      hda:      { url: u("alpine.img"), async: false },
-      hdb:      { url: u("kit.img"),    async: false },
-      memory_size:     128 * 1024 * 1024,
-      vga_memory_size:   4 * 1024 * 1024,
-      autostart: true,
-    });
-
-    emulator.add_listener("emulator-started", () => {
-      setTimeout(hideSplash, 300);
-      setTimeout(refit, 350);
-      term.focus();
-    });
-    emulator.add_listener("download-progress", (e) => {
-      if (!e || !e.file_name) return;
-      const mb = (e.loaded / 1024 / 1024).toFixed(1);
-      const name = e.file_name.split("/").pop();
-      say(`<span class="spinner"></span> loading <b>${name}</b> &mdash; ${mb} MB`);
-    });
-
-    // ── v86 → xterm: bytes from the emulated UART get written to xterm.
-    // v86 emits this event as one char (string) per byte. Some builds
-    // emit "serial0-output-byte" instead — listen for both.
-    emulator.add_listener("serial0-output-char", (chr) => {
-      term.write(chr);
-    });
-    emulator.add_listener("serial0-output-byte", (byte) => {
-      term.write(new Uint8Array([byte]));
-    });
-
-    // ── xterm → v86: every keystroke we receive goes back over serial ──
-    term.onData((data) => {
-      if (typeof emulator.serial0_send === "function") {
-        emulator.serial0_send(data);
-      } else if (typeof emulator.serial_send_string === "function") {
-        emulator.serial_send_string(0, data);
-      }
-    });
-
-    window.__m0usunet_emu  = emulator;
-    window.__m0usunet_term = term;
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", refit);
   }
+
+  // Tap the terminal area on mobile → focus xterm → soft keyboard.
+  document.getElementById("terminal").addEventListener("click", () => {
+    term.focus();
+  });
+
+  // ── boot v86 ──────────────────────────────────────────────────────
+  let cmdline = await fetch(u("cmdline.txt"))
+    .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
+    .catch(() => "root=/dev/sda rw modules=ext4 console=tty0 console=ttyS0,115200 loglevel=7");
+  cmdline = cmdline.trim();
+
+  if (window.M0useNicks) {
+    const handle = window.M0useNicks.get();
+    if (handle) {
+      const clean = handle.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 24);
+      if (clean) cmdline += " m0use.handle=" + clean;
+    }
+  }
+
+  // Print a tiny "powering on" line into xterm before v86 starts so
+  // the player sees something while disks download.
+  term.write("\x1b[1;32m[m0usunet]\x1b[0m powering on...\r\n");
+
+  const emulator = new V86({
+    wasm_path: "v86/v86.wasm",
+    screen_container: document.getElementById("v86-headless"),
+    bios:     { url: u("v86/seabios.bin") },
+    vga_bios: { url: u("v86/vgabios.bin") },
+    bzimage:  { url: u("vmlinuz-virt"),   async: false },
+    initrd:   { url: u("initramfs-virt"), async: false },
+    cmdline:  cmdline,
+    hda:      { url: u("alpine.img"), async: false },
+    hdb:      { url: u("kit.img"),    async: false },
+    memory_size:     128 * 1024 * 1024,
+    vga_memory_size:   4 * 1024 * 1024,
+    autostart: true,
+  });
+
+  emulator.add_listener("emulator-started", () => {
+    setTimeout(refit, 200);
+    term.focus();
+  });
+  emulator.add_listener("download-progress", (e) => {
+    if (!e || !e.file_name) return;
+    const mb = (e.loaded / 1024 / 1024).toFixed(1);
+    const name = e.file_name.split("/").pop();
+    term.write(`\r\x1b[2K\x1b[1;32m[m0usunet]\x1b[0m loading \x1b[1;36m${name}\x1b[0m — ${mb} MB`);
+  });
+
+  emulator.add_listener("serial0-output-char", (chr) => { term.write(chr); });
+  emulator.add_listener("serial0-output-byte", (byte) => {
+    term.write(new Uint8Array([byte]));
+  });
+
+  term.onData((data) => {
+    if (typeof emulator.serial0_send === "function") {
+      emulator.serial0_send(data);
+    } else if (typeof emulator.serial_send_string === "function") {
+      emulator.serial_send_string(0, data);
+    }
+  });
+
+  window.__m0usunet_emu  = emulator;
+  window.__m0usunet_term = term;
 })();

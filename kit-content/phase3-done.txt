@@ -8,3 +8,11 @@
 
   Well done, Cadet.
 
+  Coordinates of Mouse Bites Inc. HQ are now declassified. Proceed
+  to HQ for TASK 3.
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │   PASSWORD3:  6123                                          │
+  │   Type   continue   below to leave the m0usunet shell.      │
+  └─────────────────────────────────────────────────────────────┘
+

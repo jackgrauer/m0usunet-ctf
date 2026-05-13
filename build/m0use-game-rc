@@ -1,0 +1,18 @@
+# m0use-game-rc — sourced by the interactive bash subshell that runs
+# during TASK 2 of the portal. Sets a colored prompt, lands the
+# player in /mnt/kit/01_nmap, prints the phase 1 README, and
+# aliases `continue` to `exit` so they have an obvious way out.
+
+HANDLE=$(cat /root/.operator 2>/dev/null)
+[ -z "$HANDLE" ] && HANDLE=cadet
+export HANDLE
+
+PS1="\[\e[1;31m\]${HANDLE}\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ "
+export PS1
+
+alias ll='ls -la'
+alias l='ls'
+alias continue='exit'
+
+cd /mnt/kit/01_nmap 2>/dev/null
+cat README

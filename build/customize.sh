@@ -41,53 +41,35 @@ cat > /etc/motd <<EOF
 
 EOF
 
-# shell environment — first-login flow:
-#   1. Prompt for operator handle (saved to /root/.operator)
-#   2. Show briefing
-#   3. Gate on "PRESS ENTER AND GET TO SNIFFING, CADET"
-#   4. cd into phase 1 + show its README
-# Subsequent shells skip all that and just use the saved handle.
+# profile.d hook — on first login, hand off to /usr/local/bin/m0use-portal
+# which walks the player through the four-task aptitude battery. Subsequent
+# shells skip the portal (it sets /root/.portal_done) and just give a
+# normal prompt.
 cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
 
-  # Browser passes the operator handle via kernel cmdline (m0use.handle=...).
-  # If it's not there (or empty), fall back to prompting on the terminal.
+  # Operator handle: take from kernel cmdline (browser passes
+  # m0use.handle=NAME); else use a fallback.
   if [ ! -f /root/.operator ]; then
     HANDLE_CMD=$(cat /proc/cmdline 2>/dev/null | tr ' ' '\n' | awk -F= '/^m0use\.handle=/{print $2; exit}')
     if [ -n "$HANDLE_CMD" ]; then
       HANDLE=$(echo "$HANDLE_CMD" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
-      [ -n "$HANDLE" ] && echo "$HANDLE" > /root/.operator
+      [ -n "$HANDLE" ] || HANDLE="cadet"
+      echo "$HANDLE" > /root/.operator
     fi
   fi
 
-  if [ ! -f /root/.operator ]; then
-    printf '\033[1;32m[+]\033[0m m0usunet handshake complete\n'
-    printf '\033[1;32m[+]\033[0m attaching to operation: \033[1;33mPARMESAN ROSE\033[0m\n'
-    printf '\033[1;32m[+]\033[0m kit mounted at /mnt/kit\n\n'
-    printf '\033[1;36moperator handle (your name on the wire):\033[0m '
-    read -r HANDLE
-    HANDLE=$(echo "$HANDLE" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
-    [ -z "$HANDLE" ] && HANDLE="cadet$$"
-    echo "$HANDLE" > /root/.operator
-  fi
-
-  HANDLE=$(cat /root/.operator)
+  HANDLE=$(cat /root/.operator 2>/dev/null)
+  [ -z "$HANDLE" ] && HANDLE=cadet
   export HANDLE
-  export PS1="\[\e[1;31m\]$HANDLE\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ "
+  export PS1="\[\e[1;31m\]${HANDLE}\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ "
   alias ll='ls -la'
   alias l='ls'
 
-  # Briefing — only on the very first shell.
-  if [ ! -f /root/.briefed ]; then
-    touch /root/.briefed
-    printf '\n\033[1;32m[+]\033[0m welcome, \033[1;33m%s\033[0m. attaching to \033[1;33mPARMESAN ROSE\033[0m.\n\n' "$HANDLE"
-    cat /mnt/kit/BRIEFING
-    printf '\n  \033[1;33mPRESS ENTER AND GET TO SNIFFING, CADET. YOU GOT THIS.\033[0m\n\n'
-    read -r _
-    cd /mnt/kit/01_nmap 2>/dev/null && cat README
-  else
-    cd /mnt/kit 2>/dev/null || cd /
+  # Hand off to the portal flow if we haven't completed it yet.
+  if [ ! -f /root/.portal_done ]; then
+    /usr/local/bin/m0use-portal
   fi
 fi
 EOF
