@@ -19,19 +19,27 @@ cat >> /etc/fstab <<'EOF'
 /dev/sdb  /mnt/kit  ext2  ro,nofail  0  0
 EOF
 
-# motd — printed by the shell on first login via profile.d
-cat > /etc/motd <<'EOF'
-   __(.)__(.)__     m 0 u s u n e t   v0.9.7
-  (___________)     MOUSE BITES INC. — Field Operations Terminal
-   /         \      target: crazy.ants  •  window: 00:30:00  •  Editor: watching
+E=$(printf '\033')
 
-  OPERATION: PARMESAN — three stages, three tools, thirty minutes.
+# pre-login banner — replaces Alpine's "Welcome to Alpine Linux" default.
+cat > /etc/issue <<EOF
+${E}[1;32mm0usunet${E}[0m ${E}[2m—${E}[0m ${E}[37mField Operations Terminal${E}[0m  ${E}[2mv0.9.7 on \r (\l)${E}[0m
 
-    01_nmap/         recon: their external surface
-    02_burp/         recon: captured HTTP exchanges
-    03_metasploit/   operations: exploit library + harness
+EOF
 
-  cat /mnt/kit/BRIEFING    cat hint    apply m0use{...}    msfconsole "..."
+# motd — colored. login(1) preserves ANSI escapes when piping to tty.
+cat > /etc/motd <<EOF
+${E}[36m   __(.)__(.)__${E}[0m     ${E}[1;32mm 0 u s u n e t${E}[0m   ${E}[1;33mv0.9.7${E}[0m
+${E}[36m  (___________)${E}[0m     ${E}[1;32mMOUSE BITES INC.${E}[0m ${E}[2m—${E}[0m ${E}[1;37mField Operations Terminal${E}[0m
+${E}[36m   /         \\${E}[0m      target: ${E}[1;31mcrazy.ants${E}[0m  •  window: ${E}[1;33m00:30:00${E}[0m  •  Editor: ${E}[1;35mwatching${E}[0m
+
+  ${E}[1;33mOPERATION: PARMESAN${E}[0m ${E}[2m—${E}[0m three stages, three tools, thirty minutes.
+
+    ${E}[1;36m01_nmap/${E}[0m         ${E}[37mrecon: their external surface${E}[0m
+    ${E}[1;36m02_burp/${E}[0m         ${E}[37mrecon: captured HTTP exchanges${E}[0m
+    ${E}[1;36m03_metasploit/${E}[0m   ${E}[37moperations: exploit library + harness${E}[0m
+
+  ${E}[1;32mcat /mnt/kit/BRIEFING${E}[0m    ${E}[1;32mcat hint${E}[0m    ${E}[1;32mapply m0use{...}${E}[0m    ${E}[1;32mmsfconsole "..."${E}[0m
 
 EOF
 
