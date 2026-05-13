@@ -44,8 +44,12 @@ umount "$TMP"
 # the end of the fs for future online grow), so drop that feature first.
 echo "=== before shrink ==="
 ls -lh "$OUT/alpine.img"
+# Drop resize_inode (reserves blocks for online grow) AND has_journal
+# (journal block can land anywhere, blocking shrink). The image is
+# served read-only from Pages so the journal is dead weight anyway.
 tune2fs -O ^resize_inode "$LOOP"
-# e2fsck returns 1 when it fixed errors (which tune2fs may have introduced).
+tune2fs -O ^has_journal  "$LOOP"
+# e2fsck returns 1 when it fixed errors (which tune2fs introduces).
 # Codes 0..2 are non-fatal; treat 4+ as failure.
 e2fsck -fy "$LOOP" || { rc=$?; [ "$rc" -le 2 ] || { echo "e2fsck failed: $rc"; exit "$rc"; }; }
 resize2fs -M "$LOOP"
