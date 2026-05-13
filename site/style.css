@@ -37,14 +37,15 @@ main {
   padding: 0.5rem;
 }
 
-/* The wrapper sets the visible terminal size:
-   - on phones (width <= 960): fills viewport width, aspect 4:3
-   - on laptops/desktops:       capped at 960px wide, centered
-   The canvas and text-mode div both scale to fill this box. */
+/* The wrapper sets the visible terminal size.
+   On phones it fills viewport width; on laptops it's bounded by
+   85vh so it doesn't get absurdly tall, but it goes plenty wide
+   so the chunky 80x25 VGA text actually reads. */
 #screen-wrap {
   position: relative;
   width: 100%;
-  max-width: 960px;
+  max-width: 1600px;
+  max-height: 85vh;
   aspect-ratio: 4 / 3;
   background: #000;
   flex: 0 0 auto;
@@ -65,7 +66,7 @@ main {
   color: #c8ffc8;
   background: #000;
   padding: 0.4rem 0.6rem;
-  font-size: 14px;
+  font-size: 18px;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -102,23 +103,45 @@ main {
 }
 #kbd-overlay::selection { background: transparent; color: transparent; }
 
-#boot-status {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #000;
   color: var(--green);
   font-family: var(--retro);
-  font-size: 1.6rem;
-  letter-spacing: 0.04em;
-  pointer-events: none;
-  background: rgba(0,0,0,0.75);
-  padding: 0.5rem 1.2rem;
-  border-radius: 2px;
-  z-index: 3;
-  text-shadow: 0 0 8px rgba(0,255,102,0.35);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-shadow: 0 0 6px rgba(0,255,102,0.35);
 }
-#boot-status.hidden { display: none; }
+#splash[hidden] { display: none; }
+
+.splash-inner {
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+.splash-line1 { font-size: 2.4rem; color: var(--green); }
+.splash-line2 { font-size: 3.2rem; color: var(--gold); }
+.splash-rule  { font-size: 2rem;  color: var(--green-dim); }
+.splash-gap   { height: 1.2rem; }
+#splash-status {
+  font-size: 1.4rem;
+  color: var(--green-dim);
+  letter-spacing: 0.05em;
+}
+#splash-status .spinner {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid var(--green-dim);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: m0use-spin 0.7s linear infinite;
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
 
 #scrollback-btn {
   position: absolute;
@@ -186,18 +209,6 @@ main {
   line-height: 1.25;
   color: var(--fg);
   background: #000;
-}
-
-#boot-status .spinner {
-  display: inline-block;
-  width: 0.9em;
-  height: 0.9em;
-  border: 2px solid var(--green-dim);
-  border-top-color: var(--green);
-  border-radius: 50%;
-  animation: m0use-spin 0.7s linear infinite;
-  margin-right: 0.5em;
-  vertical-align: middle;
 }
 
 @keyframes m0use-spin { to { transform: rotate(360deg); } }

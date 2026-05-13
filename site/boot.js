@@ -3,8 +3,10 @@
 (function () {
   "use strict";
 
-  const status = document.getElementById("boot-status");
-  function say(msg) { if (status) status.innerHTML = msg; }
+  const splash       = document.getElementById("splash");
+  const splashStatus = document.getElementById("splash-status");
+  function say(msg) { if (splashStatus) splashStatus.innerHTML = msg; }
+  function hideSplash() { if (splash) splash.hidden = true; }
 
   if (typeof V86 === "undefined") {
     say("libv86 missing — run the deploy workflow to populate site/v86/");
@@ -38,7 +40,7 @@
       }
     }
 
-    say('<span class="spinner"></span> Booting m0usunet&hellip;');
+    say('<span class="spinner"></span> booting m0usunet&hellip;');
     const emulator = new V86({
       wasm_path: "v86/v86.wasm",
       screen_container: document.getElementById("screen"),
@@ -55,7 +57,9 @@
     });
 
     emulator.add_listener("emulator-started", () => {
-      if (status) status.classList.add("hidden");
+      // Give the kernel a beat to throw up the first text on screen
+      // before we drop the splash.
+      setTimeout(hideSplash, 200);
     });
     emulator.add_listener("download-progress", (e) => {
       if (!e || !e.file_name) return;
