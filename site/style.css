@@ -85,9 +85,30 @@ main {
   overflow-x: auto;
 }
 
-/* v86 toggles between text-mode div and graphics-mode canvas; keep
-   the canvas out of the way until v86 wants it. */
 #screen canvas { display: none; }
+
+/* Invisible textarea overlaid on the screen. Tap-anywhere brings up
+   the soft keyboard; we forward each keystroke to v86 and prevent the
+   textarea from actually accumulating characters. */
+#kbd-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  border: 0;
+  outline: 0;
+  resize: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;        /* >=16px stops iOS zoom-on-focus */
+  -webkit-user-select: text;
+  user-select: text;
+  z-index: 2;
+}
+#kbd-overlay::selection { background: transparent; color: transparent; }
 
 #boot-status {
   position: absolute;
@@ -100,6 +121,7 @@ main {
   background: rgba(0,0,0,0.7);
   padding: 0.5rem 1rem;
   border-radius: 2px;
+  z-index: 3;
 }
 #boot-status.hidden { display: none; }
 
@@ -126,42 +148,3 @@ main {
 }
 #keybar button:active,
 #keybar button.sticky { background: var(--green); color: #000; }
-
-#submit {
-  display: flex;
-  gap: 0.2rem;
-  padding: 0.25rem 0.4rem;
-  background: #050505;
-}
-
-#submit input {
-  flex: 1;
-  padding: 0.4rem 0.5rem;
-  background: #1a1a1a;
-  color: var(--gold);
-  border: none;
-  border-radius: 2px;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-}
-
-#submit button {
-  padding: 0.4rem 0.8rem;
-  background: var(--green);
-  color: #000;
-  border: none;
-  border-radius: 2px;
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-#submit-result {
-  min-height: 0;
-  font-size: 0.8rem;
-  padding: 0 0.6rem;
-  background: #050505;
-}
-#submit-result.ok  { color: var(--green); padding: 0.2rem 0.6rem; }
-#submit-result.bad { color: var(--red);   padding: 0.2rem 0.6rem; }

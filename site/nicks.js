@@ -36,5 +36,12 @@
     return get();
   }
 
-  window.M0useNicks = { get, reroll, newNick };
+  function set(name) {
+    const clean = (name || "").trim().replace(/[^A-Za-z0-9_\-]/g, "").slice(0, 24);
+    if (!clean) return get();
+    try { localStorage.setItem("m0use_nick", clean); } catch (_) {}
+    return clean;
+  }
+
+  window.M0useNicks = { get, set, reroll, newNick };
 })();

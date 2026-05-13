@@ -35,7 +35,8 @@ cat > /etc/motd <<'EOF'
 
 EOF
 
-# shell environment — chatty first-login banner that fits an 80x25 screen
+# shell environment — chatty first-login banner. Don't cat /etc/motd
+# here; login(1) already prints it once before profile.d runs.
 cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
@@ -45,7 +46,6 @@ if [ -z "$M0USE_SEEN" ]; then
   printf '\033[32m[+]\033[0m kit mounted at /mnt/kit  —  3 stages located\n'
   printf '\033[1;33m[!]\033[0m window opens in 00:30:00 — clock starts NOW\n'
   printf '\n'
-  cat /etc/motd
   cd /mnt/kit 2>/dev/null || cd /
   export PS1='\[\e[1;31m\]operator\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ '
   alias ll='ls -la'
