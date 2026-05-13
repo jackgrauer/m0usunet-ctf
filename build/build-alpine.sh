@@ -66,11 +66,21 @@ tar -xf "$TAR" -C "$TMP" --acls --xattrs
 
 # Reinstall the extlinux bootloader into the fresh fs.
 extlinux --install "$TMP/boot"
-# Overwrite the .c32 modules so they match the ldlinux.sys we just
-# wrote — the ones from the tar are from a different syslinux build
-# and "Failed to load ldlinux.c32" otherwise.
-cp /usr/share/syslinux/*.c32 "$TMP/boot/" 2>/dev/null || true
-cp /usr/share/syslinux/ldlinux.c32 "$TMP/boot/" 2>/dev/null || true
+
+# Overwrite the .c32 modules so they match the freshly-written
+# ldlinux.sys. Find the modules wherever syslinux dropped them.
+echo "=== syslinux module locations ==="
+ls /usr/share/syslinux/ 2>&1 | head -30
+find / -name 'ldlinux.c32' 2>/dev/null
+SYSLINUX_DIR=$(dirname "$(find / -name 'ldlinux.c32' -not -path "$TMP/*" 2>/dev/null | head -1)")
+echo "SYSLINUX_DIR=$SYSLINUX_DIR"
+if [ -n "$SYSLINUX_DIR" ] && [ -d "$SYSLINUX_DIR" ]; then
+  cp "$SYSLINUX_DIR"/*.c32 "$TMP/boot/" 2>/dev/null
+  ls -l "$TMP/boot/"*.c32 | head -10
+else
+  echo "ERROR: cannot find syslinux .c32 modules in container"
+  exit 1
+fi
 
 sync
 umount "$TMP"
