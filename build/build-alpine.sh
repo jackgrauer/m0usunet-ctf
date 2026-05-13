@@ -24,46 +24,56 @@ fi
   "$OUT/alpine.img" \
   -- "$ROOT/build/customize.sh"
 
-# Image is unpartitioned ext4 with a syslinux boot sector in the first
-# 512 bytes. Mount $LOOP directly; no partition device files exist.
+# alpine-make-vm-image leaves us with a 128M ext4 image. resize2fs -M
+# refuses to shrink it (allocator pins blocks throughout the fs even
+# after dropping resize_inode + has_journal). So rebuild a fresh
+# smaller image: tar the rootfs out, mkfs a minimal image, extract,
+# reinstall the extlinux boot sector.
+
 TMP=$(mktemp -d)
+TAR=$(mktemp /tmp/rootfs.XXXXXX.tar)
 LOOP=$(losetup -f --show "$OUT/alpine.img")
 mount "$LOOP" "$TMP"
+
 cp "$ROOT/kit-content/flags.txt"   "$TMP/etc/m0use.flags"
 cp "$ROOT/kit-content/exploit.sh"  "$TMP/etc/m0use.exploit"
 
 ls -l "$TMP/boot/" || { echo "ERROR: /boot empty"; exit 1; }
-ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel in /boot"; exit 1; }
-ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs in /boot"; exit 1; }
+ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
+ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
+
+# Tar everything out (preserve permissions, symlinks, ownership).
+tar -cf "$TAR" -C "$TMP" --acls --xattrs .
+sync
+umount "$TMP"
+losetup -d "$LOOP"
+
+# Pick target size: tar size + 25% headroom, rounded up to MB, floor 64M.
+TARSIZE=$(stat -c %s "$TAR")
+TARGET_MB=$(( (TARSIZE * 5 / 4 + 1024*1024 - 1) / (1024*1024) ))
+[ "$TARGET_MB" -lt 64 ] && TARGET_MB=64
+echo "tar=${TARSIZE}B  new image=${TARGET_MB}M"
+
+NEW="$OUT/alpine.img.new"
+rm -f "$NEW"
+truncate -s "${TARGET_MB}M" "$NEW"
+# Bootable ext4 without journal or resize-inode reserves — image is read-only.
+mkfs.ext4 -F -O ^has_journal,^resize_inode -L M0USUNET "$NEW"
+
+LOOP=$(losetup -f --show "$NEW")
+mount "$LOOP" "$TMP"
+tar -xf "$TAR" -C "$TMP" --acls --xattrs
+
+# Reinstall the extlinux bootloader into the fresh fs.
+extlinux --install "$TMP/boot"
 
 sync
 umount "$TMP"
-
-# Shrink the filesystem to minimum, then truncate the image to fit.
-# resize2fs -M is blocked by the resize_inode feature (reserves blocks at
-# the end of the fs for future online grow), so drop that feature first.
-echo "=== before shrink ==="
-ls -lh "$OUT/alpine.img"
-# Drop resize_inode (reserves blocks for online grow) AND has_journal
-# (journal block can land anywhere, blocking shrink). The image is
-# served read-only from Pages so the journal is dead weight anyway.
-tune2fs -O ^resize_inode "$LOOP"
-tune2fs -O ^has_journal  "$LOOP"
-# e2fsck returns 1 when it fixed errors (which tune2fs introduces).
-# Codes 0..2 are non-fatal; treat 4+ as failure.
-e2fsck -fy "$LOOP" || { rc=$?; [ "$rc" -le 2 ] || { echo "e2fsck failed: $rc"; exit "$rc"; }; }
-resize2fs -M "$LOOP"
-
-dumpe2fs -h "$LOOP" 2>/dev/null | grep -E 'Block count|Block size'
-BCOUNT=$(dumpe2fs -h "$LOOP" 2>/dev/null | awk -F: '/Block count/{print $2}' | tr -d ' ')
-BSIZE=$(dumpe2fs  -h "$LOOP" 2>/dev/null | awk -F: '/Block size/{print $2}'  | tr -d ' ')
-FSBYTES=$(( BCOUNT * BSIZE ))
-echo "computed FSBYTES=$FSBYTES (BCOUNT=$BCOUNT * BSIZE=$BSIZE)"
-
 losetup -d "$LOOP"
-truncate -s "$FSBYTES" "$OUT/alpine.img"
-echo "=== after truncate ==="
-ls -lh "$OUT/alpine.img"
+
+mv "$NEW" "$OUT/alpine.img"
+rm -f "$TAR"
 rmdir "$TMP"
 
 echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
+ls -lh "$OUT/alpine.img"
