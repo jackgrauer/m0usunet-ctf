@@ -28,10 +28,15 @@ ${E}[1;32mm0usunet${E}[0m ${E}[2m—${E}[0m ${E}[37mField Operations Terminal${E
 EOF
 
 # motd — colored. login(1) preserves ANSI escapes when piping to tty.
+# The mouse is the unicode kaomoji ᘛ⁐̤ᕐᐷ rendered at double height via
+# DECDHL (ESC # 3 = top half, ESC # 4 = bottom half).
+MOUSE='ᘛ⁐̤ᕐᐷ'
 cat > /etc/motd <<EOF
-${E}[36m   __(.)__(.)__${E}[0m     ${E}[1;32mm 0 u s u n e t${E}[0m   ${E}[1;33mv0.9.7${E}[0m
-${E}[36m  (___________)${E}[0m     ${E}[1;32mMOUSE BITES INC.${E}[0m ${E}[2m—${E}[0m ${E}[1;37mField Operations Terminal${E}[0m
-${E}[36m   /         \\${E}[0m      target: ${E}[1;31mcrazy.ants${E}[0m  •  window: ${E}[1;33m00:30:00${E}[0m  •  Editor: ${E}[1;35mwatching${E}[0m
+${E}[1;36m${E}#3  ${MOUSE}${E}[0m
+${E}[1;36m${E}#4  ${MOUSE}${E}[0m
+
+  ${E}[1;32mm 0 u s u n e t${E}[0m   ${E}[1;33mv0.9.7${E}[0m   ${E}[1;32mMOUSE BITES INC.${E}[0m ${E}[2m—${E}[0m ${E}[1;37mField Operations Terminal${E}[0m
+  target: ${E}[1;31mcrazy.ants${E}[0m  •  window: ${E}[1;33m00:30:00${E}[0m  •  Editor: ${E}[1;35mwatching${E}[0m
 
   ${E}[1;33mOPERATION: PARMESAN${E}[0m ${E}[2m—${E}[0m three stages, three tools, thirty minutes.
 
