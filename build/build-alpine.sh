@@ -24,28 +24,31 @@ fi
   "$OUT/alpine.img" \
   -- "$ROOT/build/customize.sh"
 
-# inject answer files onto the rootfs + verify boot artifacts exist
+# Image is unpartitioned ext4 with a syslinux boot sector in the first
+# 512 bytes. Mount $LOOP directly; no partition device files exist.
 TMP=$(mktemp -d)
-LOOP=$(losetup -fP --show "$OUT/alpine.img")
-# alpine-make-vm-image partitions the disk; the rootfs is on partition 1.
-mount "${LOOP}p1" "$TMP" 2>/dev/null || mount "$LOOP" "$TMP"
+LOOP=$(losetup -f --show "$OUT/alpine.img")
+mount "$LOOP" "$TMP"
 cp "$ROOT/kit-content/flags.txt"   "$TMP/etc/m0use.flags"
 cp "$ROOT/kit-content/exploit.sh"  "$TMP/etc/m0use.exploit"
 
-# guard against silent mkinitfs failures
 ls -l "$TMP/boot/" || { echo "ERROR: /boot empty"; exit 1; }
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel in /boot"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs in /boot"; exit 1; }
 
 sync
 umount "$TMP"
-losetup -d "$LOOP"
-rmdir "$TMP"
 
-# Diagnostics — figure out whether we got a partitioned image or a raw fs.
-echo "=== first 8 bytes (hex) ==="
-hexdump -C -n 64 "$OUT/alpine.img" || true
-echo "=== sfdisk dump ==="
-sfdisk -d "$OUT/alpine.img" 2>&1 || true
+# Shrink the filesystem to minimum, then truncate the image to fit.
+e2fsck -fy "$LOOP" >/dev/null
+resize2fs -M "$LOOP"
+
+BCOUNT=$(dumpe2fs -h "$LOOP" 2>/dev/null | awk -F: '/Block count/{print $2}' | tr -d ' ')
+BSIZE=$(dumpe2fs  -h "$LOOP" 2>/dev/null | awk -F: '/Block size/{print $2}'  | tr -d ' ')
+FSBYTES=$(( BCOUNT * BSIZE ))
+
+losetup -d "$LOOP"
+truncate -s "$FSBYTES" "$OUT/alpine.img"
+rmdir "$TMP"
 
 echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
