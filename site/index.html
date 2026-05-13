@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>m0usunet — Junior Sniffer Field Exam</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <span class="mouse" aria-hidden="true">&#x1F42D;</span>
+    <span class="title">m0usunet &mdash; Junior Sniffer Field Exam</span>
+    <span class="nick" id="nick">applicant: &hellip;</span>
+    <a href="board.html" class="board">Hiring Board</a>
+  </header>
+
+  <main>
+    <div id="screen-wrap">
+      <div id="screen">
+        <div></div>
+        <canvas></canvas>
+      </div>
+      <div id="boot-status">Loading m0usunet&hellip;</div>
+    </div>
+
+    <div id="keybar" aria-label="Helper keys"></div>
+
+    <form id="submit" autocomplete="off">
+      <input name="flag" id="flag" placeholder="intel (m0use{...})" autocapitalize="none" autocorrect="off" spellcheck="false">
+      <button type="submit">Ship</button>
+    </form>
+    <div id="submit-result" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="v86/libv86.js"></script>
+  <script src="nicks.js"></script>
+  <script src="keyboard.js"></script>
+  <script src="boot.js"></script>
+</body>
+</html>

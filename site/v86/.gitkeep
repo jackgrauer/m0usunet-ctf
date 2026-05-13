@@ -1,0 +1,3 @@
+# v86 artifacts (libv86.js, v86.wasm, seabios.bin, vgabios.bin) are
+# downloaded into this directory by .github/workflows/deploy.yml from
+# the copy/v86 "Latest" release. Do not commit them.

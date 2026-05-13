@@ -1,0 +1,13 @@
+build/out/
+site/alpine.img
+site/kit.img
+site/v86/libv86.js
+site/v86/v86.wasm
+site/v86/seabios.bin
+site/v86/vgabios.bin
+
+.DS_Store
+*.swp
+*.swo
+node_modules/
+.wrangler/

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hiring Board — Mouse Bites Inc.</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .board-wrap { padding: 1rem; max-width: 720px; margin: 0 auto; }
+    h1 { color: var(--green); margin: 0 0 1rem 0; font-size: 1.1rem; letter-spacing: 0.05em; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { padding: 0.4rem 0.6rem; text-align: left; border-bottom: 1px solid var(--green-dim); }
+    th { color: var(--green); font-weight: 600; }
+    tbody tr:nth-child(odd) { background: #0c0c0c; }
+    .empty { color: var(--green-dim); padding: 1rem; text-align: center; }
+    footer { color: var(--green-dim); font-size: 0.75rem; margin-top: 1.5rem; }
+    a.back { color: var(--green); }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="mouse" aria-hidden="true">&#x1F42D;</span>
+    <span class="title">MOUSE BITES INC. — HIRING BOARD</span>
+    <a href="index.html" class="board">Back to terminal</a>
+  </header>
+
+  <div class="board-wrap">
+    <h1>Applicants &mdash; intel shipped</h1>
+    <table id="board-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>applicant</th>
+          <th>intel shipped</th>
+          <th>last submission</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" class="empty">No applicants yet. Scoreboard worker not deployed.</td></tr>
+      </tbody>
+    </table>
+    <footer>
+      Final hiring decision incorporates all four mouse aptitudes &mdash;
+      resourcefulness, emotional intelligence, intuition, culinary prowess.
+      See the Editor.
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+name: Deploy m0usunet to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch v86 release artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p site/v86
+          # copy/v86 publishes a rolling release tagged "latest" with libv86.js,
+          # v86.wasm, seabios.bin, vgabios.bin. Pull them straight from the
+          # release asset URLs.
+          BASE="https://github.com/copy/v86/releases/download/latest"
+          for f in libv86.js v86.wasm seabios.bin vgabios.bin; do
+            echo "fetching $f"
+            curl -fsSL "$BASE/$f" -o "site/v86/$f"
+          done
+          ls -lh site/v86/
+
+      # TODO: build alpine.img and kit.img once build scripts are wired in.
+      # For now the site deploys without disk images and v86 fails to boot.
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

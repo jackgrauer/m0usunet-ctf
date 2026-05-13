@@ -1,0 +1,137 @@
+:root {
+  --bg: #0a0a0a;
+  --fg: #c8ffc8;
+  --green: #00ff66;
+  --green-dim: #008844;
+  --red: #ff4040;
+  --gold: #ffcc33;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 14px;
+  overscroll-behavior: none;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--green-dim);
+  background: #050505;
+  flex-wrap: wrap;
+}
+
+header .mouse { font-size: 1.25rem; }
+header .title { color: var(--green); font-weight: 600; }
+header .nick  { color: var(--gold); margin-left: auto; font-size: 0.85rem; }
+header .board {
+  color: var(--green);
+  text-decoration: none;
+  border: 1px solid var(--green-dim);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+header .board:hover { background: var(--green-dim); color: #000; }
+
+main {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#screen-wrap { position: relative; }
+
+#screen {
+  width: 100%;
+  background: #000;
+  border: 1px solid var(--green-dim);
+  overflow: hidden;
+}
+
+#screen > div {
+  white-space: pre;
+  font-family: var(--mono);
+  line-height: 1.15;
+  color: var(--green);
+  background: #000;
+  padding: 0.25rem;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+#screen canvas { display: block; width: 100%; }
+
+#boot-status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--green);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+#boot-status.hidden { display: none; }
+
+#keybar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+#keybar button {
+  flex: 0 0 auto;
+  min-width: 2.5rem;
+  padding: 0.4rem 0.5rem;
+  background: #111;
+  color: var(--green);
+  border: 1px solid var(--green-dim);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#keybar button:active { background: var(--green-dim); color: #000; }
+
+#submit {
+  display: flex;
+  gap: 0.25rem;
+}
+
+#submit input {
+  flex: 1;
+  padding: 0.5rem;
+  background: #111;
+  color: var(--gold);
+  border: 1px solid var(--green-dim);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+}
+
+#submit button {
+  padding: 0.5rem 0.9rem;
+  background: var(--green-dim);
+  color: #000;
+  border: none;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-weight: 600;
+  cursor: pointer;
+}
+#submit button:hover { background: var(--green); }
+
+#submit-result { min-height: 1.2rem; font-size: 0.85rem; }
+#submit-result.ok  { color: var(--green); }
+#submit-result.bad { color: var(--red); }
