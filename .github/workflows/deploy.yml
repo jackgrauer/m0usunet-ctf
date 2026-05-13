@@ -36,6 +36,9 @@ jobs:
           done
           ls -lh site/v86/
 
+      - name: Load NBD kernel module on host
+        run: sudo modprobe nbd max_part=16
+
       - name: Build Alpine + kit disks
         run: |
           set -euo pipefail
@@ -43,7 +46,7 @@ jobs:
             -v "$PWD:/work" -w /work \
             i386/alpine:3.18 sh -c '
               set -eu
-              apk add --no-cache git bash e2fsprogs util-linux coreutils
+              apk add --no-cache git bash e2fsprogs util-linux coreutils qemu-img
               ./build/build-alpine.sh
               ./build/build-kit.sh
             '

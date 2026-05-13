@@ -26,11 +26,14 @@ fi
 
 # inject answer files onto the rootfs
 TMP=$(mktemp -d)
-mount -o loop "$OUT/alpine.img" "$TMP"
+LOOP=$(losetup -fP --show "$OUT/alpine.img")
+# alpine-make-vm-image partitions the disk; the rootfs is on partition 1.
+mount "${LOOP}p1" "$TMP" 2>/dev/null || mount "$LOOP" "$TMP"
 cp "$ROOT/kit-content/flags.txt"   "$TMP/etc/m0use.flags"
 cp "$ROOT/kit-content/exploit.sh"  "$TMP/etc/m0use.exploit"
 sync
 umount "$TMP"
+losetup -d "$LOOP"
 rmdir "$TMP"
 
 echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
