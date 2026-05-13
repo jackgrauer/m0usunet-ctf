@@ -40,8 +40,11 @@ sync
 umount "$TMP"
 
 # Shrink the filesystem to minimum, then truncate the image to fit.
+# resize2fs -M is blocked by the resize_inode feature (reserves blocks at
+# the end of the fs for future online grow), so drop that feature first.
 echo "=== before shrink ==="
 ls -lh "$OUT/alpine.img"
+tune2fs -O ^resize_inode "$LOOP"
 e2fsck -fy "$LOOP"
 resize2fs -M "$LOOP"
 
