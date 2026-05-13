@@ -44,10 +44,10 @@ cp "$TMP"/boot/vmlinuz-virt   "$OUT/vmlinuz-virt"
 cp "$TMP"/boot/initramfs-virt "$OUT/initramfs-virt"
 chmod a+r "$OUT/vmlinuz-virt" "$OUT/initramfs-virt"
 
-# Capture the APPEND line from extlinux.conf — it has the right
-# cmdline (rootdev, modules, console). Strip "APPEND " and emit.
-awk '/^[[:space:]]*APPEND /{ sub(/^[[:space:]]*APPEND /,""); print; exit }' \
-  "$TMP/boot/extlinux.conf" > "$OUT/cmdline.txt"
+# Build a stable kernel cmdline. extlinux.conf uses root=UUID=... which
+# drifts across builds; force /dev/sda so disk and cmdline never get
+# out of sync between the cached and freshly-fetched files.
+echo "root=/dev/sda rw modules=ext4 quiet" > "$OUT/cmdline.txt"
 echo "kernel cmdline: $(cat "$OUT/cmdline.txt")"
 
 sync
