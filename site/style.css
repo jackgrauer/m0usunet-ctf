@@ -70,6 +70,18 @@ main {
   inset: 0;
   background: #000;
 }
+
+/* v86 needs a screen_container; we don't show it. */
+#v86-headless {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  top: -9999px;
+  left: -9999px;
+  pointer-events: none;
+}
 #terminal .xterm-viewport,
 #terminal .xterm-screen { background: #000 !important; }
 #terminal .xterm,

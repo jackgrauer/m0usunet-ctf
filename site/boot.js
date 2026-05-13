@@ -30,7 +30,7 @@
     scrollback: 8000,
     cursorBlink: true,
     cursorStyle: "block",
-    convertEol: false,
+    convertEol: true,
     allowProposedApi: true,
     theme: {
       background: "#000000",
@@ -89,7 +89,9 @@
 
     const emulator = new V86({
       wasm_path: "v86/v86.wasm",
-      // No screen_container — v86 runs headless; all I/O is via serial.
+      // v86 wants a screen_container; we give it a hidden one and
+      // ignore its output, reading everything via serial instead.
+      screen_container: document.getElementById("v86-headless"),
       bios:     { url: u("v86/seabios.bin") },
       vga_bios: { url: u("v86/vgabios.bin") },
       bzimage:  { url: u("vmlinuz-virt"),   async: false },
@@ -114,14 +116,23 @@
       say(`<span class="spinner"></span> loading <b>${name}</b> &mdash; ${mb} MB`);
     });
 
-    // ── v86 → xterm: each serial byte gets written to the terminal ──
+    // ── v86 → xterm: bytes from the emulated UART get written to xterm.
+    // v86 emits this event as one char (string) per byte. Some builds
+    // emit "serial0-output-byte" instead — listen for both.
+    emulator.add_listener("serial0-output-char", (chr) => {
+      term.write(chr);
+    });
     emulator.add_listener("serial0-output-byte", (byte) => {
       term.write(new Uint8Array([byte]));
     });
 
     // ── xterm → v86: every keystroke we receive goes back over serial ──
     term.onData((data) => {
-      emulator.serial0_send(data);
+      if (typeof emulator.serial0_send === "function") {
+        emulator.serial0_send(data);
+      } else if (typeof emulator.serial_send_string === "function") {
+        emulator.serial_send_string(0, data);
+      }
     });
 
     window.__m0usunet_emu  = emulator;

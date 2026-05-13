@@ -19,6 +19,13 @@
     </div>
   </main>
 
+  <!-- v86 wants a screen_container even though we render everything
+       through xterm. Keep it offscreen but instantiated. -->
+  <div id="v86-headless" aria-hidden="true">
+    <div></div>
+    <canvas></canvas>
+  </div>
+
   <div id="splash">
     <div class="splash-inner">
       <div class="splash-line1">m0usunet v0.9.7  &bull;  Field Operations</div>
