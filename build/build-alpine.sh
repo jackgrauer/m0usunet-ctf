@@ -44,6 +44,14 @@ cp "$TMP"/boot/vmlinuz-virt   "$OUT/vmlinuz-virt"
 cp "$TMP"/boot/initramfs-virt "$OUT/initramfs-virt"
 chmod a+r "$OUT/vmlinuz-virt" "$OUT/initramfs-virt"
 
+# /boot is dead weight on the disk now — v86 boots the kernel and
+# initramfs externally via bzimage_url. Strip it.
+rm -rf "$TMP"/boot/* 2>/dev/null || true
+
+# /lib/modules is also unused — every driver we need (ext4, ata, bochs)
+# is compiled into the kernel image itself, not as a loadable module.
+rm -rf "$TMP"/lib/modules 2>/dev/null || true
+
 # Build a stable kernel cmdline. extlinux.conf uses root=UUID=... which
 # drifts across builds; force /dev/sda so disk and cmdline never get
 # out of sync between the cached and freshly-fetched files.

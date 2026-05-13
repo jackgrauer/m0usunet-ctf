@@ -28,12 +28,14 @@ ${E}[1;32mm0usunet${E}[0m ${E}[2m—${E}[0m ${E}[37mField Operations Terminal${E
 EOF
 
 # motd — colored. login(1) preserves ANSI escapes when piping to tty.
-# The mouse is the unicode kaomoji ᘛ⁐̤ᕐᐷ rendered at double height via
-# DECDHL (ESC # 3 = top half, ESC # 4 = bottom half).
-MOUSE='ᘛ⁐̤ᕐᐷ'
+# Each mouse-art line is DECDHL'd (ESC # 3 / ESC # 4) so it renders
+# at 2x height — the Canadian Syllabics codepoints we tried first
+# weren't in the framebuffer console font and showed as boxes.
 cat > /etc/motd <<EOF
-${E}[1;36m${E}#3  ${MOUSE}${E}[0m
-${E}[1;36m${E}#4  ${MOUSE}${E}[0m
+${E}[1;36m${E}#3   __(.)__(.)__${E}[0m
+${E}[1;36m${E}#4   __(.)__(.)__${E}[0m
+${E}[1;36m${E}#3  (___________)${E}[0m
+${E}[1;36m${E}#4  (___________)${E}[0m
 
   ${E}[1;32mm 0 u s u n e t${E}[0m   ${E}[1;33mv0.9.7${E}[0m   ${E}[1;32mMOUSE BITES INC.${E}[0m ${E}[2m—${E}[0m ${E}[1;37mField Operations Terminal${E}[0m
   target: ${E}[1;31mcrazy.ants${E}[0m  •  window: ${E}[1;33m00:30:00${E}[0m  •  Editor: ${E}[1;35mwatching${E}[0m
@@ -129,12 +131,29 @@ BANNER
 EOF
 chmod +x /usr/local/bin/msfconsole
 
-# kill unneeded services for fast boot
-for svc in chronyd crond hwclock klogd networking syslog acpid; do
+# kill every service we don't strictly need — boot inside v86 should
+# go from kernel handoff to shell in a couple of seconds.
+for svc in chronyd crond hwclock klogd networking syslog acpid \
+           machine-id save-keymaps save-termencoding urandom \
+           swap modules sysctl modloop firstboot save-entropy \
+           seedrng cgroups dmesg mdev mdev-init mdev-trigger \
+           keymaps hostname; do
   rc-update del $svc default 2>/dev/null || true
   rc-update del $svc boot    2>/dev/null || true
+  rc-update del $svc sysinit 2>/dev/null || true
 done
 
-rc-update add devfs sysinit
-rc-update add bootmisc boot
-rc-update add localmount boot
+# parallel service startup
+sed -i 's|^#*rc_parallel=.*|rc_parallel="YES"|' /etc/rc.conf
+
+# minimum services to mount + get to a shell
+rc-update add devfs       sysinit
+rc-update add bootmisc    boot
+rc-update add localmount  boot
+
+# trim documentation, locale, and other dead weight
+rm -rf /usr/share/man /usr/share/doc /usr/share/info \
+       /usr/share/help /usr/share/locale \
+       /usr/share/zoneinfo/right /usr/share/zoneinfo/posix \
+       /var/cache/apk/* /var/cache/misc/* \
+       /tmp/* /root/.ash_history 2>/dev/null || true

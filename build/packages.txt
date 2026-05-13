@@ -2,15 +2,8 @@ alpine-base
 busybox
 busybox-extras
 bash
-coreutils
-grep
-findutils
-sed
-gawk
 util-linux
-file
 less
 linux-firmware-none
 agetty
 openrc
-e2fsprogs
