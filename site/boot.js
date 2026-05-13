@@ -21,7 +21,7 @@
 
   fetch(u("cmdline.txt"))
     .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
-    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet vga=normal nomodeset"))
+    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet"))
     .catch(e => say("boot config error: " + e));
 
   function start(rawCmdline) {
@@ -108,26 +108,7 @@
     overlay.addEventListener("input", clear);
   }
 
-  // Operator handle — clickable. Tap to set a new name; that changes
-  // the localStorage value used by the next VM boot. (The VM uses
-  // whatever was set at boot time; click → refresh to apply.)
-  if (window.M0useNicks) {
-    const el = document.getElementById("nick");
-    const render = () => {
-      if (el) el.textContent = `operator: ${window.M0useNicks.get()}`;
-    };
-    render();
-    if (el) {
-      el.style.cursor = "pointer";
-      el.title = "Click to set your operator name (reload to apply in the VM)";
-      el.addEventListener("click", () => {
-        const next = window.prompt("Operator name:", window.M0useNicks.get());
-        if (next === null) return;
-        const trimmed = next.trim();
-        if (!trimmed) window.M0useNicks.reroll();
-        else          window.M0useNicks.set(trimmed);
-        render();
-      });
-    }
-  }
+  // The header pill is gone — the operator handle still gets passed
+  // from localStorage into the kernel cmdline (see start()), and the
+  // VM's profile.d will prompt on terminal if no handle is set yet.
 })();
