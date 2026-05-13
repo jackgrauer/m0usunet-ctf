@@ -124,3 +124,17 @@ main {
   z-index: 3;
 }
 #boot-status.hidden { display: none; }
+
+#boot-status .spinner {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid var(--green-dim);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: m0use-spin 0.7s linear infinite;
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
+
+@keyframes m0use-spin { to { transform: rotate(360deg); } }

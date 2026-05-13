@@ -56,7 +56,10 @@ rm -rf "$TMP"/lib/modules 2>/dev/null || true
 # Build a stable kernel cmdline. extlinux.conf uses root=UUID=... which
 # drifts across builds; force /dev/sda so disk and cmdline never get
 # out of sync between the cached and freshly-fetched files.
-echo "root=/dev/sda rw modules=ext4 quiet" > "$OUT/cmdline.txt"
+# vga=normal + nomodeset disables the bochs framebuffer, keeping the
+# console in classic VGA text mode (80x25) — smaller but lets the
+# v86 text-mode div render scrollable HTML instead of a static canvas.
+echo "root=/dev/sda rw modules=ext4 quiet vga=normal nomodeset" > "$OUT/cmdline.txt"
 echo "kernel cmdline: $(cat "$OUT/cmdline.txt")"
 
 sync

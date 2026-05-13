@@ -4,7 +4,7 @@
   "use strict";
 
   const status = document.getElementById("boot-status");
-  function say(msg) { if (status) status.textContent = msg; }
+  function say(msg) { if (status) status.innerHTML = msg; }
 
   if (typeof V86 === "undefined") {
     say("libv86 missing — run the deploy workflow to populate site/v86/");
@@ -21,12 +21,24 @@
 
   fetch(u("cmdline.txt"))
     .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
-    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet"))
+    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet vga=normal nomodeset"))
     .catch(e => say("boot config error: " + e));
 
-  function start(cmdline) {
-    cmdline = (cmdline || "").trim();
-    say("Booting m0usunet…");
+  function start(rawCmdline) {
+    let cmdline = (rawCmdline || "").trim();
+
+    // Pass the operator handle from localStorage to the kernel so
+    // profile.d can use it without re-prompting.
+    if (window.M0useNicks) {
+      const handle = window.M0useNicks.get();
+      if (handle) {
+        // Sanitize for kernel cmdline (no spaces, alnum/_- only)
+        const clean = handle.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 24);
+        if (clean) cmdline += " m0use.handle=" + clean;
+      }
+    }
+
+    say('<span class="spinner"></span> Booting m0usunet&hellip;');
     const emulator = new V86({
       wasm_path: "v86/v86.wasm",
       screen_container: document.getElementById("screen"),
@@ -44,14 +56,12 @@
 
     emulator.add_listener("emulator-started", () => {
       if (status) status.classList.add("hidden");
-      // Focus the input overlay so the soft keyboard pops on mobile
-      // as soon as the user taps. We don't auto-focus immediately —
-      // browsers block focus from non-user-gesture script paths.
     });
     emulator.add_listener("download-progress", (e) => {
       if (!e || !e.file_name) return;
-      const pct = e.file_size ? Math.round(100 * e.loaded / e.file_size) : 0;
-      say(`Loading ${e.file_name} ${pct}%`);
+      const mb = (e.loaded / 1024 / 1024).toFixed(1);
+      const name = e.file_name.split("/").pop();
+      say(`<span class="spinner"></span> loading <b>${name}</b> &mdash; ${mb} MB`);
     });
 
     window.__m0usunet_emu = emulator;
@@ -66,7 +76,6 @@
     const screen = document.getElementById("screen");
     if (!overlay) return;
 
-    // Tap anywhere on the screen → focus the overlay → soft keyboard pops.
     const refocus = () => {
       try { overlay.focus({ preventScroll: true }); } catch (_) { overlay.focus(); }
     };
@@ -74,11 +83,8 @@
     screen.addEventListener("touchstart", refocus, { passive: true });
     overlay.addEventListener("touchstart", refocus, { passive: true });
 
-    // Strip any value so the textarea doesn't accumulate (and so iOS
-    // doesn't autocorrect previously-typed words).
     const clear = () => { if (overlay.value) overlay.value = ""; };
 
-    // AT scancodes for the special edit keys we intercept.
     const SC_BACKSPACE = 0x0E;
     const SC_ENTER     = 0x1C;
 
@@ -91,22 +97,20 @@
         emu.keyboard_send_scancodes([SC_ENTER, SC_ENTER | 0x80]);
         ev.preventDefault();
       } else if (t === "insertText" && ev.data) {
-        // Each character goes through v86's text-to-scancodes path.
         if (typeof emu.keyboard_send_text === "function") {
           emu.keyboard_send_text(ev.data);
         }
         ev.preventDefault();
       }
-      // Anything else (paste/formatting) we ignore but clear after.
       requestAnimationFrame(clear);
     });
 
-    // On desktop, also forward via the input event as a safety net.
     overlay.addEventListener("input", clear);
   }
 
-  // Operator handle — clickable. Tap to set a new name (or accept the
-  // rolled default).
+  // Operator handle — clickable. Tap to set a new name; that changes
+  // the localStorage value used by the next VM boot. (The VM uses
+  // whatever was set at boot time; click → refresh to apply.)
   if (window.M0useNicks) {
     const el = document.getElementById("nick");
     const render = () => {
@@ -115,14 +119,13 @@
     render();
     if (el) {
       el.style.cursor = "pointer";
-      el.title = "Click to set your operator name";
+      el.title = "Click to set your operator name (reload to apply in the VM)";
       el.addEventListener("click", () => {
-        const current = window.M0useNicks.get();
-        const next = window.prompt("Operator name:", current);
+        const next = window.prompt("Operator name:", window.M0useNicks.get());
         if (next === null) return;
         const trimmed = next.trim();
-        if (!trimmed) { window.M0useNicks.reroll(); }
-        else          { window.M0useNicks.set(trimmed); }
+        if (!trimmed) window.M0useNicks.reroll();
+        else          window.M0useNicks.set(trimmed);
         render();
       });
     }

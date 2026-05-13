@@ -48,6 +48,16 @@ cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
 
+  # Browser passes the operator handle via kernel cmdline (m0use.handle=...).
+  # If it's not there (or empty), fall back to prompting on the terminal.
+  if [ ! -f /root/.operator ]; then
+    HANDLE_CMD=$(cat /proc/cmdline 2>/dev/null | tr ' ' '\n' | awk -F= '/^m0use\.handle=/{print $2; exit}')
+    if [ -n "$HANDLE_CMD" ]; then
+      HANDLE=$(echo "$HANDLE_CMD" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
+      [ -n "$HANDLE" ] && echo "$HANDLE" > /root/.operator
+    fi
+  fi
+
   if [ ! -f /root/.operator ]; then
     printf '\033[1;32m[+]\033[0m m0usunet handshake complete\n'
     printf '\033[1;32m[+]\033[0m attaching to operation: \033[1;33mPARMESAN ROSE\033[0m\n'
@@ -57,7 +67,6 @@ if [ -z "$M0USE_SEEN" ]; then
     HANDLE=$(echo "$HANDLE" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
     [ -z "$HANDLE" ] && HANDLE="cadet$$"
     echo "$HANDLE" > /root/.operator
-    printf '\n\033[1;32m[+]\033[0m welcome, \033[1;33m%s\033[0m. window opens NOW.\n\n' "$HANDLE"
   fi
 
   HANDLE=$(cat /root/.operator)
@@ -66,10 +75,10 @@ if [ -z "$M0USE_SEEN" ]; then
   alias ll='ls -la'
   alias l='ls'
 
-  # Briefing — only on the very first shell. Set a flag so we don't
-  # re-run it if the operator opens a new tty.
+  # Briefing — only on the very first shell.
   if [ ! -f /root/.briefed ]; then
     touch /root/.briefed
+    printf '\n\033[1;32m[+]\033[0m welcome, \033[1;33m%s\033[0m. attaching to \033[1;33mPARMESAN ROSE\033[0m.\n\n' "$HANDLE"
     cat /mnt/kit/BRIEFING
     printf '\n  \033[1;33mPRESS ENTER AND GET TO SNIFFING, CADET. YOU GOT THIS.\033[0m\n\n'
     read -r _
@@ -95,32 +104,51 @@ chmod +x /usr/local/bin/apply
 ln -s /usr/local/bin/apply /usr/local/bin/check
 
 # fake nmap — stage 1 recon. Reads pre-baked scan data from
-# /etc/m0use-nmap.dat (injected by build-alpine.sh) and prints
-# the right slice based on the target argument.
+# /etc/m0use-nmap.dat. Adds color, pages through less for long scans,
+# always prints a cheat-sheet footer when less exits.
 cat > /usr/local/bin/nmap <<'NMAP'
 #!/bin/sh
 DAT=/etc/m0use-nmap.dat
+E=$(printf '\033')
+
+colorize() {
+  sed -E "
+    s/(open)([[:space:]])/${E}[1;32m\1${E}[0m\2/g;
+    s/(filtered)/${E}[2;33m\1${E}[0m/g;
+    s/(closed)/${E}[2;31m\1${E}[0m/g;
+    s/^(Nmap scan report for[[:space:]]+)([^ ]+)([[:space:]]+)\((.+)\)/\1${E}[1;36m\2${E}[0m\3(${E}[1;33m\4${E}[0m)/g;
+    s/^(PORT[[:space:]]+STATE[[:space:]]+SERVICE.*)$/${E}[1;37m\1${E}[0m/g;
+    s/(rDNS record for [^:]+:[[:space:]]*)(\S+)/\1${E}[1;31m\2${E}[0m/g;
+    s/(Port forwarding.*)/${E}[1;35m\1${E}[0m/g;
+    s/(8080\/tcp -> 10\.4\.12\.88:8080)/${E}[1;35m\1${E}[0m/g;
+  "
+}
+
+footer() {
+  printf '\n${E}[2m──────────────────────────────────────────────────────────────────${E}[0m\n'
+  printf '  ${E}[1;36mnmap 10.4.12.X${E}[0m         zoom on a single host\n'
+  printf '  ${E}[1;36mapply m0use{HOST:PORT}${E}[0m  when you have the address\n'
+  printf '  ${E}[1;36mcat hint${E}[0m              if you are stuck\n'
+  printf '${E}[2m──────────────────────────────────────────────────────────────────${E}[0m\n'
+}
 
 case "$1" in
   ""|--help|-h|help)
-    cat <<'EOF'
-Usage: nmap <target>
+    cat <<EOF
+${E}[1;37mUsage:${E}[0m ${E}[1;36mnmap${E}[0m <target>
 
-  nmap 10.4.12.0/24       scan the whole Crazy Ants network
-  nmap 10.4.12.88         zoom on a single host
-  nmap --help             show this
-
-Tip: pipe long scans through less    nmap 10.4.12.0/24 | less
+  ${E}[1;36mnmap 10.4.12.0/24${E}[0m       scan the whole Crazy Ants network
+  ${E}[1;36mnmap 10.4.12.88${E}[0m         zoom on a single host
+  ${E}[1;36mnmap --help${E}[0m             show this
 EOF
     exit 0
     ;;
   10.4.12.0/24|10.4.12.0|10.4.12.*/24)
-    cat "$DAT"
+    cat "$DAT" | colorize | less -R
+    footer
     exit 0
     ;;
   10.4.12.*)
-    # Slice out the report for one host. Each host report starts
-    # with "Nmap scan report for" and ends at a blank line.
     awk -v T="$1" '
       /^Nmap scan report for/ {
         if (in_block) { print block; print ""; in_block=0 }
@@ -136,12 +164,13 @@ EOF
       }
       { if (in_block) block = block "\n" $0 }
       END { if (in_block) print block }
-    ' "$DAT"
+    ' "$DAT" | colorize
+    footer
     exit 0
     ;;
   *)
-    echo "nmap: cannot resolve target: $1" >&2
-    echo "      (try 10.4.12.0/24 for a full sweep)" >&2
+    printf "${E}[1;31mnmap:${E}[0m cannot resolve target: %s\n" "$1" >&2
+    printf "      (try ${E}[1;36mnmap 10.4.12.0/24${E}[0m for a full sweep)\n" >&2
     exit 1
     ;;
 esac
