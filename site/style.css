@@ -124,27 +124,3 @@ main {
   z-index: 3;
 }
 #boot-status.hidden { display: none; }
-
-#keybar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem;
-  padding: 0.25rem 0.4rem;
-  background: #050505;
-}
-
-#keybar button {
-  flex: 0 0 auto;
-  min-width: 2.2rem;
-  padding: 0.35rem 0.45rem;
-  background: #1a1a1a;
-  color: var(--green);
-  border: none;
-  border-radius: 2px;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-#keybar button:active,
-#keybar button.sticky { background: var(--green); color: #000; }
