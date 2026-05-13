@@ -17,7 +17,7 @@ fi
 
 "$TOOL/alpine-make-vm-image" \
   --image-format raw \
-  --image-size  80M \
+  --image-size  160M \
   --branch      v3.18 \
   --packages    "$(xargs < "$ROOT/build/packages.txt")" \
   --script-chroot \
