@@ -120,6 +120,74 @@ main {
 }
 #boot-status.hidden { display: none; }
 
+#scrollback-btn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 4;
+  background: #050505;
+  color: var(--green);
+  border: 1px solid var(--green-dim);
+  border-radius: 2px;
+  padding: 0.3rem 0.7rem;
+  font-family: var(--retro);
+  font-size: 1.1rem;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  opacity: 0.5;
+  -webkit-tap-highlight-color: transparent;
+}
+#scrollback-btn:hover { opacity: 1; }
+#scrollback-btn:active { background: var(--green); color: #000; }
+
+#scrollback-modal {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+#scrollback-modal[hidden] { display: none; }
+
+#scrollback-modal-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: #050505;
+  color: var(--green);
+  font-family: var(--retro);
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--green-dim);
+  flex: 0 0 auto;
+}
+#scrollback-modal-bar span { flex: 1; }
+#scrollback-modal-bar button {
+  background: transparent;
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  padding: 0.3rem 0.9rem;
+  font-family: var(--retro);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+#scrollback-modal-bar button:hover { background: var(--green); color: #000; }
+
+#scrollback-body {
+  flex: 1;
+  margin: 0;
+  padding: 1rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: var(--retro);
+  font-size: 1.15rem;
+  line-height: 1.25;
+  color: var(--fg);
+  background: #000;
+}
+
 #boot-status .spinner {
   display: inline-block;
   width: 0.9em;

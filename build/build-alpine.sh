@@ -65,7 +65,7 @@ rm -rf "$TMP"/lib/modules 2>/dev/null || true
 # on its <canvas> — that grainy pentium look. nmap and msfconsole
 # already auto-pipe through `less` for paged scrollback on long
 # output, which covers the main case.
-echo "root=/dev/sda rw modules=ext4 quiet" > "$OUT/cmdline.txt"
+echo "root=/dev/sda rw modules=ext4 quiet vga=normal nomodeset" > "$OUT/cmdline.txt"
 echo "kernel cmdline: $(cat "$OUT/cmdline.txt")"
 
 sync

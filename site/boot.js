@@ -21,7 +21,7 @@
 
   fetch(u("cmdline.txt"))
     .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
-    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet"))
+    .then(start, () => start("root=/dev/sda rw modules=ext4 quiet vga=normal nomodeset"))
     .catch(e => say("boot config error: " + e));
 
   function start(rawCmdline) {
@@ -66,6 +66,87 @@
 
     window.__m0usunet_emu = emulator;
     wireKeyboard(emulator);
+    wireScrollback(emulator);
+  }
+
+  // wireScrollback — capture v86's text-mode screen rows into a
+  // rolling buffer. The kernel runs in 80x25 VGA text mode
+  // (vga=normal nomodeset), so v86 exposes get_text_screen() with
+  // the current 25 rows. We poll every 200ms, detect when content
+  // has scrolled, and append the rows that just rolled off the top.
+  // A modal lets the player review the full captured history.
+  function wireScrollback(emu) {
+    const btn   = document.getElementById("scrollback-btn");
+    const modal = document.getElementById("scrollback-modal");
+    const close = document.getElementById("scrollback-close");
+    const body  = document.getElementById("scrollback-body");
+    if (!btn || !modal || !body) return;
+
+    const MAX_LINES = 4000;
+    const buffer = [];   // captured scrollback (older lines first)
+    let prevRows = [];   // last polled snapshot
+
+    function rowsEqual(a, b) {
+      if (a.length !== b.length) return false;
+      for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+      return true;
+    }
+
+    function captureScroll(curr) {
+      if (!prevRows.length) { prevRows = curr.slice(); return; }
+      // Find the largest scroll offset N such that curr[0..H-N-1]
+      // equals prev[N..H-1]. That means content scrolled up by N
+      // lines, and curr's last N rows are new.
+      const H = curr.length;
+      let scrolledBy = -1;
+      for (let n = 0; n <= H; n++) {
+        let ok = true;
+        for (let i = 0; i < H - n; i++) {
+          if (curr[i] !== prevRows[i + n]) { ok = false; break; }
+        }
+        if (ok) { scrolledBy = n; break; }
+      }
+      if (scrolledBy > 0) {
+        // The N rows that scrolled off the top were prev[0..N-1].
+        // The N new rows arriving at the bottom are curr[H-N..H-1].
+        // Capture the rows that left the screen.
+        for (let i = 0; i < scrolledBy; i++) {
+          buffer.push(prevRows[i] || "");
+        }
+        if (buffer.length > MAX_LINES) buffer.splice(0, buffer.length - MAX_LINES);
+      }
+      prevRows = curr.slice();
+    }
+
+    function poll() {
+      try {
+        const sa = emu.screen_adapter;
+        if (!sa || typeof sa.get_text_screen !== "function") return;
+        const rows = sa.get_text_screen();
+        if (!Array.isArray(rows) || !rows.length) return;
+        captureScroll(rows);
+      } catch (_) {}
+    }
+    setInterval(poll, 200);
+
+    function open() {
+      // Render: scrollback buffer + the current screen (so the
+      // player sees the full picture, not just what scrolled off)
+      const live = (() => {
+        try { return emu.screen_adapter.get_text_screen() || []; }
+        catch (_) { return []; }
+      })();
+      body.textContent = buffer.concat(live).join("\n").replace(/\s+$/gm, "");
+      modal.hidden = false;
+      body.scrollTop = body.scrollHeight;
+    }
+    function shut() { modal.hidden = true; }
+
+    btn.addEventListener("click", open);
+    close.addEventListener("click", shut);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.hidden) shut();
+    });
   }
 
   // wireKeyboard — forward soft-keyboard input from the textarea

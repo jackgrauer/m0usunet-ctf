@@ -20,8 +20,17 @@
       </div>
       <textarea id="kbd-overlay" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Type into the terminal"></textarea>
       <div id="boot-status">Loading m0usunet&hellip;</div>
+      <button id="scrollback-btn" type="button" aria-label="Show scrollback">scrollback</button>
     </div>
   </main>
+
+  <div id="scrollback-modal" hidden>
+    <div id="scrollback-modal-bar">
+      <span>scrollback &mdash; everything that has scrolled through the terminal</span>
+      <button id="scrollback-close" type="button">close</button>
+    </div>
+    <pre id="scrollback-body"></pre>
+  </div>
 
   <script src="v86/libv86.js"></script>
   <script src="nicks.js"></script>
