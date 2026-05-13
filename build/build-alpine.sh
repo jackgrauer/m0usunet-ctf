@@ -57,8 +57,10 @@ echo "tar=${TARSIZE}B  new image=${TARGET_MB}M"
 NEW="$OUT/alpine.img.new"
 rm -f "$NEW"
 truncate -s "${TARGET_MB}M" "$NEW"
-# Bootable ext4 without journal or resize-inode reserves — image is read-only.
-mkfs.ext4 -F -O ^has_journal,^resize_inode -L M0USUNET "$NEW"
+# Bootable ext4 without journal or resize-inode reserves. Also disable
+# metadata_csum + 64bit because SYSLINUX 6.04 can't read fs blocks with
+# those features set, which is why ldlinux.sys couldn't load ldlinux.c32.
+mkfs.ext4 -F -O ^has_journal,^resize_inode,^metadata_csum,^64bit -L M0USUNET "$NEW"
 
 LOOP=$(losetup -f --show "$NEW")
 mount "$LOOP" "$TMP"
