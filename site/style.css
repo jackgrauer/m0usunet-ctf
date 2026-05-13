@@ -14,96 +14,68 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background: #000;
   color: var(--fg);
   font-family: var(--mono);
   font-size: 14px;
   overscroll-behavior: none;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 main {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
   background: #000;
-  padding: 0.5rem;
+  min-height: 0;
 }
 
-/* The wrapper sets the visible terminal size.
-   On phones it fills viewport width; on laptops it's bounded by
-   85vh so it doesn't get absurdly tall, but it goes plenty wide
-   so the chunky 80x25 VGA text actually reads. */
+/* PHONE / NARROW: the terminal IS the screen. No aspect ratio, no
+   max width, no padding. Fills every available pixel. The on-screen
+   keyboard pushes the terminal up via the dynamic viewport unit. */
 #screen-wrap {
   position: relative;
   width: 100%;
-  max-width: 1600px;
-  max-height: 85vh;
-  aspect-ratio: 4 / 3;
+  flex: 1;
   background: #000;
-  flex: 0 0 auto;
+  min-height: 0;
 }
 
-#screen {
+/* DESKTOP / WIDE: bound the terminal so it doesn't blow up across an
+   ultrawide monitor. Centered, 4:3, capped. */
+@media (min-width: 900px) {
+  main {
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+  }
+  #screen-wrap {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 1400px;
+    max-height: 88vh;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+#terminal {
   position: absolute;
   inset: 0;
   background: #000;
-  overflow: hidden;
-  display: flex;
 }
-
-#screen > div {
-  white-space: pre;
-  font-family: var(--retro);
-  line-height: 1.15;
-  color: #c8ffc8;
-  background: #000;
-  padding: 0.4rem 0.6rem;
-  font-size: 22px;
-  letter-spacing: 0.02em;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  text-shadow: 0 0 4px rgba(200,255,200,0.18);
+#terminal .xterm-viewport,
+#terminal .xterm-screen { background: #000 !important; }
+#terminal .xterm,
+#terminal .xterm * {
+  font-family: var(--retro) !important;
 }
-
-#screen canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
-/* Invisible textarea overlaid on the screen. Tap-anywhere brings up
-   the soft keyboard; we forward each keystroke to v86 and prevent the
-   textarea from actually accumulating characters. */
-#kbd-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  color: transparent;
-  caret-color: transparent;
-  border: 0;
-  outline: 0;
-  resize: none;
-  padding: 0;
-  margin: 0;
-  font-size: 16px;        /* >=16px stops iOS zoom-on-focus */
-  -webkit-user-select: text;
-  user-select: text;
-  z-index: 2;
-}
-#kbd-overlay::selection { background: transparent; color: transparent; }
 
 #splash {
   position: fixed;
@@ -123,16 +95,26 @@ main {
 .splash-inner {
   text-align: center;
   letter-spacing: 0.03em;
+  max-width: 100%;
 }
-.splash-line1 { font-size: 2.4rem; color: var(--green); }
-.splash-line2 { font-size: 3.2rem; color: var(--gold); }
-.splash-rule  { font-size: 2rem;  color: var(--green-dim); }
-.splash-gap   { height: 1.2rem; }
+.splash-line1 { font-size: 1.6rem; color: var(--green); }
+.splash-line2 { font-size: 2.2rem; color: var(--gold); }
+.splash-rule  { font-size: 1.4rem; color: var(--green-dim); overflow: hidden; white-space: nowrap; }
+.splash-gap   { height: 1rem; }
 #splash-status {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--green-dim);
   letter-spacing: 0.05em;
 }
+
+@media (min-width: 700px) {
+  .splash-line1 { font-size: 2.4rem; }
+  .splash-line2 { font-size: 3.2rem; }
+  .splash-rule  { font-size: 2rem; }
+  .splash-gap   { height: 1.2rem; }
+  #splash-status { font-size: 1.4rem; }
+}
+
 #splash-status .spinner {
   display: inline-block;
   width: 0.9em;
@@ -143,74 +125,6 @@ main {
   animation: m0use-spin 0.7s linear infinite;
   margin-right: 0.5em;
   vertical-align: middle;
-}
-
-#scrollback-btn {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  z-index: 4;
-  background: #050505;
-  color: var(--green);
-  border: 1px solid var(--green-dim);
-  border-radius: 2px;
-  padding: 0.3rem 0.7rem;
-  font-family: var(--retro);
-  font-size: 1.1rem;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  opacity: 0.5;
-  -webkit-tap-highlight-color: transparent;
-}
-#scrollback-btn:hover { opacity: 1; }
-#scrollback-btn:active { background: var(--green); color: #000; }
-
-#scrollback-modal {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-}
-#scrollback-modal[hidden] { display: none; }
-
-#scrollback-modal-bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  background: #050505;
-  color: var(--green);
-  font-family: var(--retro);
-  font-size: 1.2rem;
-  border-bottom: 1px solid var(--green-dim);
-  flex: 0 0 auto;
-}
-#scrollback-modal-bar span { flex: 1; }
-#scrollback-modal-bar button {
-  background: transparent;
-  border: 1px solid var(--green-dim);
-  color: var(--green);
-  padding: 0.3rem 0.9rem;
-  font-family: var(--retro);
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-#scrollback-modal-bar button:hover { background: var(--green); color: #000; }
-
-#scrollback-body {
-  flex: 1;
-  margin: 0;
-  padding: 1rem;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  font-family: var(--retro);
-  font-size: 1.15rem;
-  line-height: 1.25;
-  color: var(--fg);
-  background: #000;
 }
 
 @keyframes m0use-spin { to { transform: rotate(360deg); } }

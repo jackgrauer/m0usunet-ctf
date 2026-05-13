@@ -2,24 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0a">
   <title>m0usunet // crazy.ants</title>
   <link rel="icon" type="image/svg+xml" href="mouse.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/xterm@5.3.0/css/xterm.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
     <div id="screen-wrap">
-      <div id="screen">
-        <div></div>
-        <canvas></canvas>
-      </div>
-      <textarea id="kbd-overlay" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Type into the terminal"></textarea>
-      <button id="scrollback-btn" type="button" aria-label="Show scrollback">scrollback</button>
+      <div id="terminal"></div>
     </div>
   </main>
 
@@ -34,14 +30,8 @@
     </div>
   </div>
 
-  <div id="scrollback-modal" hidden>
-    <div id="scrollback-modal-bar">
-      <span>scrollback &mdash; everything that has scrolled through the terminal</span>
-      <button id="scrollback-close" type="button">close</button>
-    </div>
-    <pre id="scrollback-body"></pre>
-  </div>
-
+  <script src="https://unpkg.com/xterm@5.3.0/lib/xterm.js"></script>
+  <script src="https://unpkg.com/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
   <script src="v86/libv86.js"></script>
   <script src="nicks.js"></script>
   <script src="boot.js"></script>

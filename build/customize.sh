@@ -5,8 +5,11 @@ set -e
 echo m0usunet > /etc/hostname
 setup-hostname m0usunet
 
-# autologin root on tty1
-sed -i 's|^tty1::respawn:.*|tty1::respawn:/sbin/agetty --autologin root --noclear 38400 tty1 linux|' /etc/inittab
+# autologin root on the serial port — xterm.js in the page is what
+# the player actually sees, and it reads from v86's emulated ttyS0.
+sed -i 's|^tty1::respawn:.*|ttyS0::respawn:/sbin/agetty --autologin root --noclear 115200 ttyS0 vt100|' /etc/inittab
+# Strip the other tty[2-6] lines — they spawn useless gettys we'd never see.
+sed -i '/^tty[2-6]::respawn:/d' /etc/inittab
 passwd -d root
 
 # drivers v86 wants

@@ -65,14 +65,13 @@ rm -rf "$TMP"/boot/* 2>/dev/null || true
 # is compiled into the kernel image itself, not as a loadable module.
 rm -rf "$TMP"/lib/modules 2>/dev/null || true
 
-# Build a stable kernel cmdline. extlinux.conf uses root=UUID=... which
-# drifts across builds; force /dev/sda so disk and cmdline never get
-# out of sync between the cached and freshly-fetched files.
-# Stay in framebuffer mode so v86 renders chunky VGA bitmap glyphs
-# on its <canvas> — that grainy pentium look. nmap and msfconsole
-# already auto-pipe through `less` for paged scrollback on long
-# output, which covers the main case.
-echo "root=/dev/sda rw modules=ext4 quiet vga=normal nomodeset" > "$OUT/cmdline.txt"
+# Build a stable kernel cmdline.
+# - root=/dev/sda is stable across builds (UUIDs drift).
+# - console=tty0 console=ttyS0,115200 sends kernel + agetty output to
+#   the emulated serial port; xterm.js in the page reads it and is
+#   the player's actual terminal. tty0 stays as a secondary console
+#   in case v86 ever has its canvas wired in again.
+echo "root=/dev/sda rw modules=ext4 quiet console=tty0 console=ttyS0,115200" > "$OUT/cmdline.txt"
 echo "kernel cmdline: $(cat "$OUT/cmdline.txt")"
 
 sync
