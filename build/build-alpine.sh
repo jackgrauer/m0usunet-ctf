@@ -42,6 +42,7 @@ ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit
 # Pull the kernel + initramfs out so v86 can boot them directly.
 cp "$TMP"/boot/vmlinuz-virt   "$OUT/vmlinuz-virt"
 cp "$TMP"/boot/initramfs-virt "$OUT/initramfs-virt"
+chmod a+r "$OUT/vmlinuz-virt" "$OUT/initramfs-virt"
 
 # Capture the APPEND line from extlinux.conf — it has the right
 # cmdline (rootdev, modules, console). Strip "APPEND " and emit.
