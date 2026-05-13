@@ -39,32 +39,11 @@ ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs in /bo
 
 sync
 umount "$TMP"
-
-# shrink: resize2fs to minimum, then truncate the image to fit
-PART="${LOOP}p1"
-e2fsck -fy "$PART" >/dev/null
-resize2fs -M "$PART" >/dev/null 2>&1 || resize2fs -M "$PART"
-
-# get final filesystem size in bytes
-BCOUNT=$(dumpe2fs -h "$PART" 2>/dev/null | awk -F: '/Block count/{print $2}' | tr -d ' ')
-BSIZE=$(dumpe2fs  -h "$PART" 2>/dev/null | awk -F: '/Block size/{print $2}'  | tr -d ' ')
-FSBYTES=$(( BCOUNT * BSIZE ))
-
 losetup -d "$LOOP"
-
-# partition start in sectors (from sfdisk dump)
-PSTART=$(sfdisk -d "$OUT/alpine.img" | awk '/start=/{for(i=1;i<=NF;i++) if($i~/^start=/){gsub(",","",$i); sub("start=","",$i); print $i}}' | head -1)
-PSECTORS=$(( (FSBYTES + 511) / 512 ))
-NEW_SIZE=$(( (PSTART + PSECTORS) * 512 ))
-truncate -s "$NEW_SIZE" "$OUT/alpine.img"
-
-# rewrite partition table so it doesn't point past EOF
-sfdisk "$OUT/alpine.img" <<EOF
-label: dos
-unit: sectors
-${PSTART},${PSECTORS},83,*
-EOF
-
 rmdir "$TMP"
+
+# Diagnostics — figure out whether we got a partitioned image or a raw fs.
+file "$OUT/alpine.img"
+sfdisk -d "$OUT/alpine.img" 2>&1 || true
 
 echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
