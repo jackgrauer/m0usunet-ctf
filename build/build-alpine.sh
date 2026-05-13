@@ -66,6 +66,11 @@ tar -xf "$TAR" -C "$TMP" --acls --xattrs
 
 # Reinstall the extlinux bootloader into the fresh fs.
 extlinux --install "$TMP/boot"
+# Overwrite the .c32 modules so they match the ldlinux.sys we just
+# wrote — the ones from the tar are from a different syslinux build
+# and "Failed to load ldlinux.c32" otherwise.
+cp /usr/share/syslinux/*.c32 "$TMP/boot/" 2>/dev/null || true
+cp /usr/share/syslinux/ldlinux.c32 "$TMP/boot/" 2>/dev/null || true
 
 sync
 umount "$TMP"
