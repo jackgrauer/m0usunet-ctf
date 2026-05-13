@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=block" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/xterm@5.3.0/css/xterm.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260514">
 </head>
 <body>
   <!-- Cold-open: the Dear Applicant letter. PASSWORD1 = 4123 -->
@@ -130,19 +130,6 @@
       <p class="dim">A reminder: the CEO's son-in-law will receive the position anyway.</p>
     </article>
   </section>
-
-  <!-- Splash overlays everything until v86 + xterm are ready. -->
-  <div id="splash">
-    <div class="splash-inner">
-      <img class="splash-mouse" src="mouse.svg" alt="">
-      <div class="splash-line1">m0usunet v0.9.7  &bull;  Field Operations</div>
-      <div class="splash-gap"></div>
-      <div class="splash-line2">OPERATION: PARMESAN ROSE</div>
-      <div class="splash-rule">═══════════════════════════════════════</div>
-      <div class="splash-gap"></div>
-      <div id="splash-status"><span class="spinner"></span> initialising terminal&hellip;</div>
-    </div>
-  </div>
 
   <!-- v86 wants a screen_container; we keep it offscreen. -->
   <div id="v86-headless" aria-hidden="true">
