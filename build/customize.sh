@@ -19,84 +19,37 @@ cat >> /etc/fstab <<'EOF'
 /dev/sdb  /mnt/kit  ext2  ro,nofail  0  0
 EOF
 
-# issue file — shown by agetty before login (we autologin so it lands above motd)
-cat > /etc/issue <<'EOF'
-
-[    0.000000] m0usunet kernel v0.9.7 — Mouse Bites Inc. proprietary
-[    0.001234] CPU: Pentium IV (Prescott) family 0xf model 0x4 — virtualized
-[    0.002301] Probing recon bus at 0x300-0x3ff ......................... [  OK  ]
-[    0.003187] Probing exploit bus at 0x400-0x4ff ........................ [  OK  ]
-[    0.004023] Loading intuition module (sniffer.ko) ..................... [  OK  ]
-[    0.004900] Loading hubris module (operator.ko) ....................... [  OK  ]
-[    0.005301] Setting up paranoia channels: irq=5,7,9,11 ................ [  OK  ]
-[    0.005998] Mounting /dev/sda                                          [  OK  ]
-[    0.006144] Mounting /dev/sdb (M0USUNET_KIT, ro)                       [  OK  ]
-[    0.006887] Starting m0usunet subsystems:
-[    0.007012]    * recon-net.service ..................................  [READY]
-[    0.007234]    * exploit-db.service .................................  [READY]
-[    0.007456]    * exfil-pipe.service .................................  [READY]
-[    0.007678]    * apply-daemon (port 4242/tcp) .......................  [LISTEN]
-[    0.007900]    * msfconsole-shim v0.9 ...............................  [READY]
-[    0.008122]    * editor.watch.service ...............................  [ARMED]
-[    0.008555] Loading recon manifests from /mnt/kit ..................... [  OK  ]
-[    0.008999] Reticulating splines ...................................... [  OK  ]
-[    0.009345] Counting whiskers ......................................... [  OK  ]
-[    0.009987] All systems nominal. Standing by for operator.
-
-EOF
-
 # motd — printed by the shell on first login via profile.d
 cat > /etc/motd <<'EOF'
-        __(.)__(.)__
-       (___________)         m 0 u s u n e t   v0.9.7
-        /         \          MOUSE BITES INC. — Field Operations Terminal
-       /___________\         "the mouse just has to scurry once"
+   __(.)__(.)__     m 0 u s u n e t   v0.9.7
+  (___________)     MOUSE BITES INC. — Field Operations Terminal
+   /         \      target: crazy.ants  •  window: 00:30:00  •  Editor: watching
 
-  ╔══════════════════════════════════════════════════════════════════════╗
-  ║  OPERATION: PARMESAN                          Editor: watching       ║
-  ║  TARGET:    crazy.ants                        Window:  00:30:00      ║
-  ║  OPERATOR:  on the wire                       Sector:  philadelphia  ║
-  ╚══════════════════════════════════════════════════════════════════════╝
+  OPERATION: PARMESAN — three stages, three tools, thirty minutes.
 
-  Three stages. Three tools. Thirty minutes. Bring back what you find.
+    01_nmap/         recon: their external surface
+    02_burp/         recon: captured HTTP exchanges
+    03_metasploit/   operations: exploit library + harness
 
-    01_nmap/         — recon: their external surface
-    02_burp/         — recon: captured HTTP exchanges
-    03_metasploit/   — operations: exploit library + harness
-
-  Hotkeys
-    cat /mnt/kit/BRIEFING       The operation, in plain language
-    cat hint                    In any stage folder, costs nothing
-    apply m0use{...}            Ship a finding back to the Editor
-    msfconsole "RHOST=..."      Fire stage 3 once you have the values
-
-  Last contact:  $(date -u 2>/dev/null || echo 2026-05-13 15:34Z) — The Editor
-  Recent intel:  3 operators on the wire, 1 declared, 0 burned
-
-  — The Editor is watching. Be quick.
+  cat /mnt/kit/BRIEFING    cat hint    apply m0use{...}    msfconsole "..."
 
 EOF
 
-# shell environment — verbose first-login banner + tight prompt
+# shell environment — chatty first-login banner that fits an 80x25 screen
 cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
-  clear
-  cat /etc/issue
-  printf '\n'
   printf '\033[32m[+]\033[0m authenticated as operator (uid=0, ring=0)\n'
   printf '\033[32m[+]\033[0m granting Editor.read, Editor.write, Editor.scurry\n'
   printf '\033[32m[+]\033[0m attaching to operation: PARMESAN\n'
-  printf '\033[32m[+]\033[0m mounting kit at /mnt/kit ............... done\n'
-  printf '\033[32m[+]\033[0m loading manifests ..................... 3 stages located\n'
-  printf '\033[32m[33m[!]\033[0m WARNING: window opens in: 00:30:00 — clock starts NOW\n'
+  printf '\033[32m[+]\033[0m kit mounted at /mnt/kit  —  3 stages located\n'
+  printf '\033[1;33m[!]\033[0m window opens in 00:30:00 — clock starts NOW\n'
   printf '\n'
   cat /etc/motd
   cd /mnt/kit 2>/dev/null || cd /
-  export PS1='\[\e[1;31m\]operator\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\[\e[33m\] ❯\[\e[0m\] '
+  export PS1='\[\e[1;31m\]operator\[\e[0m\]@\[\e[1;32m\]m0usunet\[\e[0m\]:\[\e[36m\]\w\[\e[0m\]\$ '
   alias ll='ls -la'
   alias l='ls'
-  echo
 fi
 EOF
 chmod +x /etc/profile.d/01-m0usunet.sh
