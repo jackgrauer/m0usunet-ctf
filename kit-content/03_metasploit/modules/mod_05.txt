@@ -1,0 +1,20 @@
+NAME      exploit/multi/http/jenkins_xstream_deserialize
+CVE       CVE-2017-1000353
+TARGETS   Jenkins 2.56 and earlier; LTS 2.46.1 and earlier
+RANK      Excellent
+AUTH      none required
+TYPE      remote / cli
+
+DESCRIPTION
+  Unauthenticated Java deserialization in Jenkins' CLI subsystem.
+  Crafted XStream payloads sent to the bi-directional CLI channel
+  invoke arbitrary classes during deserialization, yielding RCE.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  PAYLOAD     (required) java/jvm family
+
+COMPATIBLE PAYLOADS
+  java_meterpreter
+  java_shell_reverse_tcp

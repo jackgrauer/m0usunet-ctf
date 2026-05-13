@@ -1,0 +1,19 @@
+
+OPERATION: PARMESAN
+
+Mouse Bites Inc. requires intel from a competing concern, crazy.ants.
+Their external surface has been mapped (stage 1). A handful of captured
+requests show what's exposed (stage 2). A working exploit library is
+loaded on this terminal (stage 3).
+
+Find the access point. Find the vulnerability. Pick the right exploit.
+Fire it. Bring back what's on their server.
+
+Three stages. Three tools. Thirty minutes. The Editor is watching.
+
+  01_nmap/          recon: their external network map
+  02_burp/          recon: captured HTTP traffic against the target
+  03_metasploit/    operations: exploit library + harness
+
+  cat hint          in any folder, costs nothing
+  apply m0use{...}  submit a finding

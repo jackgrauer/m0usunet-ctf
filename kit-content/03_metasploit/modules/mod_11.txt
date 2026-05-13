@@ -1,0 +1,21 @@
+NAME      auxiliary/scanner/http/jenkins_metaprogramming_detect
+CVE       CVE-2018-1000861
+TARGETS   Jenkins 2.137 and earlier; LTS 2.121.1 and earlier
+RANK      Normal
+AUTH      none required
+TYPE      auxiliary / scanner (detection only)
+
+DESCRIPTION
+  Detects whether a Jenkins instance is vulnerable to CVE-2018-1000861
+  by issuing a benign checkScript GET and observing the response. Does
+  not deliver a payload — pairs with the exploit module of the same
+  CVE.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  TARGETURI   (optional) Jenkins base path
+
+NOTE
+  This is the *detection* version. To actually exploit, use the
+  exploit/ module for the same CVE.

@@ -1,0 +1,16 @@
+====== REQUEST ======
+POST /jenkins/scriptText HTTP/1.1
+Host: 10.4.12.1:8080
+User-Agent: Mozilla/5.0
+Authorization: Basic YW5hbHlzdDpodW50ZXIy
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 18
+
+script=println(42)
+
+====== RESPONSE ======
+HTTP/1.1 403 Forbidden
+Content-Type: text/html
+Server: Jetty(9.4.z-SNAPSHOT)
+
+analyst is missing the Overall/RunScripts permission

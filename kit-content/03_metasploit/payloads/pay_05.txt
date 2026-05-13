@@ -1,0 +1,5 @@
+NAME    windows_x86_meterpreter_reverse_tcp
+ARCH    x86 (32-bit)
+OS      Windows
+SIZE    ~1.2 KB
+NOTES   Windows-only. PE format. Cannot run on Linux targets.

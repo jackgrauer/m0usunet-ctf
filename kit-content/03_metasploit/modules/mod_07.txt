@@ -1,0 +1,24 @@
+NAME      exploit/multi/http/jenkins_metaprogramming_rce
+CVE       CVE-2018-1000861
+TARGETS   Jenkins 2.137 and earlier; LTS 2.121.1 and earlier
+RANK      Excellent
+AUTH      none required
+TYPE      remote / web
+
+DESCRIPTION
+  Unauthenticated remote code execution via the Stapler framework's
+  exposure of method calls on Jenkins core security objects. A
+  specially crafted URL to descriptorByName allows execution of
+  arbitrary Groovy in the SecureGroovyScript sandbox, which can be
+  trivially escaped.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  TARGETURI   (required) full path to checkScript endpoint
+  PAYLOAD     (required) see payloads/ — must be linux x86 family
+
+COMPATIBLE PAYLOADS
+  linux_x86_meterpreter_reverse_tcp
+  linux_x86_shell_reverse_tcp
+  cmd_unix_generic

@@ -1,62 +1,70 @@
-# m0usunet-ctf
+# m0usunet
 
-A static-site, browser-native intuition exam for Junior Sniffer applicants at
-Mouse Bites Inc. Real Alpine Linux running on each phone via [v86][v86]. Three
-puzzles. Thirty minutes. No installs, no logins, no captive portal.
+m0usunet is a browser-native field-ops terminal. Real Alpine Linux runs on
+each phone via [v86][v86]. The target is `crazy.ants`. Three stages, three
+tools, thirty minutes.
 
 > **OPERATION: PARMESAN**
-> Target: `crazy.ants`.
+> Target: `crazy.ants`
 > Goal: enumerate, exploit, exfiltrate.
-> Three stages. Tools: nmap, Burp, Metasploit.
+> Tools: nmap, Burp, Metasploit.
 
 [v86]: https://github.com/copy/v86
 
-## Status
+## How it works
 
-Day-1 scaffold. The site files are in place but `site/v86/` is empty and there
-are no disk images yet, so the page will not boot a VM. See the build plan in
-the design doc for what comes next.
+You open the URL on a phone. The page pulls down v86 (~2 MB of WASM and
+glue), SeaBIOS, a stripped Alpine root disk, and a small recon kit. v86 boots
+Alpine inside the tab. You get a green-on-black terminal, a helper bar of
+Linux keys your phone keyboard hides, and a briefing on the target. You hunt
+through the kit, find the access point, find the vulnerability, fire the
+exploit. You ship intel back with `apply m0use{...}` or paste it into the
+form on the page.
+
+No installs, no logins, no captive portal.
 
 ## Layout
 
 ```
-m0usunet-ctf/
+m0usunet/
 ├── site/             # static page served from GitHub Pages
 │   ├── index.html
 │   ├── boot.js       # v86 bootstrap
 │   ├── keyboard.js   # on-screen helper bar
-│   ├── nicks.js      # applicant alias generator
+│   ├── nicks.js      # operator handle generator
 │   ├── style.css
-│   ├── favicon.svg
+│   ├── mouse.svg
 │   ├── board.html
 │   └── v86/          # populated by the deploy workflow
-├── build/            # Alpine + kit disk builders (Linux box)
+├── build/            # Alpine + kit disk builders
 ├── kit-content/      # puzzle materials baked into kit.img
-├── scoreboard/       # Cloudflare Worker for the Hiring Board
+├── scoreboard/       # Cloudflare Worker for the Ops Log
 └── .github/workflows/deploy.yml
 ```
 
 ## Local dev
 
-The site is plain static HTML/CSS/JS. Serve it however you like:
+The site is plain static HTML/CSS/JS:
 
 ```sh
 cd site && python3 -m http.server 8000
 # → http://localhost:8000
 ```
 
-It will fail to boot v86 until you drop `libv86.js`, `v86.wasm`, `seabios.bin`,
-`vgabios.bin`, `alpine.img`, and `kit.img` into `site/` (and `site/v86/`). The
-deploy workflow does this automatically on push; locally you can grab v86 from
-its CI release and skip disk images while iterating on the page chrome.
+It will fail to boot until `alpine.img` and `kit.img` are present. The CI
+workflow builds them on every push.
 
 ## Building the disks
 
-Disk-image builds require a Linux host (loop mounts, `mkfs.ext2`,
-`alpine-make-vm-image`). The `build/` directory is a placeholder for now.
+Disk builds require root + loop mounts + `alpine-make-vm-image`, so they run
+inside an Alpine container in CI. To build locally on a Linux host:
+
+```sh
+./build/build-alpine.sh   # → build/out/alpine.img (~12 MB)
+./build/build-kit.sh      # → build/out/kit.img    (~2 MB)
+```
 
 ## Deploying
 
-GitHub Actions builds `site/v86/` from the upstream v86 release and publishes
-`site/` to GitHub Pages. Disk image builds will be wired in once the build
-scripts land.
+`.github/workflows/deploy.yml` fetches v86 release artifacts, builds both
+disk images in an Alpine container, then publishes `site/` to GitHub Pages.

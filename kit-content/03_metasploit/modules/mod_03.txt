@@ -1,0 +1,23 @@
+NAME      exploit/multi/http/jenkins_script_console
+CVE       n/a
+TARGETS   Jenkins all versions (post-auth)
+RANK      Great
+AUTH      required (Overall/RunScripts permission)
+TYPE      remote / web
+
+DESCRIPTION
+  Executes Groovy code via Jenkins' /script console. Requires valid
+  credentials with the Overall/RunScripts permission. Not a vulnerability
+  per se — this is the documented administrative feature.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  USERNAME    (required) Jenkins username
+  PASSWORD    (required) Jenkins password
+  PAYLOAD     (required) any Groovy-compatible
+
+COMPATIBLE PAYLOADS
+  linux_x86_meterpreter_reverse_tcp
+  windows_x86_meterpreter_reverse_tcp
+  cmd_unix_generic

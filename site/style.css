@@ -30,7 +30,7 @@ header {
   flex-wrap: wrap;
 }
 
-header .mouse { font-size: 1.25rem; }
+header .mouse { width: 1.4rem; height: 1.4rem; display: block; flex: 0 0 auto; }
 header .title { color: var(--green); font-weight: 600; }
 header .nick  { color: var(--gold); margin-left: auto; font-size: 0.85rem; }
 header .board {

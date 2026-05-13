@@ -1,0 +1,11 @@
+Twenty captures. Most are routine. One is wrong on two counts.
+
+Hint 1:  grep "HTTP/1.1 " 02_burp/*.txt
+         How many returned 200? How many returned 403?
+
+Hint 2:  Which 200s had no "Authorization:" header in the request?
+
+         grep -L "Authorization" 02_burp/*.txt | xargs grep -l "200 OK"
+
+There's exactly one. That's your vulnerability. The CVE is named in
+the response path — read the request line carefully and look it up.

@@ -1,0 +1,6 @@
+NAME    java_jsp_shell_reverse_tcp
+ARCH    JSP / Java bytecode
+OS      any servlet container
+SIZE    ~3 KB
+NOTES   JSP file dropped into a webapp's working directory; invokes
+        a reverse shell. Useful for Tomcat upload-style RCE.

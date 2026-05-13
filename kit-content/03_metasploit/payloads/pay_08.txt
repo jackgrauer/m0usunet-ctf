@@ -1,0 +1,6 @@
+NAME    php_meterpreter_reverse_tcp
+ARCH    PHP
+OS      any with PHP CLI/web
+SIZE    ~30 KB
+NOTES   For PHP targets only. Will not run inside Java application
+        servers or out of a static-file context.

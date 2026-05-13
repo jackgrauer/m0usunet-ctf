@@ -1,0 +1,21 @@
+NAME      exploit/linux/ssh/openssh_userauth
+CVE       CVE-2024-6387
+TARGETS   OpenSSH 8.5p1 - 9.7p1 on glibc Linux
+RANK      Manual
+AUTH      none required
+TYPE      remote / pre-auth race condition
+
+DESCRIPTION
+  Signal handler race condition in sshd ("regreSSHion") yielding
+  pre-authentication remote code execution. Requires hundreds of
+  thousands of connections to win the race; not practical against
+  rate-limited targets.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port (default 22)
+  PAYLOAD     (required) linux x86_64 family
+
+COMPATIBLE PAYLOADS
+  linux_x64_meterpreter_reverse_tcp
+  linux_x64_shell_reverse_tcp

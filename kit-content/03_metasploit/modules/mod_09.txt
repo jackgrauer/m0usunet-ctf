@@ -1,0 +1,20 @@
+NAME      exploit/multi/http/confluence_widget_connector
+CVE       CVE-2019-3396
+TARGETS   Atlassian Confluence Server 6.x.x < 6.6.12, 6.7-6.12.2, 6.13.0-6.13.2, 6.14.0-6.14.1
+RANK      Excellent
+AUTH      none required
+TYPE      remote / web
+
+DESCRIPTION
+  Server-side template injection via the WebDAV widget connector
+  macro in Confluence. Unauthenticated. Targets Confluence only.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  TARGETURI   (required) Confluence base path
+  PAYLOAD     (required) java/jvm family
+
+COMPATIBLE PAYLOADS
+  java_meterpreter
+  cmd_unix_generic

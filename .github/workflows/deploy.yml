@@ -24,13 +24,11 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p site/v86
-          # libv86.js + v86.wasm come from the copy/v86 rolling "latest" release.
           REL="https://github.com/copy/v86/releases/download/latest"
           for f in libv86.js v86.wasm; do
             echo "fetching $f"
             curl -fsSL "$REL/$f" -o "site/v86/$f"
           done
-          # SeaBIOS + VGA BIOS aren't in the release — pull from the source tree.
           RAW="https://raw.githubusercontent.com/copy/v86/master/bios"
           for f in seabios.bin vgabios.bin; do
             echo "fetching $f"
@@ -38,8 +36,24 @@ jobs:
           done
           ls -lh site/v86/
 
-      # TODO: build alpine.img and kit.img once build scripts are wired in.
-      # For now the site deploys without disk images and v86 fails to boot.
+      - name: Build Alpine + kit disks
+        run: |
+          set -euo pipefail
+          docker run --rm --privileged \
+            -v "$PWD:/work" -w /work \
+            i386/alpine:3.18 sh -c '
+              set -eu
+              apk add --no-cache git bash e2fsprogs util-linux coreutils
+              ./build/build-alpine.sh
+              ./build/build-kit.sh
+            '
+          ls -lh build/out/
+
+      - name: Stage disk images into site/
+        run: |
+          cp build/out/alpine.img site/
+          cp build/out/kit.img    site/
+          ls -lh site/
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

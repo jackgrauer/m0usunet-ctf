@@ -69,6 +69,6 @@
   if (window.M0useNicks) {
     const nick = window.M0useNicks.get();
     const el = document.getElementById("nick");
-    if (el) el.textContent = `applicant: ${nick}`;
+    if (el) el.textContent = `operator: ${nick}`;
   }
 })();

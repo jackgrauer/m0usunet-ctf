@@ -1,0 +1,15 @@
+NAME      auxiliary/scanner/redis/redis_login
+CVE       n/a
+TARGETS   Redis 2.x-7.x
+RANK      Normal
+AUTH      brute force
+TYPE      auxiliary / login
+
+DESCRIPTION
+  Scans Redis instances for default or weak AUTH passwords, including
+  the no-password case (most common). Not an RCE on its own.
+
+OPTIONS
+  RHOSTS      (required) target host(s)
+  RPORT       (required) target port (default 6379)
+  PASS_FILE   (optional) password wordlist

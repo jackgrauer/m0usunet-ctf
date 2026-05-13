@@ -1,5 +1,5 @@
-// nicks.js — applicant alias generator
-// Mouse-themed two-word nicknames stored in localStorage.
+// nicks.js — operator handle generator
+// Mouse-themed two-word handles stored in localStorage.
 
 (function () {
   "use strict";

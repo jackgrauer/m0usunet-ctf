@@ -1,0 +1,13 @@
+====== REQUEST ======
+GET /jenkins/me/api/json HTTP/1.1
+Host: 10.4.12.1:8080
+User-Agent: Mozilla/5.0
+Authorization: Basic YW5hbHlzdDpodW50ZXIy
+Accept: application/json
+
+====== RESPONSE ======
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: Jetty(9.4.z-SNAPSHOT)
+
+{"id":"analyst","fullName":"analyst","description":null,"absoluteUrl":"/jenkins/user/analyst"}

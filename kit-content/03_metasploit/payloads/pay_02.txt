@@ -1,0 +1,6 @@
+NAME    linux_x86_shell_reverse_tcp
+ARCH    x86 (32-bit)
+OS      Linux
+SIZE    ~95 bytes
+NOTES   Plain reverse shell over TCP. No meterpreter session — you
+        get a raw shell. Smaller than meterpreter; less interactive.

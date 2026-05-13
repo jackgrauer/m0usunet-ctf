@@ -1,0 +1,119 @@
+# Nmap 7.94 scan initiated 2026-05-10 14:22:01 UTC
+# Command: nmap -sV -O -p- --script "default,port-forwarding" 10.4.12.0/24
+
+Nmap scan report for gw.crazy.ants (10.4.12.1)
+Host is up (0.0008s latency).
+Not shown: 997 filtered tcp ports
+PORT     STATE SERVICE    VERSION
+22/tcp   open  ssh        OpenSSH 8.9p1 (Ubuntu 22.04)
+80/tcp   open  http       nginx 1.22.1
+443/tcp  open  ssl/https  nginx 1.22.1
+| ssl-cert: Subject: commonName=*.crazy.ants
+|_ Not valid before: 2025-11-04
+| Port forwarding (from --script port-forwarding):
+|   8080/tcp -> 10.4.12.88:8080
+|_  (Jenkins; see CVE-2018-1000861)
+| http-title: crazy.ants — corporate
+|_OS: Linux 5.x
+Service Info: OS: Linux
+
+Nmap scan report for mail.crazy.ants (10.4.12.10)
+Host is up (0.0021s latency).
+Not shown: 996 closed tcp ports
+PORT    STATE SERVICE  VERSION
+22/tcp  open  ssh      OpenSSH 8.4p1
+25/tcp  open  smtp     Postfix smtpd
+465/tcp open  smtps    Postfix smtpd
+993/tcp open  imaps    Dovecot imapd
+OS detection: Linux 5.x (Debian 11)
+Service Info: Host: mail.crazy.ants
+
+Nmap scan report for www.crazy.ants (10.4.12.20)
+Host is up (0.0014s latency).
+Not shown: 998 closed tcp ports
+PORT    STATE SERVICE  VERSION
+80/tcp  open  http     nginx 1.24.0
+443/tcp open  ssl/http nginx 1.24.0
+| http-title: crazy.ants
+|_http-server-header: nginx/1.24.0
+OS detection: Linux 5.x (Ubuntu 22.04)
+
+Nmap scan report for api.crazy.ants (10.4.12.21)
+Host is up (0.0017s latency).
+Not shown: 999 closed tcp ports
+PORT     STATE SERVICE VERSION
+8443/tcp open  ssl/http Kestrel
+| http-title: api.crazy.ants v3
+|_http-server-header: Kestrel
+OS detection: Linux 5.x (Ubuntu 22.04)
+
+Nmap scan report for db-01.crazy.ants (10.4.12.30)
+Host is up (0.0009s latency).
+Not shown: 998 closed tcp ports
+PORT     STATE SERVICE    VERSION
+22/tcp   open  ssh        OpenSSH 8.9p1
+5432/tcp open  postgresql PostgreSQL 15.3
+OS detection: Linux 5.x (Debian 12)
+
+Nmap scan report for db-02.crazy.ants (10.4.12.31)
+Host is up (0.0009s latency).
+Not shown: 998 closed tcp ports
+PORT     STATE SERVICE    VERSION
+22/tcp   open  ssh        OpenSSH 8.9p1
+5432/tcp open  postgresql PostgreSQL 15.3
+OS detection: Linux 5.x (Debian 12)
+
+Nmap scan report for redis.crazy.ants (10.4.12.40)
+Host is up (0.0011s latency).
+Not shown: 998 closed tcp ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.9p1
+6379/tcp open  redis   Redis 7.0.12
+OS detection: Linux 5.x
+
+Nmap scan report for vpn.crazy.ants (10.4.12.50)
+Host is up (0.0018s latency).
+Not shown: 999 closed tcp ports
+PORT    STATE SERVICE     VERSION
+443/tcp open  ssl/openvpn OpenVPN 2.6.7
+OS detection: Linux 5.x (Alpine)
+
+Nmap scan report for ci.crazy.ants (10.4.12.70)
+Host is up (0.0013s latency).
+Not shown: 997 closed tcp ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 9.3p1
+80/tcp   open  http    Caddy
+443/tcp  open  ssl/http Caddy
+| http-title: crazy.ants — Drone CI
+|_http-server-header: Caddy
+OS detection: Linux 6.x (Alpine)
+
+Nmap scan report for grafana.crazy.ants (10.4.12.80)
+Host is up (0.0015s latency).
+Not shown: 999 closed tcp ports
+PORT     STATE SERVICE VERSION
+3000/tcp open  http    Grafana 10.1.0
+| http-title: Grafana
+|_http-server-header: nginx
+OS detection: Linux 5.x
+
+Nmap scan report for legacy-build-03.crazy.ants (10.4.12.88)
+Host is up (0.0019s latency).
+rDNS record for 10.4.12.88: jenkins-old.internal.crazy.ants
+Not shown: 999 filtered tcp ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.4p1
+OS detection: Linux 4.x (likely Debian); kernel reports i686
+Service Info: Host: jenkins-old; OS: Linux
+
+Nmap scan report for assets.crazy.ants (10.4.12.99)
+Host is up (0.0007s latency).
+Not shown: 999 closed tcp ports
+PORT    STATE SERVICE VERSION
+443/tcp open  ssl/http nginx 1.24.0
+| http-title: crazy.ants — assets CDN
+|_http-server-header: nginx/1.24.0
+OS detection: Linux 5.x
+
+# Nmap done at 2026-05-10 14:31:47 UTC -- 256 IP addresses (12 hosts up) scanned in 586.21s

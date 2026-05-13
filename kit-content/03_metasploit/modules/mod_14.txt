@@ -1,0 +1,20 @@
+NAME      exploit/multi/http/jenkins_unauth_groovy_v1
+CVE       CVE-2015-8103
+TARGETS   Jenkins 1.x only (1.580 - 1.637)
+RANK      Excellent
+AUTH      none required
+TYPE      remote / web
+
+DESCRIPTION
+  Unauthenticated Java deserialization in legacy Jenkins 1.x CLI.
+  Superseded by the 2.x deserialization patches. Will not fire
+  against Jenkins 2.x targets.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port (CLI port, not HTTP)
+  PAYLOAD     (required) java family
+
+COMPATIBLE PAYLOADS
+  java_meterpreter
+  java_shell_reverse_tcp

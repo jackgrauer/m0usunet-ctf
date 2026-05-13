@@ -1,0 +1,17 @@
+NAME      exploit/linux/http/grafana_arbitrary_file_read
+CVE       CVE-2021-43798
+TARGETS   Grafana 8.0.0-beta1 to 8.3.0
+RANK      Great
+AUTH      none required
+TYPE      remote / web (LFI)
+
+DESCRIPTION
+  Path traversal in Grafana plugin URL routing permits arbitrary file
+  read on the host filesystem. Not RCE — useful for credential and
+  config exfiltration only.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port (default 3000)
+  TARGETURI   (optional) Grafana base path
+  PATH        (required) absolute file path to read

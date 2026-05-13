@@ -1,0 +1,22 @@
+NAME      exploit/multi/http/struts2_content_type_ognl
+CVE       CVE-2017-5638
+TARGETS   Apache Struts 2.3.5-2.3.31, 2.5.0-2.5.10
+RANK      Excellent
+AUTH      none required
+TYPE      remote / web
+
+DESCRIPTION
+  Exploits a remote code execution vulnerability in Jakarta Multipart
+  parser of Apache Struts 2. Crafting a malicious Content-Type header
+  causes OGNL expression evaluation in the exception handler.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  TARGETURI   (required) URI of a Struts action
+  PAYLOAD     (required) any cmd or linux/x86 family
+
+COMPATIBLE PAYLOADS
+  linux_x86_meterpreter_reverse_tcp
+  cmd_unix_generic
+  java_jsp_shell_reverse_tcp

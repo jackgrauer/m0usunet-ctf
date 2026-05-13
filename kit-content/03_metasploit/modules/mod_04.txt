@@ -1,0 +1,20 @@
+NAME      exploit/multi/http/drupal_drupalgeddon2
+CVE       CVE-2018-7600
+TARGETS   Drupal 7.x < 7.58, 8.x < 8.5.1
+RANK      Excellent
+AUTH      none required
+TYPE      remote / web
+
+DESCRIPTION
+  Unauthenticated remote code execution via insufficient input
+  sanitization in Drupal's Form API rendering of nested array keys.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  TARGETURI   (required) Drupal install root
+  PAYLOAD     (required) cmd or php family
+
+COMPATIBLE PAYLOADS
+  cmd_unix_generic
+  php_meterpreter_reverse_tcp

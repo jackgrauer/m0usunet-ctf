@@ -1,0 +1,16 @@
+NAME      exploit/multi/http/nginx_chunked_size
+CVE       CVE-2013-2028
+TARGETS   nginx 1.3.9-1.4.0
+RANK      Normal
+AUTH      none required
+TYPE      remote / web (memory corruption)
+
+DESCRIPTION
+  Stack buffer overflow in nginx's chunked transfer encoding parser.
+  Requires very specific build configuration; exploitation rate in
+  the wild is low.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  PAYLOAD     (required) linux/x86 family

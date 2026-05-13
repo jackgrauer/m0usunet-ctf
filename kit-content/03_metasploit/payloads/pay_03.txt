@@ -1,0 +1,6 @@
+NAME    linux_x86_meterpreter_reverse_tcp
+ARCH    x86 (32-bit)
+OS      Linux
+SIZE    ~700 bytes
+NOTES   Standard meterpreter stage; reliable on Linux 2.6+. Use this
+        when the target reports i686 / 32-bit Linux.

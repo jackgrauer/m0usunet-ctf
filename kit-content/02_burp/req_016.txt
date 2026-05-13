@@ -1,0 +1,13 @@
+====== REQUEST ======
+GET /jenkins/user/admin/configure HTTP/1.1
+Host: 10.4.12.1:8080
+User-Agent: Mozilla/5.0
+Authorization: Basic YW5hbHlzdDpodW50ZXIy
+Accept: text/html
+
+====== RESPONSE ======
+HTTP/1.1 403 Forbidden
+Content-Type: text/html
+Server: Jetty(9.4.z-SNAPSHOT)
+
+analyst is missing the User/Administer permission for admin

@@ -1,0 +1,13 @@
+====== REQUEST ======
+GET /jenkins/asynchPeople/api/json HTTP/1.1
+Host: 10.4.12.1:8080
+User-Agent: Mozilla/5.0
+Authorization: Basic YW5hbHlzdDpodW50ZXIy
+Accept: application/json
+
+====== RESPONSE ======
+HTTP/1.1 200 OK
+Content-Type: application/json
+Server: Jetty(9.4.z-SNAPSHOT)
+
+{"users":[{"user":{"absoluteUrl":"/jenkins/user/admin","fullName":"admin"}},{"user":{"absoluteUrl":"/jenkins/user/analyst","fullName":"analyst"}}]}

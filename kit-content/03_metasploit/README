@@ -1,0 +1,17 @@
+This terminal has a synthetic Metasploit harness loaded. Run:
+
+  msfconsole "RHOST=... RPORT=... TARGETURI=... PAYLOAD=..."
+
+You'll need four values:
+
+  RHOST       — from stage 1
+  RPORT       — from stage 1
+  TARGETURI   — from stage 2 (the captured request that didn't 403)
+  PAYLOAD     — read modules/ to find the right exploit, then
+                pick from its COMPATIBLE PAYLOADS list. Check
+                payloads/ to confirm architecture compatibility.
+
+The harness will tell you why if it fails. Read its output.
+
+Tip: the right module matches stage 2's CVE AND it's the *exploit*,
+not the detector. There are two hits for the CVE.

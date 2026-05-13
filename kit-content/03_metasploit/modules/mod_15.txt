@@ -1,0 +1,22 @@
+NAME      exploit/multi/http/tomcat_mgr_upload
+CVE       n/a
+TARGETS   Apache Tomcat Manager (post-auth)
+RANK      Excellent
+AUTH      required (manager-script role)
+TYPE      remote / web
+
+DESCRIPTION
+  Uploads a malicious WAR file via Tomcat's /manager/text/deploy
+  endpoint, achieving RCE inside the servlet container. Requires
+  valid manager credentials — pairs with tomcat_mgr_login.
+
+OPTIONS
+  RHOST       (required) target host
+  RPORT       (required) target port
+  USERNAME    (required) Tomcat Manager user
+  PASSWORD    (required) Tomcat Manager password
+  PAYLOAD     (required) java jsp family
+
+COMPATIBLE PAYLOADS
+  java_jsp_shell_reverse_tcp
+  java_meterpreter

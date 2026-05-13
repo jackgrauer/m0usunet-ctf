@@ -1,0 +1,13 @@
+====== REQUEST ======
+GET /jenkins/static/c8cd14dc/css/style.css HTTP/1.1
+Host: 10.4.12.1:8080
+User-Agent: Mozilla/5.0
+Authorization: Basic YW5hbHlzdDpodW50ZXIy
+Accept: text/css
+
+====== RESPONSE ======
+HTTP/1.1 200 OK
+Content-Type: text/css
+Server: Jetty(9.4.z-SNAPSHOT)
+
+body { font-family: sans-serif; } /* ...stylesheet truncated... */

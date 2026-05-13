@@ -1,0 +1,6 @@
+NAME    java_meterpreter
+ARCH    Java bytecode (architecture-neutral)
+OS      any with JRE
+SIZE    ~28 KB
+NOTES   Drops a .jar payload into the running JVM. Use when the target
+        exposes a Java application server (Tomcat, Confluence, etc.).
