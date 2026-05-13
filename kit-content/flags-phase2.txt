@@ -1,0 +1,5 @@
+m0use{CVE_2018_1000861}
+m0use{CVE-2018-1000861}
+m0use{cve_2018_1000861}
+m0use{cve-2018-1000861}
+m0use{descriptorByName_unauth}

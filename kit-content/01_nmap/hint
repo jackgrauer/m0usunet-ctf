@@ -1,14 +1,16 @@
-Twelve hosts, eleven decoys. The one you want has something
-unusual that none of the others have. Read top to bottom.
+The giveaway is usually in the language — words in a hostname that
+mark something as staff-only:
 
-If you're still stuck:
-  - Look at the lines that start with something other than "PORT"
-    or "Not shown" or "Host is up". Those are extra notes nmap
-    only emits for hosts that have something special.
-  - One host has TWO names — its forward DNS says one thing, its
-    rDNS says something else. That contradiction is the clue.
+    internal     private      staging     legacy
+    admin        old          backup      test
 
-The flag is HOST:PORT — the address an attacker would actually
-connect to from outside. Not the internal address where the
-service really lives (that's behind the gateway and only has ssh
-exposed directly).
+If any of those words show up on a host that's visible from the
+outside, somebody screwed up. That's your target.
+
+Look at the hostnames themselves, and also look at the lines right
+under each hostname — most hosts on this scan don't have anything
+between their name and their port list, but one does.
+
+When you have it, submit the host name or the IP:
+
+    apply m0use{<hostname>}        or       apply m0use{<ip-address>}

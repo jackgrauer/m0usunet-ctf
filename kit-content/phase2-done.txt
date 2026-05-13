@@ -1,0 +1,13 @@
+
+  ═══════════════════════════════════════════════════════════════════
+  PHASE 2 COMPLETE — vulnerability identified
+  ═══════════════════════════════════════════════════════════════════
+
+  You found the way in. Now we exploit it.
+
+  This terminal has a working exploit harness loaded. You'll need to
+  pick the right module, pick the right payload, plug in what you've
+  learned from phases 1 and 2, and fire.
+
+  Next:  cd ../03_metasploit && cat README
+

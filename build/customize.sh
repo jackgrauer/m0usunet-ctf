@@ -90,14 +90,24 @@ fi
 EOF
 chmod +x /etc/profile.d/01-m0usunet.sh
 
-# apply — local flag validator
+# apply — phase-aware flag validator. Matches against the per-phase
+# accepted-flag files and prints the matching phase-complete banner.
 cat > /usr/local/bin/apply <<'EOF'
 #!/bin/sh
 [ -z "$1" ] && { echo "usage: apply m0use{...}"; exit 1; }
-if grep -qxF "$1" /etc/m0use.flags 2>/dev/null; then
-  echo "✓ finding accepted — paste into the form below the terminal"
+INPUT="$1"
+
+if   grep -qxF "$INPUT" /etc/m0use.flags1 2>/dev/null; then
+  printf '\033[1;32m✓ finding accepted.\033[0m\n'
+  cat /etc/m0use.phase1.done
+elif grep -qxF "$INPUT" /etc/m0use.flags2 2>/dev/null; then
+  printf '\033[1;32m✓ finding accepted.\033[0m\n'
+  cat /etc/m0use.phase2.done
+elif grep -qxF "$INPUT" /etc/m0use.flags3 2>/dev/null; then
+  printf '\033[1;32m✓ finding accepted.\033[0m\n'
+  cat /etc/m0use.phase3.done
 else
-  echo "✗ that's not one of our findings. try again."
+  printf '\033[1;31m✗ not quite.\033[0m try again, or \033[1;36mcat hint\033[0m if you are stuck.\n'
 fi
 EOF
 chmod +x /usr/local/bin/apply

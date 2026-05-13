@@ -1,0 +1,7 @@
+m0use{jenkins-old}
+m0use{jenkins-old.internal.crazy.ants}
+m0use{legacy-build-03}
+m0use{legacy-build-03.crazy.ants}
+m0use{10.4.12.88}
+m0use{10.4.12.88:8080}
+m0use{10.4.12.1:8080}

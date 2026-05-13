@@ -1,0 +1,20 @@
+
+  ═══════════════════════════════════════════════════════════════════
+  PHASE 1 COMPLETE — back office located
+  ═══════════════════════════════════════════════════════════════════
+
+  Nice work, Cadet. You spotted what their IT team didn't: a server
+  named for the inside that's reachable from the outside. That's the
+  Crazy Ants' fragrance compounding back office.
+
+  Finding it doesn't get us through the door. We need a way IN.
+
+  Last Friday a contractor was poking at that server with a tool
+  called Burp Suite — basically a recording device that captures
+  every web request and response. Twenty captures came back. Nineteen
+  of them are the boring stuff: hitting the login page, getting told
+  "no." But one of them got a response the server should never have
+  given. That's our way in.
+
+  Next:  cd ../02_burp && cat README
+
