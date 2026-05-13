@@ -45,7 +45,9 @@ umount "$TMP"
 echo "=== before shrink ==="
 ls -lh "$OUT/alpine.img"
 tune2fs -O ^resize_inode "$LOOP"
-e2fsck -fy "$LOOP"
+# e2fsck returns 1 when it fixed errors (which tune2fs may have introduced).
+# Codes 0..2 are non-fatal; treat 4+ as failure.
+e2fsck -fy "$LOOP" || { rc=$?; [ "$rc" -le 2 ] || { echo "e2fsck failed: $rc"; exit "$rc"; }; }
 resize2fs -M "$LOOP"
 
 dumpe2fs -h "$LOOP" 2>/dev/null | grep -E 'Block count|Block size'
