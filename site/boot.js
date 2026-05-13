@@ -17,31 +17,43 @@
     return;
   }
 
-  const emulator = new V86({
-    wasm_path: "v86/v86.wasm",
-    screen_container: document.getElementById("screen"),
-    bios:     { url: "v86/seabios.bin" },
-    vga_bios: { url: "v86/vgabios.bin" },
-    hda:      { url: "alpine.img", async: false },
-    hdb:      { url: "kit.img",    async: false },
-    memory_size:     128 * 1024 * 1024,
-    vga_memory_size:   8 * 1024 * 1024,
-    autostart: true,
-  });
+  // Fetch the kernel cmdline from the build, then boot the kernel + initrd
+  // directly. The disk images supply userspace; we don't go through the
+  // SYSLINUX bootloader on the disk.
+  fetch("cmdline.txt")
+    .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
+    .then(start, err => start("modules=ext4 root=/dev/sda rw"))
+    .catch(e => say("boot config error: " + e));
 
-  emulator.add_listener("emulator-started", () => {
-    say("");
-    if (status) status.classList.add("hidden");
-  });
+  function start(cmdline) {
+    cmdline = (cmdline || "").trim();
+    say("Booting m0usunet…");
+    const emulator = new V86({
+      wasm_path: "v86/v86.wasm",
+      screen_container: document.getElementById("screen"),
+      bios:     { url: "v86/seabios.bin" },
+      vga_bios: { url: "v86/vgabios.bin" },
+      bzimage:  { url: "vmlinuz-virt",   async: false },
+      initrd:   { url: "initramfs-virt", async: false },
+      cmdline:  cmdline,
+      hda:      { url: "alpine.img", async: false },
+      hdb:      { url: "kit.img",    async: false },
+      memory_size:     128 * 1024 * 1024,
+      vga_memory_size:   8 * 1024 * 1024,
+      autostart: true,
+    });
 
-  emulator.add_listener("download-progress", (e) => {
-    if (!e || !e.file_name) return;
-    const pct = e.file_size ? Math.round(100 * e.loaded / e.file_size) : 0;
-    say(`Loading ${e.file_name} ${pct}%`);
-  });
+    emulator.add_listener("emulator-started", () => {
+      if (status) status.classList.add("hidden");
+    });
+    emulator.add_listener("download-progress", (e) => {
+      if (!e || !e.file_name) return;
+      const pct = e.file_size ? Math.round(100 * e.loaded / e.file_size) : 0;
+      say(`Loading ${e.file_name} ${pct}%`);
+    });
+    window.__m0usunet_emu = emulator;
+  }
 
-  // expose for keyboard.js
-  window.__m0usunet_emu = emulator;
 
   // submit form → POST to scoreboard worker (URL filled in once deployed).
   // Until the Worker exists this just validates the format client-side.

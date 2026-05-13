@@ -52,10 +52,13 @@ jobs:
             '
           ls -lh build/out/
 
-      - name: Stage disk images into site/
+      - name: Stage disk images + kernel into site/
         run: |
-          cp build/out/alpine.img site/
-          cp build/out/kit.img    site/
+          cp build/out/alpine.img     site/
+          cp build/out/kit.img        site/
+          cp build/out/vmlinuz-virt   site/
+          cp build/out/initramfs-virt site/
+          cp build/out/cmdline.txt    site/
           ls -lh site/
 
       - uses: actions/configure-pages@v5

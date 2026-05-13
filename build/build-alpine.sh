@@ -24,73 +24,34 @@ fi
   "$OUT/alpine.img" \
   -- "$ROOT/build/customize.sh"
 
-# alpine-make-vm-image leaves us with a 128M ext4 image. resize2fs -M
-# refuses to shrink it (allocator pins blocks throughout the fs even
-# after dropping resize_inode + has_journal). So rebuild a fresh
-# smaller image: tar the rootfs out, mkfs a minimal image, extract,
-# reinstall the extlinux boot sector.
+# Mount the image, inject answer files, extract kernel + initramfs +
+# kernel command line. v86 will load those directly (bzimage_url +
+# initrd_url) and skip the SYSLINUX bootloader entirely — that chain
+# fails to load ldlinux.c32 in v86 for reasons we couldn't trace.
 
 TMP=$(mktemp -d)
-TAR=$(mktemp /tmp/rootfs.XXXXXX.tar)
 LOOP=$(losetup -f --show "$OUT/alpine.img")
 mount "$LOOP" "$TMP"
 
 cp "$ROOT/kit-content/flags.txt"   "$TMP/etc/m0use.flags"
 cp "$ROOT/kit-content/exploit.sh"  "$TMP/etc/m0use.exploit"
 
-ls -l "$TMP/boot/" || { echo "ERROR: /boot empty"; exit 1; }
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
 
-# Tar everything out (preserve permissions, symlinks, ownership).
-tar -cf "$TAR" -C "$TMP" --acls --xattrs .
-sync
-umount "$TMP"
-losetup -d "$LOOP"
+# Pull the kernel + initramfs out so v86 can boot them directly.
+cp "$TMP"/boot/vmlinuz-virt   "$OUT/vmlinuz-virt"
+cp "$TMP"/boot/initramfs-virt "$OUT/initramfs-virt"
 
-# Pick target size: tar size + 25% headroom, rounded up to MB, floor 64M.
-TARSIZE=$(stat -c %s "$TAR")
-TARGET_MB=$(( (TARSIZE * 5 / 4 + 1024*1024 - 1) / (1024*1024) ))
-[ "$TARGET_MB" -lt 64 ] && TARGET_MB=64
-echo "tar=${TARSIZE}B  new image=${TARGET_MB}M"
-
-NEW="$OUT/alpine.img.new"
-rm -f "$NEW"
-truncate -s "${TARGET_MB}M" "$NEW"
-# Bootable ext4 without journal or resize-inode reserves. Also disable
-# metadata_csum + 64bit because SYSLINUX 6.04 can't read fs blocks with
-# those features set, which is why ldlinux.sys couldn't load ldlinux.c32.
-mkfs.ext4 -F -O ^has_journal,^resize_inode,^metadata_csum,^64bit -L M0USUNET "$NEW"
-
-LOOP=$(losetup -f --show "$NEW")
-mount "$LOOP" "$TMP"
-tar -xf "$TAR" -C "$TMP" --acls --xattrs
-
-# Reinstall the extlinux bootloader into the fresh fs.
-extlinux --install "$TMP/boot"
-
-# Overwrite the .c32 modules so they match the freshly-written
-# ldlinux.sys. Find the modules wherever syslinux dropped them.
-echo "=== syslinux module locations ==="
-ls /usr/share/syslinux/ 2>&1 | head -30
-find / -name 'ldlinux.c32' 2>/dev/null
-SYSLINUX_DIR=$(dirname "$(find / -name 'ldlinux.c32' -not -path "$TMP/*" 2>/dev/null | head -1)")
-echo "SYSLINUX_DIR=$SYSLINUX_DIR"
-if [ -n "$SYSLINUX_DIR" ] && [ -d "$SYSLINUX_DIR" ]; then
-  cp "$SYSLINUX_DIR"/*.c32 "$TMP/boot/" 2>/dev/null
-  ls -l "$TMP/boot/"*.c32 | head -10
-else
-  echo "ERROR: cannot find syslinux .c32 modules in container"
-  exit 1
-fi
+# Capture the APPEND line from extlinux.conf — it has the right
+# cmdline (rootdev, modules, console). Strip "APPEND " and emit.
+awk '/^[[:space:]]*APPEND /{ sub(/^[[:space:]]*APPEND /,""); print; exit }' \
+  "$TMP/boot/extlinux.conf" > "$OUT/cmdline.txt"
+echo "kernel cmdline: $(cat "$OUT/cmdline.txt")"
 
 sync
 umount "$TMP"
 losetup -d "$LOOP"
-
-mv "$NEW" "$OUT/alpine.img"
-rm -f "$TAR"
 rmdir "$TMP"
 
-echo "wrote $OUT/alpine.img ($(du -h "$OUT/alpine.img" | cut -f1))"
-ls -lh "$OUT/alpine.img"
+ls -lh "$OUT/"
