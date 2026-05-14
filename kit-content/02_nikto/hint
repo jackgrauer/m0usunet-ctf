@@ -17,6 +17,6 @@ gives you unauth RCE? Anything that requires authentication is
 useless — we don't have credentials. Anything that's just info
 disclosure or XSS won't get us inside.
 
-When you have the right one, submit it:
+When you have the right one, type it at the prompt and hit Enter:
 
-    answer CVE-XXXX-XXXXXXX
+    CVE-XXXX-XXXXXXX

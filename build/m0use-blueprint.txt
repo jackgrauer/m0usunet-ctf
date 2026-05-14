@@ -37,4 +37,4 @@ SDS sheets withheld at counsel's direction.
 
 ──────────────────────────────────────────────────────────────────
 
-Submit this finding via:  answer jenkins_was_a_mistake
+Type this at the prompt to submit:  jenkins_was_a_mistake

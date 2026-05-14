@@ -23,9 +23,11 @@ PASSWORD4: 4123
 
 ## TASK 2 — Operation Parmesan Rose (digital phase)
 
-`answer <thing>` is the command that advances every phase. Bare
-values work — no `m0use{...}` wrapper needed. Old habits also work:
-`apply`, `submit`, and `check` are aliases.
+**To advance any phase: just type the IP / hostname / CVE id / flag
+string at the prompt and hit Enter. No keyword, no braces.**
+
+`answer X` still works as a fallback (and `apply`, `submit`, `check`
+are aliases for muscle memory).
 
 You land in `/mnt/kit/01_nmap`.
 

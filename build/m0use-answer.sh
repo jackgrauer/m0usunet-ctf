@@ -34,8 +34,10 @@ fi
 # after the same normalization.
 norm() {
   v=$(echo "$*" | tr -d ' \t')
-  v="${v#m0use\{}"
-  v="${v%\}}"
+  v="${v#m0use\{}"   # strip leading m0use{
+  v="${v%\}}"        # strip trailing }
+  v="${v#m0use}"     # strip bare m0use prefix (when bash brace-expansion
+                     # collapsed m0use{X} into m0useX before we saw it)
   # Lowercase for case-insensitive compare.
   echo "$v" | tr '[:upper:]' '[:lower:]'
 }

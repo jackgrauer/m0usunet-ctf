@@ -16,6 +16,31 @@ alias continue='exit'
 
 cd /mnt/kit/01_nmap 2>/dev/null
 
+# Catch bare findings typed straight at the prompt. The player types
+# `10.4.12.88` or `jenkins-old` and bash can't find a binary by that
+# name — this handler intercepts, sniffs whether the input looks
+# like a finding attempt, and if so routes it through `answer`. If
+# it doesn't look like a finding (just a typo'd command), we print
+# a normal command-not-found message instead of a misleading "not
+# quite" reply.
+command_not_found_handle() {
+  local input="$*"
+  case "$input" in
+    [0-9]*.[0-9]*.[0-9]*.[0-9]*)  ;;  # IPv4-ish
+    [Cc][Vv][Ee][-_]*)            ;;  # CVE id
+    m0use\{*|m0use*)              ;;  # m0use{...} or expanded
+    *_*)                          ;;  # snake_case flag string
+    *-*)                          ;;  # hostname-ish (jenkins-old)
+    *)
+      echo "bash: $1: command not found" >&2
+      return 127
+      ;;
+  esac
+  /usr/local/bin/answer "$@"
+  return 0
+}
+export -f command_not_found_handle
+
 E=$'\033'
 wrap <<EOF
 
@@ -34,8 +59,10 @@ ${E}[2mWhat we're looking for:${E}[0m not vulnerabilities — ${E}[1;37mcareless
   ${E}[1;36mnmap 10.4.12.88${E}[0m          ${E}[2mone host${E}[0m
   ${E}[1;36mcat hint${E}[0m                 ${E}[2mpenalty-free hint if you're stuck${E}[0m
 
-When you find an host that is public but shouldn't, type its IP address (something like ${E}[1;37m10.4.12.88${E}[0m) in the terminal below — submit it with ${E}[1;33manswer${E}[0m:
+${E}[1;33mTO ADVANCE:${E}[0m just type the IP address or hostname at the prompt and hit Enter. That's it. Examples:
 
-  ${E}[1;33manswer 10.4.12.88${E}[0m
+  ${E}[1;37m10.4.12.88${E}[0m
+  ${E}[1;37mjenkins-old${E}[0m
+  ${E}[1;37mlegacy-build-03${E}[0m
 
 EOF

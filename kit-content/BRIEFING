@@ -42,6 +42,7 @@ HOW TO USE THIS TERMINAL
   grep <pattern> <f>    find lines matching a pattern
   ls                    list files in the current folder
 
-  answer <finding>      submit a finding to advance to the next phase
-                        (this is THE command that moves the game forward)
+  <finding>             just type the finding (IP, hostname, CVE id,
+                        flag string) at the prompt and hit Enter.
+                        That advances you to the next phase.
   cat hint              real help, no penalty   (in any phase folder)

@@ -43,7 +43,9 @@ asking who you were.
 Now do the same thing but ask it to read the blueprint file.
 
 Read the response carefully. The flag is inside the file's text.
+Type it straight at the prompt and hit Enter — same as before, no
+keyword needed.
 
-    answer <the-flag-string>
+    <the-flag-string>
 
 Stuck?  cat hint  — no penalty.

@@ -26,6 +26,6 @@
       nikto -h http://<the IP you just identified>:8080/
       cat advisories
 
-  Submit:  answer <CVE-id>
-  Stuck?   cat hint  — no penalty.
+  Then type the CVE id straight at the prompt and hit Enter.
+  Stuck?  cat hint  — no penalty.
 

@@ -19,7 +19,8 @@ ${DIM}────────────────────────�
   ${CYAN}cat hint${R}                   non-judgmental hint for the current phase
   ${CYAN}cat README${R}                 long-form notes for the current phase
 
-  ${CYAN}answer <finding>${R}           ${B}submit a finding -- this is how you advance${R}
+  ${CYAN}<finding>${R}                  ${B}just type the IP / host / CVE / flag and hit Enter${R}
+                             that's how you advance every phase
   ${CYAN}replay <N>${R}                 re-fire burp capture #N against the live target
 
   ${CYAN}continue${R}                   leave the m0usunet shell and proceed
