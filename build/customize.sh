@@ -49,6 +49,10 @@ cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
 
+  printf '  \033[2mPress \033[0m\033[1;37mEnter\033[0m\033[2m to continue\033[0m'
+  read _ </dev/tty
+  printf '\n'
+
   # Operator handle: take from kernel cmdline (browser passes
   # m0use.handle=NAME); else use a fallback.
   if [ ! -f /root/.operator ]; then
