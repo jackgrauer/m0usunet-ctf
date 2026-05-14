@@ -62,10 +62,6 @@
     },
   });
 
-  const fitAddon = (typeof FitAddon !== "undefined" && FitAddon.FitAddon)
-    ? new FitAddon.FitAddon() : null;
-  if (fitAddon) term.loadAddon(fitAddon);
-
   const searchAddon = (typeof SearchAddon !== "undefined" && SearchAddon.SearchAddon)
     ? new SearchAddon.SearchAddon() : null;
   if (searchAddon) term.loadAddon(searchAddon);
@@ -76,22 +72,37 @@
 
   const terminalEl = document.getElementById("terminal");
   term.open(terminalEl);
-  if (fitAddon) try { fitAddon.fit(); } catch (_) {}
 
-  function refit() { if (fitAddon) try { fitAddon.fit(); } catch (_) {} }
+  // We pin xterm to 80 cols because that's what the VM's serial
+  // console defaults to. If the two disagree, readline redraws over
+  // the prompt when the player types past the shorter of the two
+  // widths. Instead of changing cols on resize, we scale the font
+  // size so 80 cells fit the available width — VT323's cell width
+  // is roughly 0.55 of its font size.
+  const COLS = 80;
+  const CELL_W_RATIO = 0.55;
+
+  function refit() {
+    const w = terminalEl.clientWidth;
+    const h = terminalEl.clientHeight;
+    if (!w || !h) return;
+    let fontSize = Math.floor((w - 4) / COLS / CELL_W_RATIO);
+    fontSize = Math.max(10, Math.min(28, fontSize));
+    term.options.fontSize = fontSize;
+    const cellH = fontSize * 1.0; // lineHeight 1.0
+    const rows = Math.max(10, Math.floor((h - 4) / cellH));
+    try { term.resize(COLS, rows); } catch (_) {}
+  }
+  refit();
+
   window.addEventListener("resize", refit);
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", refit);
   }
-
   // iOS Safari settles its viewport over a few hundred ms (URL bar
-  // collapse, safe-area, notch). xterm.js does NOT re-flow lines
-  // already in the buffer on resize, so we refit aggressively at
-  // first paint to lock in a correct column count before the VM
-  // writes anything substantial.
+  // collapse, safe-area, notch). Re-run refit at a few intervals so
+  // the final layout is locked in before the VM writes much.
   for (const t of [50, 200, 500, 1200]) setTimeout(refit, t);
-
-  // Catch any later container size changes the resize event misses.
   if (typeof ResizeObserver !== "undefined") {
     new ResizeObserver(refit).observe(terminalEl);
   }

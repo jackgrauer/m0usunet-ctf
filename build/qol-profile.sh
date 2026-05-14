@@ -2,6 +2,15 @@
 # interactive shell (login + portal + game subshell). Single source
 # of truth used by both the VM build and the local devshell.
 
+# Pin the terminal size to match xterm.js on the page (80 cols). If
+# the VM and xterm disagree, readline redraws over the prompt when
+# the player types past the shorter of the two widths. Both sides
+# now stay at 80 cols.
+stty cols 80 rows 30 2>/dev/null || true
+export COLUMNS=80
+export LINES=30
+export TERM=xterm-256color
+
 # Colors for common file/dir/search tools.
 alias ls='ls --color=auto'
 alias ll='ls -la --color=auto'
