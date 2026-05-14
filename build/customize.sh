@@ -32,13 +32,8 @@ EOF
 
 # motd — colored. login(1) preserves ANSI escapes when piping to tty.
 cat > /etc/motd <<EOF
-  ${E}[1;32mm0usunet v0.9.7${E}[0m  ${E}[2m•${E}[0m  ${E}[1;37mField Operations Terminal${E}[0m
-  ${E}[2mtarget:${E}[0m ${E}[1;31mcrazy.ants${E}[0m  ${E}[2m•  window:${E}[0m ${E}[1;33m00:30:00${E}[0m  ${E}[2m•  Editor: watching${E}[0m
-
-  ${E}[1;33mOPERATION: PARMESAN${E}[0m — three phases, thirty minutes total. Start here:
-
-    ${E}[1;32mcat /mnt/kit/BRIEFING${E}[0m
-
+  ${E}[1;32mm0usunet v0.9.7${E}[0m    ${E}[1;37mField Operations Terminal${E}[0m
+  ${E}[1;33mOPERATION: PARMESAN ROSE${E}[0m
 EOF
 
 # profile.d hook — on first login, hand off to /usr/local/bin/m0use-portal
