@@ -148,12 +148,15 @@ EOF
 
 # Mark task 2 reached
 touch /root/.portal_task2
-sleep 1.5
+
+printf "  ${DIM}Press ${R}${WHITE}Enter${R}${DIM} to continue${R}"
+read -r _
+printf "\n"
 
 # ─── TASK 2 GAME SUBSHELL ────────────────────────────────────────────
 # Drop the player into the m0usunet game shell. The rc file sets the
-# prompt, cd's to phase 1, prints the README, and aliases `continue`
-# to `exit` so the player has an obvious way back out.
+# prompt, cd's to phase 1, prints the recon intro, and aliases
+# `continue` to `exit` so the player has an obvious way back out.
 
 bash --rcfile /etc/m0use-game-rc -i || true
 

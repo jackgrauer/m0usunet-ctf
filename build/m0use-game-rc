@@ -1,7 +1,7 @@
 # m0use-game-rc — sourced by the interactive bash subshell that runs
 # during TASK 2 of the portal. Sets a colored prompt, lands the
-# player in /mnt/kit/01_nmap, prints the phase 1 README, and
-# aliases `continue` to `exit` so they have an obvious way out.
+# player in /mnt/kit/01_nmap, prints the recon intro, and aliases
+# `continue` to `exit` so they have an obvious way out.
 
 HANDLE=$(cat /root/.operator 2>/dev/null)
 [ -z "$HANDLE" ] && HANDLE=cadet
@@ -15,4 +15,14 @@ alias l='ls'
 alias continue='exit'
 
 cd /mnt/kit/01_nmap 2>/dev/null
-cat README
+
+E=$'\033'
+printf "\n${E}[1;31mtarget:${E}[0m ${E}[1;37m10.4.12.0/24${E}[0m   ${E}[2m— the Crazy Ants subnet${E}[0m\n\n"
+printf "Find a host that's exposed to the outside but clearly meant to\n"
+printf "stay internal — a staging box, a forgotten test server. That's\n"
+printf "the back office.\n\n"
+printf "  ${E}[1;36mnmap 10.4.12.0/24${E}[0m        ${E}[2msweep the subnet${E}[0m\n"
+printf "  ${E}[1;36mnmap -sV 10.4.12.0/24${E}[0m    ${E}[2m+ service versions${E}[0m\n"
+printf "  ${E}[1;36mnmap 10.4.12.88${E}[0m          ${E}[2mone host${E}[0m\n\n"
+printf "Submit:  ${E}[1;33mapply m0use{<host-or-ip>}${E}[0m\n"
+printf "${E}[2mStuck?${E}[0m ${E}[1;36mcat hint${E}[0m ${E}[2m— no penalty.${E}[0m\n\n"

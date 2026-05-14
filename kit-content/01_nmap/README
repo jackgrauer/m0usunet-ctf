@@ -1,25 +1,22 @@
-PHASE 1 — RECON
-═══════════════
-tool:  nmap
+target: 10.4.12.0/24   (the Crazy Ants subnet)
 
-The Crazy Ants run on 10.4.12.0/24. The terminal you're on has real
-nmap installed, real DNS resolving their hostnames, and a real
-network connection into their range. Hit it.
+Find a host that's exposed to the outside but clearly meant to stay
+internal — a staging box, a forgotten test server. That's the back
+office.
 
-    nmap 10.4.12.0/24       full sweep, all addresses
-    nmap -sV 10.4.12.0/24   same, but ask each host its software version
-    nmap 10.4.12.88         zoom on a single host
-    nmap --help             real nmap help (it's long)
+    nmap 10.4.12.0/24        sweep the subnet
+    nmap -sV 10.4.12.0/24    + service versions
+    nmap 10.4.12.88          one host
+    nmap --help              real nmap help
 
 Long output? Pipe through less:    nmap -sV 10.4.12.0/24 | less
 
 
-WHAT YOU'RE ACTUALLY LOOKING FOR
-────────────────────────────────
-Recon isn't about finding "vulnerabilities." Anyone can spot an old
-website. What recon is really about is finding evidence of human
-carelessness. Somebody at this company did something they didn't
-think anybody would notice — and left a trace.
+What recon is actually for
+──────────────────────────
+Recon isn't about "vulnerabilities." It's about human carelessness.
+Somebody at this company did something they didn't think anybody
+would notice — and left a trace.
 
 Most of what nmap returns will be normal: their public website, the
 mail server, the customer-facing API. These are well-locked-down and
@@ -31,11 +28,7 @@ sprint three years ago and never torn down. A staging environment
 that was supposed to be internal but got accidentally exposed when
 someone set up a port forward "just for today" and forgot.
 
-If you can find that host — visible from outside but clearly meant
-for internal use — that's the back office. That's where the
-fragrance blueprint lives.
-
-When you have it, submit the host name or the IP:
+When you have it:
 
     apply m0use{<hostname>}        or       apply m0use{<ip-address>}
 
