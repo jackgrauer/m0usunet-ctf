@@ -20,7 +20,7 @@ MAGENTA="${E}[1;35m"
 WHITE="${E}[1;37m"
 GREY="${E}[2;37m"
 
-PROMPT="${GREEN}operator@mouse-bites${R}${DIM}:~\$${R}"
+PROMPT="${DIM}>${R}"
 
 # Skip the portal flow if we've already finished it.
 [ -f /root/.portal_done ] && return 0 2>/dev/null
@@ -50,8 +50,8 @@ Regardless of performance during the assessment, ${RED}the CEO's son-in-law${R}
 ${RED}will receive the position anyway.${R} Save your energy. Don't try very
 hard. Enjoy yourself. You think you deserve this pain. You don't.
 
-${WHITE}OPERATION PARMESAN${R} will consist of four parts. Each targets one
-aptitude expected of Mouse Bites Inc. Junior Sniffers:
+The ${WHITE}Junior Sniffer assessment${R} consists of four parts, each targeting
+one aptitude expected of Mouse Bites Inc. Junior Sniffers:
 
    ${GOLD}1)${R}  ${WHITE}resourcefulness${R}
    ${GOLD}2)${R}  ${WHITE}intuition${R}
@@ -64,7 +64,7 @@ EOF
 
 while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD1 to proceed to TASK 1:${R} "
-  read -r PW
+  read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}✓${R} accepted\n\n"
     break
@@ -97,7 +97,7 @@ EOF
 
 while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD2 to proceed to TASK 2:${R} "
-  read -r PW
+  read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}✓${R} accepted\n\n"
     break
@@ -150,7 +150,7 @@ EOF
 touch /root/.portal_task2
 
 printf "  ${DIM}Press ${R}${WHITE}Enter${R}${DIM} to continue${R}"
-read -r _
+read -r _ </dev/tty
 printf "\n"
 
 # ─── TASK 2 GAME SUBSHELL ────────────────────────────────────────────
@@ -167,7 +167,7 @@ printf "${GREEN_DIM}operator returning from m0usunet shell...${R}\n\n"
 
 while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD3 to proceed to TASK 3:${R} "
-  read -r PW
+  read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}✓${R} accepted\n\n"
     break
@@ -195,7 +195,7 @@ EOF
 
 while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD4 to proceed to TASK 4:${R} "
-  read -r PW
+  read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}✓${R} accepted\n\n"
     break
@@ -219,7 +219,7 @@ reflection_section() {
   local label="$1"
   printf "${CYAN}${label}${R}\n"
   local line lines=""
-  while IFS= read -r line; do
+  while IFS= read -r line </dev/tty; do
     [ -z "$line" ] && break
     lines="${lines}${line}
 "
