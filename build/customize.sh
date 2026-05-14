@@ -74,67 +74,11 @@ fi
 EOF
 chmod +x /etc/profile.d/01-m0usunet.sh
 
-# apply — phase-aware flag validator. Matches against the per-phase
-# accepted-flag files and prints the matching phase-complete banner.
-cat > /usr/local/bin/apply <<'EOF'
-#!/bin/sh
-[ -z "$1" ] && { echo "usage: apply m0use{...}"; exit 1; }
-INPUT="$1"
-
-if   grep -qxF "$INPUT" /etc/m0use.flags1 2>/dev/null; then
-  printf '\033[1;32m✓ finding accepted.\033[0m\n'
-  cat /etc/m0use.phase1.done
-elif grep -qxF "$INPUT" /etc/m0use.flags2 2>/dev/null; then
-  printf '\033[1;32m✓ finding accepted.\033[0m\n'
-  cat /etc/m0use.phase2.done
-elif grep -qxF "$INPUT" /etc/m0use.flags3 2>/dev/null; then
-  printf '\033[1;32m✓ finding accepted.\033[0m\n'
-  cat /etc/m0use.phase3.done
-else
-  printf '\033[1;31m✗ not quite.\033[0m try again, or \033[1;36mcat hint\033[0m if you are stuck.\n'
-fi
-EOF
-chmod +x /usr/local/bin/apply
-ln -s /usr/local/bin/apply /usr/local/bin/check
-
-# The fake nmap and msfconsole stubs are gone — players use real
-# nmap (from apk) and real curl against a real fake-network running
-# inside the VM. See /etc/init.d/m0usenet which brings up the lo
-# aliases and starts dnsmasq + banner responder + fake-Jenkins.
-
-# replay — replays a captured burp request against the live target
-# using real curl, so the player can verify the bug still works.
-cat > /usr/local/bin/replay <<'REPLAY'
-#!/bin/sh
-[ -z "$1" ] && { echo "usage: replay <N>          (N = capture number, e.g. 17)"; exit 1; }
-N=$(printf '%03d' "$1" 2>/dev/null) || N="$1"
-FILE="/mnt/kit/02_burp/req_${N}.txt"
-if [ ! -f "$FILE" ]; then
-  echo "replay: no capture matching #$N"; exit 1
-fi
-# Extract method + path from the captured request line.
-LINE=$(grep -m1 -E '^(GET|POST|PUT|DELETE|HEAD) ' "$FILE")
-METHOD=$(echo "$LINE" | awk '{print $1}')
-PATH_=$(echo "$LINE" | awk '{print $2}')
-# Was there an Authorization line in the capture's request half?
-HASAUTH=$(awk '/^====== RESPONSE ======/{exit} /^Authorization:/{print "yes"; exit}' "$FILE")
-
-printf '\033[1;36mreplaying capture #%s against live target\033[0m\n' "$N"
-printf '  %s http://10.4.12.1:8080%s   (auth %s)\n\n' "$METHOD" "$PATH_" "${HASAUTH:-NO}"
-
-if [ "$HASAUTH" = "yes" ]; then
-  curl -isS -X "$METHOD" -H 'Authorization: Basic YW5hbHlzdDpodW50ZXIy' \
-       "http://10.4.12.1:8080${PATH_}" | head -20
-else
-  curl -isS -X "$METHOD" "http://10.4.12.1:8080${PATH_}" | head -20
-fi
-REPLAY
-chmod +x /usr/local/bin/replay
-
-# Install the m0usenet service files (sourced from /etc/m0use/* on
-# the rootfs; build-alpine.sh copies them in alongside the flag files).
-chmod +x /usr/local/bin/m0use-banners /usr/local/bin/m0use-jenkins
-chmod +x /etc/init.d/m0usenet
+# apply + replay scripts and m0usenet service files are copied into
+# this rootfs by build-alpine.sh after this chroot script finishes.
+# We just need to make sure the executable bits get set; build-alpine
+# also sets them after the cp.
+:
 
 # kill every service we don't strictly need — boot inside v86 should
 # go from kernel handoff to shell in a couple of seconds.

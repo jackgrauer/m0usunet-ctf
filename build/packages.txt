@@ -8,6 +8,8 @@ linux-firmware-none
 agetty
 openrc
 nmap
+nmap-nselibs
+nmap-scripts
 curl
 python3
 dnsmasq
