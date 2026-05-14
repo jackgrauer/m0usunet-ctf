@@ -62,12 +62,16 @@ chmod 644 "$TMP/var/m0use/blueprint.txt"
 # real binary might exist by putting these in /usr/local/bin, which
 # appears before /usr/bin on PATH (and we've stopped installing the
 # real nmap/nikto/curl packages anyway).
-cp "$ROOT/build/fake-nmap.py"   "$TMP/usr/local/bin/nmap"
-cp "$ROOT/build/fake-nikto.py"  "$TMP/usr/local/bin/nikto"
-cp "$ROOT/build/fake-curl.py"   "$TMP/usr/local/bin/curl"
+cp "$ROOT/build/fake-nmap.py"        "$TMP/usr/local/bin/nmap"
+cp "$ROOT/build/fake-nikto.py"       "$TMP/usr/local/bin/nikto"
+cp "$ROOT/build/fake-curl.py"        "$TMP/usr/local/bin/curl"
+cp "$ROOT/build/fake-msfconsole.py"  "$TMP/usr/local/bin/msfconsole"
 chmod 755 "$TMP/usr/local/bin/nmap" \
           "$TMP/usr/local/bin/nikto" \
-          "$TMP/usr/local/bin/curl"
+          "$TMP/usr/local/bin/curl" \
+          "$TMP/usr/local/bin/msfconsole"
+ln -sf msfconsole "$TMP/usr/local/bin/msf"
+ln -sf msfconsole "$TMP/usr/local/bin/metasploit"
 
 # Minimal PID-1 bootstrap: replaces OpenRC. Runs once at boot via
 # inittab's ::sysinit, does mounts + hostname.

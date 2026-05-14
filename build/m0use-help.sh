@@ -29,6 +29,6 @@ ${DIM}────────────────────────�
   ${CYAN}ls${R} / ${CYAN}ll${R} / ${CYAN}cd${R}              navigate the kit
   ${CYAN}cat file${R} / ${CYAN}less file${R}         read files (colors preserved through less)
 
-${DIM}Recon tools — try:${R} ${CYAN}nmap --help${R}, ${CYAN}nikto -H${R}, ${CYAN}curl --help${R}
+${DIM}Recon tools — try:${R} ${CYAN}nmap --help${R}, ${CYAN}nikto -H${R}, ${CYAN}msfconsole${R}, ${CYAN}curl --help${R}
 
 EOF

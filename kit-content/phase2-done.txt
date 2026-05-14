@@ -18,18 +18,23 @@
 
   ─── next ──────────────────────────────────────────────────────────
 
-  We'll use metasploit. An exploitation framework — a library of
-  pre-written break-in tools, organized by CVE. For nearly every
-  public vulnerability you'd care to use, somebody has already
-  written a metasploit module that automates the exploitation. You
-  pick a module, point it at a host, run it, and it pops a shell.
+  To actually walk through the open door we've found, use
+  metasploit. It's an exploitation framework — a library of
+  pre-scripted code snippets organized according to the particular
+  CVE they exploit. Almost any time someone discovers a given
+  vulnerability, someone else writes and logs a corresponding
+  metasploit module to automate it. This helps everyone walk
+  through the door once it's found. Pick a module. Point it at a
+  host (in our case, 10.4.12.1).
+
+  That's it. You're logged in. You get a shell.
 
   Most pentest workflows end here: nmap finds it, a scanner
   fingerprints it, metasploit walks through the door.
 
   Type each of these two commands in order, one at a time, hitting
   Enter after each. The first moves you into the phase 3 folder;
-  the second prints the briefing for what to do next.
+  the second prints the briefing for the metasploit walk.
 
       1.  cd /mnt/kit/03_metasploit
       2.  cat README
