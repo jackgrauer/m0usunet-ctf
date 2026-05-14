@@ -27,8 +27,12 @@
   Most pentest workflows end here: nmap finds it, a scanner
   fingerprints it, metasploit walks through the door.
 
-      cd /mnt/kit/03_metasploit
-      cat README
+  Type each of these two commands in order, one at a time, hitting
+  Enter after each. The first moves you into the phase 3 folder;
+  the second prints the briefing for what to do next.
+
+      1.  cd /mnt/kit/03_metasploit
+      2.  cat README
 
   Stuck?  cat hint  — no penalty.
 

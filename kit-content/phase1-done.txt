@@ -22,9 +22,13 @@
   software versions, dangerous endpoints, misconfigurations, default
   credentials. When it finds something, it shouts.
 
-      cd /mnt/kit/02_nikto
-      nikto -h http://<the IP you just identified>:8080/
-      cat advisories
+  Type each of these three commands in order, one at a time, hitting
+  Enter after each. The first one moves you into the right folder;
+  the second runs the scan; the third shows you the CVE table.
+
+      1.  cd /mnt/kit/02_nikto
+      2.  nikto -h http://<the IP you just identified>:8080/
+      3.  cat advisories
 
   Then type the CVE id straight at the prompt and hit Enter.
   Stuck?  cat hint  — no penalty.
