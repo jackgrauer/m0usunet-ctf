@@ -22,8 +22,16 @@ GREY="${E}[2;37m"
 
 PROMPT="${DIM}>${R}"
 
+# Overridable for local dry-runs. Defaults match the in-VM paths.
+STATE_DIR="${PORTAL_STATE:-/root}"
+GAME_RC="${PORTAL_RC:-/etc/m0use-game-rc}"
+if ! { mkdir -p "$STATE_DIR" 2>/dev/null && [ -w "$STATE_DIR" ]; }; then
+  STATE_DIR=$(mktemp -d -t m0use-portal)
+  PORTAL_SKIP_GAME=${PORTAL_SKIP_GAME:-1}
+fi
+
 # Skip the portal flow if we've already finished it.
-[ -f /root/.portal_done ] && return 0 2>/dev/null
+[ -f "$STATE_DIR/.portal_done" ] && return 0 2>/dev/null
 
 # ─── COLD OPEN ────────────────────────────────────────────────────────
 
@@ -141,13 +149,10 @@ Your first assignment: scan the ${RED}Crazy Ants${R} network with ${CYAN}nmap${R
 find the back-office host that's accidentally exposed to the outside
 — the one wired into their fragrance compounding subsidiary.
 
-${DIM}When the Editor has accepted your final flag, type${R} ${GOLD}continue${R} ${DIM}to${R}
-${DIM}return for TASK 3. Use${R} ${CYAN}cat hint${R} ${DIM}if you get stuck.${R}
-
 EOF
 
 # Mark task 2 reached
-touch /root/.portal_task2
+touch "$STATE_DIR/.portal_task2"
 
 printf "  ${DIM}Press ${R}${WHITE}Enter${R}${DIM} to continue${R}"
 read -r _ </dev/tty
@@ -158,7 +163,11 @@ printf "\n"
 # prompt, cd's to phase 1, prints the recon intro, and aliases
 # `continue` to `exit` so the player has an obvious way back out.
 
-bash --rcfile /etc/m0use-game-rc -i || true
+if [ -n "$PORTAL_SKIP_GAME" ]; then
+  printf "${DIM}(dryrun: skipping m0usunet game shell)${R}\n\n"
+else
+  bash --rcfile "$GAME_RC" -i || true
+fi
 
 # ─── PASSWORD3 ────────────────────────────────────────────────────────
 
@@ -224,11 +233,11 @@ reflection_section() {
     lines="${lines}${line}
 "
   done
-  echo "${label}:" >> /root/.portal_reflection.txt
-  printf "%s\n\n" "$lines" >> /root/.portal_reflection.txt
+  echo "${label}:" >> "$STATE_DIR/.portal_reflection.txt"
+  printf "%s\n\n" "$lines" >> "$STATE_DIR/.portal_reflection.txt"
 }
 
-: > /root/.portal_reflection.txt
+: > "$STATE_DIR/.portal_reflection.txt"
 reflection_section "WHEN YOU"
 reflection_section "I FEEL"
 reflection_section "I NEED"
@@ -241,7 +250,7 @@ cat <<EOF
 ${GOLD}ASSESSMENT COMPLETE${R}
 ${GREEN}═══════════════════${R}
 
-${GREEN_DIM}Reflection statement saved to /root/.portal_reflection.txt${R}
+${GREEN_DIM}Reflection statement saved to $STATE_DIR/.portal_reflection.txt${R}
 
 Thank you for your application. The Editor will be in touch.
 
@@ -249,4 +258,4 @@ ${DIM}A reminder: the CEO's son-in-law will receive the position anyway.${R}
 
 EOF
 
-touch /root/.portal_done
+touch "$STATE_DIR/.portal_done"
