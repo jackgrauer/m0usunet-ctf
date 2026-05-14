@@ -1,4 +1,5 @@
 build/out/
+build/alpine-make-vm-image/
 site/alpine.img
 site/kit.img
 site/v86/libv86.js

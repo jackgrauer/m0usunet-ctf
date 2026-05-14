@@ -2,8 +2,8 @@
 # m0use-portal — the four-task Junior Sniffer aptitude battery.
 # Called from /etc/profile.d on first login. Walks the player through:
 #   cold-open letter → PASSWORD1 → TASK 1 → PASSWORD2 → TASK 2 (the
-#   m0usunet hack game, in a subshell) → PASSWORD3 → TASK 3 → TASK 4
-#   reflection → done.
+#   m0usunet hack game, in a subshell) → PASSWORD3 → TASK 3 →
+#   PASSWORD4 → TASK 4 reflection → done.
 
 # Colors
 E=$'\033'
@@ -75,9 +75,8 @@ done
 # ─── TASK 1 ──────────────────────────────────────────────────────────
 
 cat <<EOF
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-${GOLD}TASK 1${R}    ${WHITE}resourcefulness${R}
-${GREEN}════════════════════════════════════════════════════════════════════${R}
+${GOLD}TASK 1) RESOURCEFULNESS${R}
+${GREEN}═══════════════════════${R}
 
 Proceed to a store you think sells the item you have been tasked to
 supply. If inclined, buy a second item with which you like to cook.
@@ -88,6 +87,10 @@ ${CYAN}Sabzi Mandi${R} at 69th & Market St. I don't care.
 If you're cheap, present receipt to Mouse Bites Inc. ${GOLD}Craft Services${R}
 ${GOLD}Accounting Unit${R} staff for reimbursement.
 
+Proceed with food items to the center of ${CYAN}Jefferson Square Park${R}
+between 3rd St. and 4th St. and Federal St. and Washington Ave.
+There, you will be provided ${GREEN}m0usunet access credentials${R}.
+
 EOF
 
 # ─── PASSWORD2 ────────────────────────────────────────────────────────
@@ -95,7 +98,7 @@ EOF
 while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD2 to proceed to TASK 2:${R} "
   read -r PW
-  if [ "$PW" = "5123" ]; then
+  if [ "$PW" = "4123" ]; then
     printf "${GREEN}✓${R} accepted\n\n"
     break
   fi
@@ -105,29 +108,41 @@ done
 # ─── TASK 2 INTRO ────────────────────────────────────────────────────
 
 cat <<EOF
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-${GOLD}TASK 2${R}    ${WHITE}intuition${R}
-${GREEN}════════════════════════════════════════════════════════════════════${R}
+${GOLD}TASK 2) OPERATION PARMESAN ROSE${R}
+${GREEN}═══════════════════════════════${R}
 
-Proceed with food items to the center of ${CYAN}Jefferson Square Park${R}
-between 3rd St. and 4th St. and Federal St. and Washington Ave.
-There, you will be provided access to the ${GREEN}m0usunet mainframe${R}.
+${WHITE}Mouse Bites Inc.${R} has received intel that the ${RED}Crazy Ants${R}, our rival
+concern, are planning something major.
 
-Obtain ${MAGENTA}uncredentialed access${R} to our adversary's server:
-${RED}crazy.ants${R}. Once you successfully breach the crazy.ants server,
-you will be provided coordinates of Mouse Bites Inc. HQ.
+We suspect a private equity roll-up play in the fragmented hotel
+fragrances and potpourri sector in FY Q3 2026.
 
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-${DIM}You are now in the m0usunet operator shell. Inside this shell:${R}
+${DIM}What we know so far:${R}
 
-  ${CYAN}cat /mnt/kit/BRIEFING${R}        the full op brief
-  ${CYAN}cd /mnt/kit/01_nmap && cat README${R}  start phase 1
-  ${CYAN}apply m0use{...}${R}             submit findings to the Editor
-  ${CYAN}cat hint${R}                     real help, no penalty
+  ${GOLD}-${R} Respiratory therapists at local urgent care clinics report
+    clusters of new-onset reactive airway cases in residents of three
+    subway-accessible facilities this year.
 
-${GREY}When you have completed phase 3 and the Editor has accepted the${R}
-${GREY}final flag, type${R} ${GOLD}continue${R} ${GREY}to leave the game shell and proceed to${R}
-${GREY}TASK 3.${R}
+  ${GOLD}-${R} Department of State filing cross-references the institutional
+    purchasing data via a RTK request to the Bucks County purchasing
+    office, and matches the ${RED}Crazy Ants Fragrance Compounder${R}
+    ${RED}Subsidiary${R} SDS sheets (obtained through an OSHA 300 log FOIA
+    on the contract facility) against the Protected Substances List.
+
+  ${GOLD}-${R} "SAME ARTISAN QUALITY, NEW OWNERSHIP" signs are appearing at
+    Mom-and-pop crafters and aging Yankee Candle mall kiosks across
+    Mischief City.
+
+Right now we can see the shape. We need the blueprint. That's where
+you come in, ${CYAN}Sniffer Cadet${R}. We need to cripple the ${RED}Ants${R}' deck
+before they start yoking investors.
+
+Your first assignment: scan the ${RED}Crazy Ants${R} network with ${CYAN}nmap${R} and
+find the back-office host that's accidentally exposed to the outside
+— the one wired into their fragrance compounding subsidiary.
+
+${DIM}When the Editor has accepted your final flag, type${R} ${GOLD}continue${R} ${DIM}to${R}
+${DIM}return for TASK 3. Use${R} ${CYAN}cat hint${R} ${DIM}if you get stuck.${R}
 
 EOF
 
@@ -145,17 +160,12 @@ bash --rcfile /etc/m0use-game-rc -i || true
 # ─── PASSWORD3 ────────────────────────────────────────────────────────
 
 clear
-cat <<EOF
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-${GREEN_DIM}operator returning from m0usunet shell...${R}
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-
-EOF
+printf "${GREEN_DIM}operator returning from m0usunet shell...${R}\n\n"
 
 while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD3 to proceed to TASK 3:${R} "
   read -r PW
-  if [ "$PW" = "6123" ]; then
+  if [ "$PW" = "4123" ]; then
     printf "${GREEN}✓${R} accepted\n\n"
     break
   fi
@@ -165,9 +175,8 @@ done
 # ─── TASK 3 ──────────────────────────────────────────────────────────
 
 cat <<EOF
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-${GOLD}TASK 3${R}    ${WHITE}the culinary art${R}
-${GREEN}════════════════════════════════════════════════════════════════════${R}
+${GOLD}TASK 3) THE CULINARY ART${R}
+${GREEN}════════════════════════${R}
 
 Proceed to HQ.
 
@@ -179,16 +188,23 @@ Your dish will be assessed via ${MAGENTA}blind peer review${R}.
 
 EOF
 
-printf "${PROMPT} ${DIM}press ENTER when you have completed TASK 3:${R} "
-read -r _
-printf "${GREEN}✓${R} acknowledged\n\n"
+# ─── PASSWORD4 ────────────────────────────────────────────────────────
+
+while :; do
+  printf "${PROMPT} ${DIM}enter PASSWORD4 to proceed to TASK 4:${R} "
+  read -r PW
+  if [ "$PW" = "4123" ]; then
+    printf "${GREEN}✓${R} accepted\n\n"
+    break
+  fi
+  printf "${RED}✗${R} incorrect.\n\n"
+done
 
 # ─── TASK 4 ──────────────────────────────────────────────────────────
 
 cat <<EOF
-${GREEN}════════════════════════════════════════════════════════════════════${R}
-${GOLD}TASK 4${R}    ${WHITE}emotional intelligence${R}
-${GREEN}════════════════════════════════════════════════════════════════════${R}
+${GOLD}TASK 4) EMOTIONAL INTELLIGENCE${R}
+${GREEN}══════════════════════════════${R}
 
 Reflect on the evening's events. Write a statement, in this format,
 directed to a fellow participant. Press ENTER on a blank line to
@@ -219,9 +235,8 @@ reflection_section "WOULD YOU"
 
 cat <<EOF
 
-${GREEN}════════════════════════════════════════════════════════════════════${R}
 ${GOLD}ASSESSMENT COMPLETE${R}
-${GREEN}════════════════════════════════════════════════════════════════════${R}
+${GREEN}═══════════════════${R}
 
 ${GREEN_DIM}Reflection statement saved to /root/.portal_reflection.txt${R}
 
