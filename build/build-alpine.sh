@@ -52,17 +52,25 @@ cp "$ROOT/kit-content/phase1-done.txt"  "$TMP/etc/m0use.phase1.done"
 cp "$ROOT/kit-content/phase2-done.txt"  "$TMP/etc/m0use.phase2.done"
 cp "$ROOT/kit-content/phase3-done.txt"  "$TMP/etc/m0use.phase3.done"
 
-# Fake-network services + DNS + blueprint flag file.
-cp "$ROOT/build/m0use-banners.py"   "$TMP/usr/local/bin/m0use-banners"
-cp "$ROOT/build/m0use-jenkins.py"   "$TMP/usr/local/bin/m0use-jenkins"
-cp "$ROOT/build/m0use-dnsmasq.conf" "$TMP/etc/m0use-dnsmasq.conf"
-chmod 755 "$TMP/usr/local/bin/m0use-banners" "$TMP/usr/local/bin/m0use-jenkins"
+# Blueprint flag file — read by fake-curl when the player exploits
+# the Jenkins endpoint.
 mkdir -p "$TMP/var/m0use"
 cp "$ROOT/build/m0use-blueprint.txt" "$TMP/var/m0use/blueprint.txt"
 chmod 644 "$TMP/var/m0use/blueprint.txt"
 
+# Fake recon tools — canned output, no real network. Shadow whatever
+# real binary might exist by putting these in /usr/local/bin, which
+# appears before /usr/bin on PATH (and we've stopped installing the
+# real nmap/nikto/curl packages anyway).
+cp "$ROOT/build/fake-nmap.py"   "$TMP/usr/local/bin/nmap"
+cp "$ROOT/build/fake-nikto.py"  "$TMP/usr/local/bin/nikto"
+cp "$ROOT/build/fake-curl.py"   "$TMP/usr/local/bin/curl"
+chmod 755 "$TMP/usr/local/bin/nmap" \
+          "$TMP/usr/local/bin/nikto" \
+          "$TMP/usr/local/bin/curl"
+
 # Minimal PID-1 bootstrap: replaces OpenRC. Runs once at boot via
-# inittab's ::sysinit, does mounts + lo aliases + background services.
+# inittab's ::sysinit, does mounts + hostname.
 cp "$ROOT/build/m0use-bootstrap.sh"  "$TMP/sbin/m0use-bootstrap"
 chmod 755 "$TMP/sbin/m0use-bootstrap"
 

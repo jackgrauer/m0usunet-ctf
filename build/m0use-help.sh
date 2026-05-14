@@ -27,6 +27,6 @@ ${DIM}────────────────────────�
   ${CYAN}ls${R} / ${CYAN}ll${R} / ${CYAN}cd${R}              navigate the kit
   ${CYAN}cat file${R} / ${CYAN}less file${R}         read files (colors preserved through less)
 
-${DIM}For the actual recon tools, see:${R} ${CYAN}man nmap${R}, ${CYAN}man nikto${R}, ${CYAN}man curl${R}
+${DIM}Recon tools — try:${R} ${CYAN}nmap --help${R}, ${CYAN}nikto -H${R}, ${CYAN}curl --help${R}
 
 EOF

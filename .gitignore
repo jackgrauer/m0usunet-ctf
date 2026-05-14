@@ -13,3 +13,4 @@ site/v86/vgabios.bin
 *.swo
 node_modules/
 .wrangler/
+build/__pycache__/

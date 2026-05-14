@@ -4,9 +4,4 @@ bash
 less
 linux-firmware-none
 agetty
-nmap
-nikto
-curl
 python3
-dnsmasq
-iproute2
