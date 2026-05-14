@@ -120,6 +120,7 @@ _CYAN_B  = "\x1b[1;36m"
 _GREEN_B = "\x1b[1;32m"
 _WHITE_B = "\x1b[1;37m"
 _YELLOW  = "\x1b[0;33m"
+_GOLD_B  = "\x1b[1;33m"
 
 
 def fmt_report(host, with_versions):
@@ -201,6 +202,18 @@ def main(argv):
     n_hosts = len(matches)
     n_ips = 256 if target == "10.4.12.0/24" else n_hosts
     print(f"Nmap done: {n_ips} IP addresses ({n_hosts} hosts up) scanned in {elapsed:.2f} seconds")
+
+    # After a subnet sweep, the player has the info they need to
+    # submit. Tell them how, right where they're looking — not 30
+    # screens up in the recon intro before they ran the scan.
+    if target == "10.4.12.0/24":
+        sys.stdout.write(
+            f"\n{_GOLD_B}TO ADVANCE:{_R} just type the IP address or hostname at the prompt\n"
+            f"and hit Enter. That's it. Examples:\n\n"
+            f"  {_WHITE_B}10.4.12.88{_R}\n"
+            f"  {_WHITE_B}jenkins-old{_R}\n"
+            f"  {_WHITE_B}legacy-build-03{_R}\n\n"
+        )
     return 0
 
 

@@ -59,10 +59,4 @@ ${E}[2mWhat we're looking for:${E}[0m not vulnerabilities — ${E}[1;37mcareless
   ${E}[1;36mnmap 10.4.12.88${E}[0m          ${E}[2mone host${E}[0m
   ${E}[1;36mcat hint${E}[0m                 ${E}[2mpenalty-free hint if you're stuck${E}[0m
 
-${E}[1;33mTO ADVANCE:${E}[0m just type the IP address or hostname at the prompt and hit Enter. That's it. Examples:
-
-  ${E}[1;37m10.4.12.88${E}[0m
-  ${E}[1;37mjenkins-old${E}[0m
-  ${E}[1;37mlegacy-build-03${E}[0m
-
 EOF
