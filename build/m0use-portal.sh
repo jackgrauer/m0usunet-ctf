@@ -22,6 +22,14 @@ GREY="${E}[2;37m"
 
 PROMPT="${DIM}>${R}"
 
+# page_break — clears the screen and pads the top with blank lines so
+# the next section visually starts as a *fresh* page, not flush
+# against the previous prompt. Used at every major transition.
+page_break() {
+  clear
+  printf '\n\n\n'
+}
+
 # Overridable for local dry-runs. Defaults match the in-VM paths.
 STATE_DIR="${PORTAL_STATE:-/root}"
 GAME_RC="${PORTAL_RC:-/etc/m0use-game-rc}"
@@ -35,7 +43,7 @@ fi
 
 # ─── COLD OPEN ────────────────────────────────────────────────────────
 
-clear
+page_break
 wrap <<EOF
 ${GREEN}╔════════════════════════════════════════════════════════════════════╗${R}
 ${GREEN}║${R}                     ${GOLD}M O U S E   B I T E S   I N C .${R}                ${GREEN}║${R}
@@ -73,6 +81,7 @@ done
 
 # ─── TASK 1 ──────────────────────────────────────────────────────────
 
+page_break
 wrap <<EOF
 ${GOLD}TASK 1) RESOURCEFULNESS${R}
 ${GREEN}═══════════════════════${R}
@@ -106,6 +115,7 @@ done
 
 # ─── TASK 2 INTRO ────────────────────────────────────────────────────
 
+page_break
 wrap <<EOF
 ${GOLD}TASK 2) OPERATION PARMESAN ROSE${R}
 ${GREEN}═══════════════════════════════${R}
@@ -162,7 +172,7 @@ fi
 
 # ─── PASSWORD3 ────────────────────────────────────────────────────────
 
-clear
+page_break
 printf "${GREEN_DIM}operator returning from m0usunet shell...${R}\n\n"
 
 while :; do
@@ -177,6 +187,7 @@ done
 
 # ─── TASK 3 ──────────────────────────────────────────────────────────
 
+page_break
 wrap <<EOF
 ${GOLD}TASK 3) THE CULINARY ART${R}
 ${GREEN}════════════════════════${R}
@@ -205,6 +216,7 @@ done
 
 # ─── TASK 4 ──────────────────────────────────────────────────────────
 
+page_break
 wrap <<EOF
 ${GOLD}TASK 4) EMOTIONAL INTELLIGENCE${R}
 ${GREEN}══════════════════════════════${R}
@@ -236,6 +248,7 @@ reflection_section "WOULD YOU"
 
 # ─── DONE ────────────────────────────────────────────────────────────
 
+page_break
 wrap <<EOF
 
 ${GOLD}ASSESSMENT COMPLETE${R}

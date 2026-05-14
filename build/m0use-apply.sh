@@ -28,13 +28,13 @@ case "$INPUT" in
 esac
 
 if   grep -qxF "$INPUT" /etc/m0use.flags1 2>/dev/null; then
-  printf '\033[1;32m[OK] finding accepted.\033[0m\n'
+  printf '\n\n\n\033[1;32m[OK] finding accepted.\033[0m\n'
   cat /etc/m0use.phase1.done
 elif grep -qxF "$INPUT" /etc/m0use.flags2 2>/dev/null; then
-  printf '\033[1;32m[OK] finding accepted.\033[0m\n'
+  printf '\n\n\n\033[1;32m[OK] finding accepted.\033[0m\n'
   cat /etc/m0use.phase2.done
 elif grep -qxF "$INPUT" /etc/m0use.flags3 2>/dev/null; then
-  printf '\033[1;32m[OK] finding accepted.\033[0m\n'
+  printf '\n\n\n\033[1;32m[OK] finding accepted.\033[0m\n'
   cat /etc/m0use.phase3.done
 else
   printf '\033[1;31m[!!] not quite\033[0m (read as %s). try again, or \033[1;36mcat hint\033[0m if stuck.\n' "$INPUT"
