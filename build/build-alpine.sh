@@ -33,6 +33,18 @@ TMP=$(mktemp -d)
 LOOP=$(losetup -f --show "$OUT/alpine.img")
 mount "$LOOP" "$TMP"
 
+# alpine-make-vm-image traps EXIT with `exit 0`, so apk failures don't
+# fail the build. Assert customize.sh actually ran by checking for the
+# inittab line it writes. If this is missing, the image still has the
+# default Alpine boot config (OpenRC + every service) and v86 will hang.
+if ! grep -q 'm0use-bootstrap' "$TMP/etc/inittab"; then
+  echo "ERROR: customize.sh did not run — /etc/inittab is the Alpine default."
+  echo "       Almost certainly apk add ran out of disk space mid-install."
+  echo "       Either trim build/packages.txt or bump --image-size in this script."
+  umount "$TMP"; losetup -d "$LOOP"; rmdir "$TMP"
+  exit 1
+fi
+
 cp "$ROOT/kit-content/flags-phase1.txt" "$TMP/etc/m0use.flags1"
 cp "$ROOT/kit-content/flags-phase2.txt" "$TMP/etc/m0use.flags2"
 cp "$ROOT/kit-content/flags-phase3.txt" "$TMP/etc/m0use.flags3"
