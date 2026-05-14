@@ -113,26 +113,45 @@ def parse_targets(arg):
     return []
 
 
+_R       = "\x1b[0m"
+_DIM     = "\x1b[2m"
+_BOLD    = "\x1b[1m"
+_CYAN_B  = "\x1b[1;36m"
+_GREEN_B = "\x1b[1;32m"
+_WHITE_B = "\x1b[1;37m"
+_YELLOW  = "\x1b[0;33m"
+
+
 def fmt_report(host, with_versions):
     ip, fwd, rdns, ports = host
     lines = []
-    lines.append(f"Nmap scan report for {fwd} ({ip})")
-    lines.append(f"Host is up ({random.uniform(0.000040, 0.000220):.6f}s latency).")
-    # the leak: extra line when rDNS doesn't match fwd
+    # Hostname / IP header — bold white, the visual anchor for each host.
+    lines.append(f"{_WHITE_B}Nmap scan report for {fwd} ({ip}){_R}")
+    lines.append(f"{_DIM}Host is up ({random.uniform(0.000040, 0.000220):.6f}s latency).{_R}")
+    # The leak: extra rDNS line on the one host whose fwd/rev DNS
+    # disagree. Tinted yellow so it reads as "something is up here"
+    # without screaming GIVEAWAY at the player.
     if rdns:
-        lines.append(f"rDNS record for {ip}: {rdns}")
+        lines.append(f"{_YELLOW}rDNS record for {ip}: {rdns}{_R}")
     closed = 1000 - len(ports)
-    lines.append(f"Not shown: {closed} closed tcp ports (conn-refused)")
+    lines.append(f"{_DIM}Not shown: {closed} closed tcp ports (conn-refused){_R}")
     if with_versions:
-        lines.append("PORT     STATE SERVICE     VERSION")
+        lines.append(f"{_DIM}PORT     STATE SERVICE     VERSION{_R}")
     else:
-        lines.append("PORT     STATE SERVICE")
+        lines.append(f"{_DIM}PORT     STATE SERVICE{_R}")
     for port, proto, service, version in ports:
         head = f"{port}/{proto}".ljust(9)
         if with_versions:
-            lines.append(f"{head}open  {service:<11} {version}")
+            lines.append(
+                f"{_BOLD}{head}{_R}{_GREEN_B}open{_R}  "
+                f"{_CYAN_B}{service:<11}{_R} {_DIM}{version}{_R}"
+            )
         else:
-            lines.append(f"{head}open  {service}")
+            lines.append(
+                f"{_BOLD}{head}{_R}{_GREEN_B}open{_R}  {_CYAN_B}{service}{_R}"
+            )
+    # Trailing blank line so consecutive scan reports breathe.
+    lines.append("")
     return "\n".join(lines) + "\n"
 
 
