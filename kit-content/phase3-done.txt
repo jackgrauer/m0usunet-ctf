@@ -1,18 +1,27 @@
 
   ═══════════════════════════════════════════════════════════════════
-  OPERATION PARMESAN ROSE — COMPLETE
+  [OK] BLUEPRINT EXTRACTED.
   ═══════════════════════════════════════════════════════════════════
 
-  The blueprint is ours. Their fragrance roll-up is dead before it
-  starts. The Editor will be in touch.
+  SUCCESS! With the new access granted to you via the exploit, you've
+  found the pitch deck Crazy Ants have written to rally investors
+  behind their hotel-fragrance roll-up: a private-equity play to buy
+  out every artisan candle and soap brand in the region, swap their
+  formulas for industrial ethanolamine and an undisclosed phthalate
+  carrier, and keep shipping under the original boutique labels. The
+  respiratory clusters at the urgent-care clinics aren't a coincidence
+  — they're the cost-optimization.
+
+  That's the deck. That's what they couldn't put on the front page of
+  their own website. That's what the back-office Jenkins box was for.
+
+  Now Mouse Bites Inc. has it. The Editor takes it from here.
 
   Well done, Cadet.
 
-  Coordinates of Mouse Bites Inc. HQ are now declassified. Proceed
-  to HQ for TASK 3.
+  ─── next ──────────────────────────────────────────────────────────
 
-  ┌─────────────────────────────────────────────────────────────┐
-  │   PASSWORD3:  4123                                          │
-  │   Type   continue   below to leave the m0usunet shell.      │
-  └─────────────────────────────────────────────────────────────┘
+  Mouse Bites Inc. HQ coordinates are declassified. Proceed there for
+  TASK 3. They'll hand you the next password at the door.
 
+  Type   continue   below to leave the m0usunet shell.
