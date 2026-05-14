@@ -19,26 +19,23 @@ cd /mnt/kit/01_nmap 2>/dev/null
 E=$'\033'
 wrap <<EOF
 
-${E}[1;33mWELCOME TO OPERATION PARMESAN ROSE${E}[0m
-${E}[1;32m══════════════════════════════════${E}[0m
+  ${E}[1;31mtarget:${E}[0m ${E}[1;37m10.4.12.0/24${E}[0m   ${E}[2m— the Crazy Ants subnet${E}[0m
 
-${E}[1;31mtarget:${E}[0m ${E}[1;37m10.4.12.0/24${E}[0m   ${E}[2m— the Crazy Ants subnet${E}[0m
+This is the network the Ants run their company on. They don't know you're sitting on it.
 
-This is the network the Ants run their company on. They don't know you're sitting on it. You'll use ${E}[1;36mnmap${E}[0m to map it.
+Use ${E}[1;36mnmap${E}[0m to map it. nmap is a network scanner. You give it a range of IP addresses; it touches every port on every host and reports back what's listening — web servers, e-mail, anything. It catalogues unfamiliar networks from the outside.
 
-${E}[2mWhat is nmap?${E}[0m  A network scanner. You give it a range of IP addresses; it touches every port on every host and reports back what's listening — web servers, databases, mail, SSH, anything that answers. It's the standard tool for cataloguing an unfamiliar network from the outside.
+Somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragrance compounder computor runs on isolated infrastructure — by policy. But people get tired. People make exceptions. They slip up. They forget they slipped up. A staging box left up from a sprint three years ago. A test environment someone "temporarily" exposed for a vendor demo and forgot. A back-office service that was supposed to live inside their VPN but escaped through a misconfigured firewall.
 
-${E}[2mWhy are we doing this?${E}[0m  Because somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragrance compounder runs on isolated infrastructure — by policy. But policies don't get enforced; people get tired and make exceptions. A staging box left up from a sprint three years ago. A test environment someone "temporarily" exposed for a vendor demo and forgot. A back-office service that was supposed to live inside their VPN but escaped through a misconfigured firewall.
-
-${E}[2mWhat we're looking for:${E}[0m  not vulnerabilities — carelessness. The host that's visible from outside but clearly meant to stay internal. That's the back office. That's where the blueprint lives.
+${E}[2mWhat we're looking for:${E}[0m not vulnerabilities — ${E}[1;37mcarelessness${E}[0m. The host that's visible from outside but was clearly not meant for someone outside the company to see. The back office.
 
   ${E}[1;36mnmap 10.4.12.0/24${E}[0m        ${E}[2msweep the subnet${E}[0m
-  ${E}[1;36mnmap -sV 10.4.12.0/24${E}[0m    ${E}[2m+ service versions${E}[0m
+  ${E}[1;36mnmap -sV 10.4.12.0/24${E}[0m    ${E}[2mlist service versions${E}[0m
   ${E}[1;36mnmap 10.4.12.88${E}[0m          ${E}[2mone host${E}[0m
+  ${E}[1;36mcat hint${E}[0m                 ${E}[2mpenalty-free hint if you're stuck${E}[0m
 
-${E}[1;33mWHEN YOU HAVE THE ANSWER, TYPE:${E}[0m
-  ${E}[1;36manswer <host-or-ip>${E}[0m       ${E}[2me.g. answer 10.4.12.88${E}[0m
+When you find an host that is public but shouldn't, type its IP address (something like ${E}[1;37m10.4.12.88${E}[0m) in the terminal below — submit it with ${E}[1;33manswer${E}[0m:
 
-${E}[2m`answer` is how you advance every phase. Stuck?${E}[0m ${E}[1;36mcat hint${E}[0m ${E}[2m— no penalty.${E}[0m
+  ${E}[1;33manswer 10.4.12.88${E}[0m
 
 EOF

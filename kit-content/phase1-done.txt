@@ -3,21 +3,16 @@
   [OK] BACK OFFICE LOCATED.
   ═══════════════════════════════════════════════════════════════════
 
-  Nice work. The host you found is a Jenkins server.
+  You found a Jenkins build automation server. Companies compile
+  and ship code on these while building a website. They're old and
+  famously, catastrophically broken. Normally, this belongs behind
+  the corporate VPN. This one isn't. Someone left it out. This is
+  our window in.
 
-  What is Jenkins?  A build automation server. Software companies
-  run Jenkins to compile and ship their code on every commit — test,
-  package, deploy, repeat. It's industrial machinery. If you find
-  someone's Jenkins, you find the recipe for everything they make.
-
-  The Crazy Ants' Jenkins should live behind their corporate VPN. It
-  does not. We can see it from here. That means we can see how they
-  build their fragrance compounder. We just need a way in.
-
-  Old Jenkins versions are catastrophically broken. There are at
-  least a dozen unauth RCE bugs in the Jenkins CVE history — paths
-  that let you execute code on the server without logging in. The
-  one we want is whatever bug this specific version has.
+  Now that we've found our window, we need to climb through. Jenkins
+  servers have dozens of known bugs that let remote users — us —
+  control them without logging in. All we need to do now is find a
+  known bug specific to this version of the server.
 
   ─── next ──────────────────────────────────────────────────────────
 
