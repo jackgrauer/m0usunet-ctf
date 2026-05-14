@@ -28,9 +28,9 @@
 
   // ── xterm.js terminal ──────────────────────────────────────────────
   const term = new Terminal({
-    fontFamily: '"Share Tech Mono", ui-monospace, "Courier New", monospace',
-    fontSize: 17,
-    lineHeight: 1.1,
+    fontFamily: '"VT323", "Perfect DOS VGA 437", "Courier New", monospace',
+    fontSize: 20,
+    lineHeight: 1.0,
     letterSpacing: 0,
     scrollback: 10000,
     cursorBlink: true,

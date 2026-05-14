@@ -65,10 +65,10 @@ while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD1 to proceed to TASK 1:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
-    printf "${GREEN}✓${R} accepted\n\n"
+    printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
-  printf "${RED}✗${R} incorrect.\n\n"
+  printf "${RED}[!!]${R} incorrect.\n\n"
 done
 
 # ─── TASK 1 ──────────────────────────────────────────────────────────
@@ -98,10 +98,10 @@ while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD2 to proceed to TASK 2:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
-    printf "${GREEN}✓${R} accepted\n\n"
+    printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
-  printf "${RED}✗${R} incorrect.\n\n"
+  printf "${RED}[!!]${R} incorrect.\n\n"
 done
 
 # ─── TASK 2 INTRO ────────────────────────────────────────────────────
@@ -169,10 +169,10 @@ while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD3 to proceed to TASK 3:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
-    printf "${GREEN}✓${R} accepted\n\n"
+    printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
-  printf "${RED}✗${R} incorrect.\n\n"
+  printf "${RED}[!!]${R} incorrect.\n\n"
 done
 
 # ─── TASK 3 ──────────────────────────────────────────────────────────
@@ -197,10 +197,10 @@ while :; do
   printf "${PROMPT} ${DIM}enter PASSWORD4 to proceed to TASK 4:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
-    printf "${GREEN}✓${R} accepted\n\n"
+    printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
-  printf "${RED}✗${R} incorrect.\n\n"
+  printf "${RED}[!!]${R} incorrect.\n\n"
 done
 
 # ─── TASK 4 ──────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 
   ═══════════════════════════════════════════════════════════════════
-  ✓ BACK OFFICE LOCATED.
+  [OK] BACK OFFICE LOCATED.
   ═══════════════════════════════════════════════════════════════════
 
   Nice work. The host you found is a Jenkins server.

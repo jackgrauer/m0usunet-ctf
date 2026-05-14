@@ -22,20 +22,20 @@ case "$INPUT" in
   m0use*\})   INPUT="m0use{${INPUT#m0use}" ;;         # missing open brace
   m0use*)     INPUT="m0use{${INPUT#m0use}}" ;;        # both braces missing
   *)
-    printf '\033[1;31m✗ wrong format.\033[0m flags look like \033[1;36mm0use{...}\033[0m — try again.\n'
+    printf '\033[1;31m[!!] wrong format.\033[0m flags look like \033[1;36mm0use{...}\033[0m -- try again.\n'
     exit 1
     ;;
 esac
 
 if   grep -qxF "$INPUT" /etc/m0use.flags1 2>/dev/null; then
-  printf '\033[1;32m✓ finding accepted.\033[0m\n'
+  printf '\033[1;32m[OK] finding accepted.\033[0m\n'
   cat /etc/m0use.phase1.done
 elif grep -qxF "$INPUT" /etc/m0use.flags2 2>/dev/null; then
-  printf '\033[1;32m✓ finding accepted.\033[0m\n'
+  printf '\033[1;32m[OK] finding accepted.\033[0m\n'
   cat /etc/m0use.phase2.done
 elif grep -qxF "$INPUT" /etc/m0use.flags3 2>/dev/null; then
-  printf '\033[1;32m✓ finding accepted.\033[0m\n'
+  printf '\033[1;32m[OK] finding accepted.\033[0m\n'
   cat /etc/m0use.phase3.done
 else
-  printf '\033[1;31m✗ not quite\033[0m (read as %s). try again, or \033[1;36mcat hint\033[0m if you are stuck.\n' "$INPUT"
+  printf '\033[1;31m[!!] not quite\033[0m (read as %s). try again, or \033[1;36mcat hint\033[0m if stuck.\n' "$INPUT"
 fi

@@ -4,7 +4,7 @@
   --green-dim: #008844;
   --gold: #ffcc33;
   --red: #ff4040;
-  --retro: "Share Tech Mono", ui-monospace, "Courier New", monospace;
+  --retro: "VT323", "Perfect DOS VGA 437", "Courier New", monospace;
 }
 
 * { box-sizing: border-box; }
