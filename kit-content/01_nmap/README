@@ -28,8 +28,10 @@ sprint three years ago and never torn down. A staging environment
 that was supposed to be internal but got accidentally exposed when
 someone set up a port forward "just for today" and forgot.
 
-When you have it:
+When you have it, submit it to advance:
 
-    apply m0use{<hostname>}        or       apply m0use{<ip-address>}
+    answer <hostname>     or     answer <ip-address>
+
+That's how you move forward. Every phase ends with `answer <thing>`.
 
 Stuck?  cat hint  — no penalty.

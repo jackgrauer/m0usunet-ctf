@@ -42,5 +42,6 @@ HOW TO USE THIS TERMINAL
   grep <pattern> <f>    find lines matching a pattern
   ls                    list files in the current folder
 
-  apply m0use{...}      ship a finding to the Editor
+  answer <finding>      submit a finding to advance to the next phase
+                        (this is THE command that moves the game forward)
   cat hint              real help, no penalty   (in any phase folder)

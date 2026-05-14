@@ -74,11 +74,14 @@ chmod 755 "$TMP/usr/local/bin/nmap" \
 cp "$ROOT/build/m0use-bootstrap.sh"  "$TMP/sbin/m0use-bootstrap"
 chmod 755 "$TMP/sbin/m0use-bootstrap"
 
-# Flag validator + burp replay tool.
-cp "$ROOT/build/m0use-apply.sh"     "$TMP/usr/local/bin/apply"
+# Finding submitter (the way the player advances) + burp replay.
+cp "$ROOT/build/m0use-answer.sh"    "$TMP/usr/local/bin/answer"
 cp "$ROOT/build/m0use-replay.sh"    "$TMP/usr/local/bin/replay"
-chmod 755 "$TMP/usr/local/bin/apply" "$TMP/usr/local/bin/replay"
-ln -sf apply "$TMP/usr/local/bin/check"
+chmod 755 "$TMP/usr/local/bin/answer" "$TMP/usr/local/bin/replay"
+# Back-compat aliases for muscle memory and old docs.
+ln -sf answer "$TMP/usr/local/bin/apply"
+ln -sf answer "$TMP/usr/local/bin/check"
+ln -sf answer "$TMP/usr/local/bin/submit"
 
 # Portal flow (4-task aptitude battery)
 cp "$ROOT/build/m0use-portal.sh"    "$TMP/usr/local/bin/m0use-portal"

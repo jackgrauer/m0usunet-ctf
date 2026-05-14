@@ -13,4 +13,4 @@ between their name and their port list, but one does.
 
 When you have it, submit the host name or the IP:
 
-    apply m0use{<hostname>}        or       apply m0use{<ip-address>}
+    answer <hostname>     or     answer <ip-address>

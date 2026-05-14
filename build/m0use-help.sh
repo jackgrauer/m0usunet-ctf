@@ -4,6 +4,7 @@
 
 E=$(printf '\033')
 R="${E}[0m"
+B="${E}[1m"
 DIM="${E}[2m"
 GOLD="${E}[1;33m"
 CYAN="${E}[1;36m"
@@ -18,7 +19,7 @@ ${DIM}────────────────────────�
   ${CYAN}cat hint${R}                   non-judgmental hint for the current phase
   ${CYAN}cat README${R}                 long-form notes for the current phase
 
-  ${CYAN}apply m0use{...}${R}           submit a finding to the Editor
+  ${CYAN}answer <finding>${R}           ${B}submit a finding -- this is how you advance${R}
   ${CYAN}replay <N>${R}                 re-fire burp capture #N against the live target
 
   ${CYAN}continue${R}                   leave the m0usunet shell and proceed

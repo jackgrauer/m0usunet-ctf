@@ -36,7 +36,9 @@ ${E}[2mWhat we're looking for:${E}[0m  not vulnerabilities — carelessness. The
   ${E}[1;36mnmap -sV 10.4.12.0/24${E}[0m    ${E}[2m+ service versions${E}[0m
   ${E}[1;36mnmap 10.4.12.88${E}[0m          ${E}[2mone host${E}[0m
 
-Submit:  ${E}[1;33mapply m0use{<host-or-ip>}${E}[0m
-${E}[2mStuck?${E}[0m ${E}[1;36mcat hint${E}[0m ${E}[2m— no penalty.${E}[0m
+${E}[1;33mWHEN YOU HAVE THE ANSWER, TYPE:${E}[0m
+  ${E}[1;36manswer <host-or-ip>${E}[0m       ${E}[2me.g. answer 10.4.12.88${E}[0m
+
+${E}[2m`answer` is how you advance every phase. Stuck?${E}[0m ${E}[1;36mcat hint${E}[0m ${E}[2m— no penalty.${E}[0m
 
 EOF

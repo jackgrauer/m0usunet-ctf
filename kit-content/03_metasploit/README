@@ -44,6 +44,6 @@ Now do the same thing but ask it to read the blueprint file.
 
 Read the response carefully. The flag is inside the file's text.
 
-    apply m0use{...}
+    answer <the-flag-string>
 
 Stuck?  cat hint  — no penalty.

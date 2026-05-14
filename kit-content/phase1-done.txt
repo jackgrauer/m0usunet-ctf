@@ -31,6 +31,6 @@
       nikto -h http://<the IP you just identified>:8080/
       cat advisories
 
-  Submit:  apply m0use{<CVE-id>}
+  Submit:  answer <CVE-id>
   Stuck?   cat hint  — no penalty.
 

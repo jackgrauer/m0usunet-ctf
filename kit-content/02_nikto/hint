@@ -19,4 +19,4 @@ disclosure or XSS won't get us inside.
 
 When you have the right one, submit it:
 
-    apply m0use{CVE-XXXX-XXXXXXX}
+    answer CVE-XXXX-XXXXXXX
