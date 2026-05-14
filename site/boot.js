@@ -66,7 +66,16 @@
     ? new FitAddon.FitAddon() : null;
   if (fitAddon) term.loadAddon(fitAddon);
 
-  term.open(document.getElementById("terminal"));
+  const searchAddon = (typeof SearchAddon !== "undefined" && SearchAddon.SearchAddon)
+    ? new SearchAddon.SearchAddon() : null;
+  if (searchAddon) term.loadAddon(searchAddon);
+
+  const webLinksAddon = (typeof WebLinksAddon !== "undefined" && WebLinksAddon.WebLinksAddon)
+    ? new WebLinksAddon.WebLinksAddon() : null;
+  if (webLinksAddon) term.loadAddon(webLinksAddon);
+
+  const terminalEl = document.getElementById("terminal");
+  term.open(terminalEl);
   if (fitAddon) try { fitAddon.fit(); } catch (_) {}
 
   function refit() { if (fitAddon) try { fitAddon.fit(); } catch (_) {} }
@@ -75,8 +84,34 @@
     window.visualViewport.addEventListener("resize", refit);
   }
 
+  // iOS Safari settles its viewport over a few hundred ms (URL bar
+  // collapse, safe-area, notch). xterm.js does NOT re-flow lines
+  // already in the buffer on resize, so we refit aggressively at
+  // first paint to lock in a correct column count before the VM
+  // writes anything substantial.
+  for (const t of [50, 200, 500, 1200]) setTimeout(refit, t);
+
+  // Catch any later container size changes the resize event misses.
+  if (typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(refit).observe(terminalEl);
+  }
+
+  // Ctrl-F → search scrollback. Crude prompt() for v1; can be
+  // upgraded to an in-page search bar later.
+  if (searchAddon) {
+    term.attachCustomKeyEventHandler((ev) => {
+      if (ev.type === "keydown" && (ev.ctrlKey || ev.metaKey) && ev.key === "f") {
+        ev.preventDefault();
+        const q = window.prompt("search scrollback:");
+        if (q) searchAddon.findNext(q, { caseSensitive: false });
+        return false;
+      }
+      return true;
+    });
+  }
+
   // Tap the terminal area on mobile → focus xterm → soft keyboard.
-  document.getElementById("terminal").addEventListener("click", () => {
+  terminalEl.addEventListener("click", () => {
     term.focus();
   });
 

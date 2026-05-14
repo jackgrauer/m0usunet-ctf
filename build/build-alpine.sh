@@ -63,6 +63,14 @@ cp "$ROOT/build/m0use-game-rc"      "$TMP/etc/m0use-game-rc"
 chmod 755 "$TMP/usr/local/bin/m0use-portal"
 chmod 644 "$TMP/etc/m0use-game-rc"
 
+# QoL: colored ls/grep, less defaults, completion, help/restart cmds.
+mkdir -p "$TMP/etc/profile.d"
+cp "$ROOT/build/qol-profile.sh"     "$TMP/etc/profile.d/qol.sh"
+cp "$ROOT/build/m0use-help.sh"      "$TMP/usr/local/bin/help"
+cp "$ROOT/build/m0use-restart.sh"   "$TMP/usr/local/bin/restart"
+chmod 644 "$TMP/etc/profile.d/qol.sh"
+chmod 755 "$TMP/usr/local/bin/help" "$TMP/usr/local/bin/restart"
+
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
 

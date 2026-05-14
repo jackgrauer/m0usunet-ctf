@@ -21,10 +21,16 @@ fi
 
 : "${HANDLE:=cadet}"
 
+# Persistent bash history across container runs. File lives in the
+# repo root (gitignored) so Ctrl-R picks up commands from prior runs.
+HIST="$ROOT/.devshell-history"
+[ -f "$HIST" ] || touch "$HIST"
+
 exec docker run --rm -it \
   --platform linux/386 \
   --cap-add NET_ADMIN --cap-add NET_RAW \
   -v "$ROOT:/work:ro" \
+  -v "$HIST:/root/.bash_history" \
   -e HANDLE="$HANDLE" \
   -e TERM="${TERM:-xterm-256color}" \
   i386/alpine:3.18 \

@@ -8,7 +8,7 @@ set -e
 # Packages. apk add is cached across runs by the layer if we ever
 # move to a Dockerfile; for now it re-fetches each container start
 # (~5-10 s on a warm mirror).
-apk add --no-cache -q bash nmap nmap-nselibs nmap-scripts curl python3 dnsmasq iproute2 less >/dev/null 2>&1 || true
+apk add --no-cache -q bash bash-completion nmap nmap-nselibs nmap-scripts curl python3 dnsmasq iproute2 less >/dev/null 2>&1 || true
 
 # nmap SYN scans need raw-packet ioctls that OrbStack / Lima's
 # lightweight kernel does not expose. Wrap nmap so it transparently
@@ -31,9 +31,14 @@ cp /work/build/m0use-jenkins.py  /usr/local/bin/m0use-jenkins
 cp /work/build/m0use-dnsmasq.conf /etc/m0use-dnsmasq.conf
 cp /work/build/m0use-game-rc     /etc/m0use-game-rc
 cp /work/build/m0use-blueprint.txt /var/m0use/blueprint.txt
+cp /work/build/m0use-help.sh     /usr/local/bin/help
+cp /work/build/m0use-restart.sh  /usr/local/bin/restart
+mkdir -p /etc/profile.d
+cp /work/build/qol-profile.sh    /etc/profile.d/qol.sh
 chmod 755 /usr/local/bin/m0use-portal /usr/local/bin/apply \
           /usr/local/bin/replay /usr/local/bin/m0use-banners \
-          /usr/local/bin/m0use-jenkins
+          /usr/local/bin/m0use-jenkins /usr/local/bin/help \
+          /usr/local/bin/restart
 ln -sf /usr/local/bin/apply /usr/local/bin/check
 
 # Per-phase flag lists + completion banners.
