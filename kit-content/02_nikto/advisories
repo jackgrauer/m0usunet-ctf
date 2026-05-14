@@ -1,21 +1,46 @@
-ADVISORY DATABASE — Jenkins
+ADVISORY DATABASE
 last updated  2025-11-03
+
+slice of the public CVE catalog. for each entry: which product,
+which version ranges are affected, what kind of bug, and whether
+exploitation requires valid login credentials.
 
 ──────────────────────────────────────────
 CVE-2017-1000353
+product: Jenkins
 type:    UNAUTH RCE
 affects: Jenkins ≤ 2.56   /  LTS ≤ 2.46.1
 notes:   Java object deserialization in the
          CLI subsystem. Patched in 2.57 and
          LTS 2.46.2.
 
+──────────────────────────────────────────
+CVE-2017-1000487
+product: Jenkins (plugin: Subversion)
+type:    AUTHED RCE  (Job/Configure)
+affects: Subversion plugin ≤ 2.10.1
+notes:   Pipeline DSL injection. Useful only
+         once we're already logged in.
+
+──────────────────────────────────────────
 CVE-2018-1000110
+product: Jenkins
 type:    INFO DISCLOSURE
 affects: Jenkins ≤ 2.106  /  LTS ≤ 2.89.3
 notes:   User enumeration via login response
          timing. Limited operational value.
 
+──────────────────────────────────────────
+CVE-2018-1000600
+product: Jenkins (plugin: GitHub)
+type:    AUTHED INFO DISCLOSURE
+affects: GitHub plugin ≤ 1.29.1
+notes:   Connection-test endpoint leaks
+         credentials. Requires Overall/Read.
+
+──────────────────────────────────────────
 CVE-2018-1000861
+product: Jenkins
 type:    UNAUTH RCE
 affects: Jenkins ≤ 2.138  /  LTS ≤ 2.121.1
 notes:   Stapler URL router can be tricked
@@ -24,31 +49,116 @@ notes:   Stapler URL router can be tricked
          Groovy script console. Public
          exploit module available.
 
+──────────────────────────────────────────
 CVE-2019-1003000
+product: Jenkins (plugin: Script Security)
 type:    AUTHED RCE  (sandbox bypass)
 affects: Jenkins ≤ 2.137  /  LTS ≤ 2.121.1
 notes:   Groovy sandbox bypass in the
          Pipeline plugin. Requires valid
          credentials with Overall/Read.
 
+──────────────────────────────────────────
+CVE-2019-10320
+product: Jenkins (plugin: Credentials Binding)
+type:    INFO DISCLOSURE
+affects: Credentials Binding plugin ≤ 1.18
+notes:   Build log fails to mask secret
+         values. Not remotely exploitable.
+
+──────────────────────────────────────────
+CVE-2019-16538
+product: Jenkins
+type:    XSS  (stored)
+affects: Jenkins ≤ 2.196  /  LTS ≤ 2.176.3
+notes:   Stored XSS in the build description
+         field. Useful only inside an
+         authenticated session.
+
+──────────────────────────────────────────
+CVE-2020-2160
+product: Jenkins
+type:    XSS  (reflected)
+affects: Jenkins ≤ 2.227  /  LTS ≤ 2.204.5
+notes:   Reflected XSS via "from" parameter
+         on login page. Requires victim to
+         click a crafted link.
+
+──────────────────────────────────────────
+CVE-2020-2229
+product: Jenkins
+type:    CSRF
+affects: Jenkins ≤ 2.250  /  LTS ≤ 2.235.3
+notes:   Tooltip rendering accepts arbitrary
+         HTML. Requires authenticated victim.
+
+──────────────────────────────────────────
+CVE-2021-21639
+product: Jenkins (plugin: Active Directory)
+type:    AUTH BYPASS
+affects: AD plugin ≤ 2.20  AND  AD config
+         with "Use Standard TLS" disabled
+notes:   Pre-condition (plugin installed +
+         specific config) does not apply on
+         a vanilla install.
+
+──────────────────────────────────────────
+CVE-2022-29036
+product: Jenkins (plugin: Performance)
+type:    INFO DISCLOSURE
+affects: Performance plugin ≤ 3.20
+notes:   Path traversal in the report parser
+         exposes files readable by the
+         jenkins user. Requires Job/Read.
+
+──────────────────────────────────────────
 CVE-2023-27898
-type:    XSS
+product: Jenkins
+type:    XSS  (reflected)
 affects: Jenkins ≤ 2.387.2 / LTS ≤ 2.375.3
 notes:   Reflected XSS via header injection
          in the plugin marketplace. Requires
          user interaction.
 
+──────────────────────────────────────────
 CVE-2024-23897
+product: Jenkins
 type:    INFO DISCLOSURE  (arbitrary file read)
 affects: Jenkins ≤ 2.441  /  LTS ≤ 2.426.2
 notes:   CLI command parser expands @filepath
          arguments. No RCE primitive.
 
 ──────────────────────────────────────────
+CVE-2024-43044
+product: Jenkins
+type:    AUTHED RCE  (agent connection)
+affects: Jenkins ≤ 2.470  /  LTS ≤ 2.452.3
+notes:   Agent registration accepts arbitrary
+         classpath. Requires a controllable
+         agent connection token.
+
+──────────────────────────────────────────
+CVE-2025-1234
+product: GitLab CE
+type:    UNAUTH RCE
+affects: GitLab CE 17.2 — 17.6
+notes:   Wrong product. We are targeting a
+         Jenkins host, not GitLab. Skip.
+
+──────────────────────────────────────────
+CVE-2025-4001
+product: Bamboo
+type:    UNAUTH RCE
+affects: Bamboo ≤ 9.5
+notes:   Wrong product. Atlassian Bamboo is
+         a different CI server. Skip.
+
+──────────────────────────────────────────
 match the affected version ranges against
 the target you fingerprinted with nikto.
 
-OPERATION PARMESAN ROSE needs UNAUTH RCE.
-anything requiring auth, or limited to
-disclosure / XSS, is the wrong tool for the
-job.
+OPERATION PARMESAN ROSE needs UNAUTH RCE on
+Jenkins. anything authenticated, anything
+limited to disclosure / XSS / CSRF, anything
+against a different product — wrong tool for
+the job.

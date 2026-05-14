@@ -31,11 +31,20 @@
       3.  cat advisories
 
   nikto will tell you the Jenkins version on the host. The
-  advisories file is a table of known Jenkins CVEs. Your job is to
-  find the one CVE that BOTH (a) covers that version range AND
-  (b) gives us unauthenticated RCE — we don't have credentials, so
-  any bug that requires login is useless. There's only one row in
-  the table that fits both.
+  advisories file is a table of known CVEs.
+
+  A CVE (Common Vulnerabilities and Exposures) is just a public
+  catalog number for a known software bug. Every serious bug
+  somebody publishes gets one — CVE-YYYY-NNNNNN — and the catalog
+  records what software it affects, what versions, what kind of
+  attack it enables (info disclosure, RCE, etc.), and whether it
+  needs login credentials to exploit. The advisories file is a
+  slice of that catalog.
+
+  Your job is to find the one CVE that BOTH (a) covers the Jenkins
+  version nikto reported AND (b) gives us unauthenticated RCE — we
+  don't have credentials, so any bug that requires login is
+  useless. Only one row in the table fits both.
 
   When you find it, type that CVE id at the prompt and hit Enter.
 

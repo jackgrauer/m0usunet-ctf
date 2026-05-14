@@ -70,6 +70,16 @@ def report(host_arg, ip, port):
         "---------------------------------------------------------------------------\n"
         "+ 1 host(s) tested\n"
     )
+    # Same "where to go next" hint pattern we added to nmap. nikto by
+    # itself doesn't print CVE numbers — it reports the version. The
+    # CVE lookup happens in the advisories table; tell the player that
+    # right where they're reading, not 30 lines back in some other doc.
+    sys.stdout.write(
+        "\n\x1b[1;33mNEXT:\x1b[0m nikto reports the software + version. To find a "
+        "CVE that fits this version,\nopen the advisories table:\n\n"
+        "  \x1b[1;36mcat advisories\x1b[0m\n\n"
+        "Then type the matching CVE id at the prompt to advance.\n"
+    )
 
 
 def main(argv):
