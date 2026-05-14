@@ -20,6 +20,10 @@ import sys
 
 ANSI = re.compile(r'\x1b\[[0-9;]*[A-Za-z]')
 BOX_CHARS = set('═║╔╗╚╝╠╣╦╩╬─│┌┐└┘├┤┬┴┼━┃┏┓┗┛┣┫┳┻╋')
+# A run of 2+ spaces between non-space tokens means the source is using
+# whitespace for column alignment (a command + its description, a list
+# row, etc.). Prose never does this — single spaces between words only.
+TABLE_LIKE = re.compile(r'\S {2,}\S')
 
 
 def visible_len(s):
@@ -30,7 +34,9 @@ def looks_like_art(line):
     stripped = ANSI.sub('', line)
     if any(c in BOX_CHARS for c in stripped):
         return True
-    # All-uppercase short headers like "WELCOME TO X" we leave alone.
+    # Aligned-column rows ("  cmd        description") — preserve.
+    if TABLE_LIKE.search(stripped):
+        return True
     return False
 
 
