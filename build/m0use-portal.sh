@@ -36,7 +36,7 @@ fi
 # ─── COLD OPEN ────────────────────────────────────────────────────────
 
 clear
-cat <<EOF
+wrap <<EOF
 ${GREEN}╔════════════════════════════════════════════════════════════════════╗${R}
 ${GREEN}║${R}                     ${WHITE}M O U S E   B I T E S   I N C .${R}                ${GREEN}║${R}
 ${GREEN}║${R}                ${DIM}Office of Junior Sniffer Recruitment${R}                ${GREEN}║${R}
@@ -82,7 +82,7 @@ done
 
 # ─── TASK 1 ──────────────────────────────────────────────────────────
 
-cat <<EOF
+wrap <<EOF
 ${GOLD}TASK 1) RESOURCEFULNESS${R}
 ${GREEN}═══════════════════════${R}
 
@@ -115,7 +115,7 @@ done
 
 # ─── TASK 2 INTRO ────────────────────────────────────────────────────
 
-cat <<EOF
+wrap <<EOF
 ${GOLD}TASK 2) OPERATION PARMESAN ROSE${R}
 ${GREEN}═══════════════════════════════${R}
 
@@ -186,7 +186,7 @@ done
 
 # ─── TASK 3 ──────────────────────────────────────────────────────────
 
-cat <<EOF
+wrap <<EOF
 ${GOLD}TASK 3) THE CULINARY ART${R}
 ${GREEN}════════════════════════${R}
 
@@ -214,7 +214,7 @@ done
 
 # ─── TASK 4 ──────────────────────────────────────────────────────────
 
-cat <<EOF
+wrap <<EOF
 ${GOLD}TASK 4) EMOTIONAL INTELLIGENCE${R}
 ${GREEN}══════════════════════════════${R}
 
@@ -245,7 +245,7 @@ reflection_section "WOULD YOU"
 
 # ─── DONE ────────────────────────────────────────────────────────────
 
-cat <<EOF
+wrap <<EOF
 
 ${GOLD}ASSESSMENT COMPLETE${R}
 ${GREEN}═══════════════════${R}

@@ -13,8 +13,13 @@ start() {
     ebegin "starting m0usenet"
 
     # Bring up loopback and add IP aliases for all 12 crazy.ants hosts.
+    # The first alias is /24 so the kernel installs a main-table route
+    # for 10.4.12.0/24 → lo; without that, nmap's default SYN scan
+    # bails with "setup_target: failed to determine route". The rest
+    # are /32 aliases on top so the additional hosts are reachable.
     ip link set lo up 2>/dev/null
-    for ip in 10.4.12.1 10.4.12.10 10.4.12.20 10.4.12.21 \
+    ip addr add 10.4.12.1/24 dev lo 2>/dev/null
+    for ip in 10.4.12.10 10.4.12.20 10.4.12.21 \
               10.4.12.30 10.4.12.31 10.4.12.40 10.4.12.50 \
               10.4.12.70 10.4.12.80 10.4.12.88 10.4.12.99; do
         ip addr add "${ip}/32" dev lo 2>/dev/null

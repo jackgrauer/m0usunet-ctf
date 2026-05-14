@@ -1,0 +1,54 @@
+ADVISORY DATABASE — Jenkins
+last updated  2025-11-03
+
+──────────────────────────────────────────
+CVE-2017-1000353
+type:    UNAUTH RCE
+affects: Jenkins ≤ 2.56   /  LTS ≤ 2.46.1
+notes:   Java object deserialization in the
+         CLI subsystem. Patched in 2.57 and
+         LTS 2.46.2.
+
+CVE-2018-1000110
+type:    INFO DISCLOSURE
+affects: Jenkins ≤ 2.106  /  LTS ≤ 2.89.3
+notes:   User enumeration via login response
+         timing. Limited operational value.
+
+CVE-2018-1000861
+type:    UNAUTH RCE
+affects: Jenkins ≤ 2.138  /  LTS ≤ 2.121.1
+notes:   Stapler URL router can be tricked
+         into invoking arbitrary methods on
+         internal objects, including the
+         Groovy script console. Public
+         exploit module available.
+
+CVE-2019-1003000
+type:    AUTHED RCE  (sandbox bypass)
+affects: Jenkins ≤ 2.137  /  LTS ≤ 2.121.1
+notes:   Groovy sandbox bypass in the
+         Pipeline plugin. Requires valid
+         credentials with Overall/Read.
+
+CVE-2023-27898
+type:    XSS
+affects: Jenkins ≤ 2.387.2 / LTS ≤ 2.375.3
+notes:   Reflected XSS via header injection
+         in the plugin marketplace. Requires
+         user interaction.
+
+CVE-2024-23897
+type:    INFO DISCLOSURE  (arbitrary file read)
+affects: Jenkins ≤ 2.441  /  LTS ≤ 2.426.2
+notes:   CLI command parser expands @filepath
+         arguments. No RCE primitive.
+
+──────────────────────────────────────────
+match the affected version ranges against
+the target you fingerprinted with nikto.
+
+OPERATION PARMESAN ROSE needs UNAUTH RCE.
+anything requiring auth, or limited to
+disclosure / XSS, is the wrong tool for the
+job.

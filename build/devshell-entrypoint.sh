@@ -33,12 +33,13 @@ cp /work/build/m0use-game-rc     /etc/m0use-game-rc
 cp /work/build/m0use-blueprint.txt /var/m0use/blueprint.txt
 cp /work/build/m0use-help.sh     /usr/local/bin/help
 cp /work/build/m0use-restart.sh  /usr/local/bin/restart
+cp /work/build/m0use-wrap.py     /usr/local/bin/wrap
 mkdir -p /etc/profile.d
 cp /work/build/qol-profile.sh    /etc/profile.d/qol.sh
 chmod 755 /usr/local/bin/m0use-portal /usr/local/bin/apply \
           /usr/local/bin/replay /usr/local/bin/m0use-banners \
           /usr/local/bin/m0use-jenkins /usr/local/bin/help \
-          /usr/local/bin/restart
+          /usr/local/bin/restart /usr/local/bin/wrap
 ln -sf /usr/local/bin/apply /usr/local/bin/check
 
 # Per-phase flag lists + completion banners.
@@ -57,8 +58,11 @@ ln -sfn /work/kit-content/03_metasploit  /mnt/kit/03_metasploit
 cp /work/kit-content/BRIEFING            /mnt/kit/BRIEFING
 
 # Fake crazy.ants network — same IPs the m0usenet initd sets up.
+# First alias is /24 so the kernel installs a 10.4.12.0/24 → lo route
+# in the main table; otherwise default nmap SYN scans bail.
 ip link set lo up 2>/dev/null || true
-for ip in 10.4.12.1 10.4.12.10 10.4.12.20 10.4.12.21 \
+ip addr add 10.4.12.1/24 dev lo 2>/dev/null || true
+for ip in 10.4.12.10 10.4.12.20 10.4.12.21 \
           10.4.12.30 10.4.12.31 10.4.12.40 10.4.12.50 \
           10.4.12.70 10.4.12.80 10.4.12.88 10.4.12.99; do
   ip addr add "${ip}/32" dev lo 2>/dev/null || true

@@ -68,8 +68,10 @@ mkdir -p "$TMP/etc/profile.d"
 cp "$ROOT/build/qol-profile.sh"     "$TMP/etc/profile.d/qol.sh"
 cp "$ROOT/build/m0use-help.sh"      "$TMP/usr/local/bin/help"
 cp "$ROOT/build/m0use-restart.sh"   "$TMP/usr/local/bin/restart"
+cp "$ROOT/build/m0use-wrap.py"      "$TMP/usr/local/bin/wrap"
 chmod 644 "$TMP/etc/profile.d/qol.sh"
-chmod 755 "$TMP/usr/local/bin/help" "$TMP/usr/local/bin/restart"
+chmod 755 "$TMP/usr/local/bin/help" "$TMP/usr/local/bin/restart" \
+          "$TMP/usr/local/bin/wrap"
 
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
