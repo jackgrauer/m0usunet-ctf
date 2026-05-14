@@ -251,13 +251,67 @@
     }
   });
 
-  term.onData((data) => {
+  // ── input sanitizer ──────────────────────────────────────────────
+  // Catch the typical paste-of-doom: a multi-line snippet where every
+  // line ends in \r\n. xterm sends both bytes; bash sees \r (CR) and
+  // executes whatever was buffered up to that point. Collapse \r\n -> \r
+  // so paste-as-one-command still works, then forward.
+  // Strip bracketed-paste markers (\e[200~ ... \e[201~) — the VM's
+  // bash doesn't set bracketed-paste mode, so those escapes would
+  // land in the command line as literal "200~" / "201~" garbage.
+  function sanitizeInput(data) {
+    return data
+      .replace(/\r\n/g, "\r")
+      .replace(/\x1b\[200~/g, "")
+      .replace(/\x1b\[201~/g, "");
+  }
+
+  function sendToVM(data) {
+    if (!data) return;
     if (typeof emulator.serial0_send === "function") {
       emulator.serial0_send(data);
     } else if (typeof emulator.serial_send_string === "function") {
       emulator.serial_send_string(0, data);
     }
+  }
+
+  term.onData((data) => sendToVM(sanitizeInput(data)));
+
+  // ── safety nets ──────────────────────────────────────────────────
+
+  // 1. Emulator crash: if v86 throws or stops, tell the player
+  //    instead of leaving a frozen black terminal. Suggesting reload
+  //    is better than silence.
+  emulator.add_listener("emulator-stopped", () => {
+    term.write("\r\n\r\n\x1b[1;31m[m0usunet]\x1b[0m VM stopped. Reload the page to restart.\r\n");
   });
+  window.addEventListener("error", (e) => {
+    // Only fire on errors from this script's own module — don't show
+    // anything for downstream library hiccups.
+    if (e && e.filename && e.filename.includes("boot.js")) {
+      try {
+        term.write("\r\n\x1b[1;31m[m0usunet]\x1b[0m page error: " +
+                   (e.message || "unknown") + "\r\n");
+      } catch (_) {}
+    }
+  });
+
+  // 2. When the terminal regains focus (player tabbed away and back,
+  //    or rotated the device), reset xterm's input mode and re-fit.
+  //    Prevents the "I typed something but nothing happened" case.
+  terminalEl.addEventListener("focus", refit, true);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      refit();
+      term.focus();
+    }
+  });
+
+  // 3. Mobile soft keyboard pops up after first tap; visualViewport
+  //    fires resize when it does. Make sure we re-pin the size.
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("scroll", refit);
+  }
 
   window.__m0usunet_emu  = emulator;
   window.__m0usunet_term = term;
