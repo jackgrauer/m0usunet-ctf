@@ -95,7 +95,7 @@ rm -rf "$TMP"/lib/modules 2>/dev/null || true
 #   the emulated serial port; xterm.js in the page reads it and is
 #   the player's actual terminal. tty0 stays as a secondary console
 #   in case v86 ever has its canvas wired in again.
-echo "root=/dev/sda rw modules=ext4 console=tty0 console=ttyS0,115200 loglevel=7" > "$OUT/cmdline.txt"
+echo "root=/dev/sda rw modules=ext4 console=tty0 console=ttyS0,115200 quiet" > "$OUT/cmdline.txt"
 echo "kernel cmdline: $(cat "$OUT/cmdline.txt")"
 
 sync
