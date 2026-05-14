@@ -1,5 +1,5 @@
 #!/bin/sh
-# dryrun.sh — run the portal locally, no VM, no CI.
+# dryrun.sh -- run the portal locally, no VM, no CI.
 # State files go to a temp dir; the TASK 2 game shell is skipped.
 # Use HANDLE=<name> to set the operator handle.
 set -e

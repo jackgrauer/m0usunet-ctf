@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""wrap — ANSI-aware word-wrap with paragraph reflow.
+"""wrap -- ANSI-aware word-wrap with paragraph reflow.
 
 Reads stdin, word-wraps to $COLUMNS (or arg), writes to stdout.
 ANSI escapes are emitted unchanged but ignored for column-count
@@ -22,7 +22,7 @@ ANSI = re.compile(r'\x1b\[[0-9;]*[A-Za-z]')
 BOX_CHARS = set('═║╔╗╚╝╠╣╦╩╬─│┌┐└┘├┤┬┴┼━┃┏┓┗┛┣┫┳┻╋')
 # A run of 2+ spaces between non-space tokens means the source is using
 # whitespace for column alignment (a command + its description, a list
-# row, etc.). Prose never does this — single spaces between words only.
+# row, etc.). Prose never does this -- single spaces between words only.
 TABLE_LIKE = re.compile(r'\S {2,}\S')
 
 
@@ -34,7 +34,7 @@ def looks_like_art(line):
     stripped = ANSI.sub('', line)
     if any(c in BOX_CHARS for c in stripped):
         return True
-    # Aligned-column rows ("  cmd        description") — preserve.
+    # Aligned-column rows ("  cmd        description") -- preserve.
     if TABLE_LIKE.search(stripped):
         return True
     return False

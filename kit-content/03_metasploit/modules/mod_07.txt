@@ -16,7 +16,7 @@ OPTIONS
   RHOST       (required) target host
   RPORT       (required) target port
   TARGETURI   (required) full path to checkScript endpoint
-  PAYLOAD     (required) see payloads/ — must be linux x86 family
+  PAYLOAD     (required) see payloads/ -- must be linux x86 family
 
 COMPATIBLE PAYLOADS
   linux_x86_meterpreter_reverse_tcp

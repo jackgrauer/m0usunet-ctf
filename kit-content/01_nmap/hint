@@ -1,4 +1,4 @@
-The giveaway is usually in the language — words in a hostname that
+The giveaway is usually in the language -- words in a hostname that
 mark something as staff-only:
 
     internal     private      staging     legacy
@@ -8,11 +8,11 @@ If any of those words show up on a host that's visible from the
 outside, somebody screwed up. That's your target.
 
 Look at the hostnames themselves, and also look at the lines right
-under each hostname — most hosts on this scan don't have anything
+under each hostname -- most hosts on this scan don't have anything
 between their name and their port list, but one does.
 
 When you have it, just type the host name or the IP at the prompt
-and hit Enter — that's the whole submission:
+and hit Enter -- that's the whole submission:
 
     10.4.12.88
     jenkins-old

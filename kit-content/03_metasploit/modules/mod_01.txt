@@ -8,7 +8,7 @@ TYPE      auxiliary / login
 DESCRIPTION
   Attempts to login to Apache Tomcat's /manager/html interface with
   a wordlist of default and weak credentials. Not an exploit on its
-  own — pairs with tomcat_mgr_upload once valid credentials are found.
+  own -- pairs with tomcat_mgr_upload once valid credentials are found.
 
 OPTIONS
   RHOSTS      (required) target host(s)

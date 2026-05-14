@@ -7,7 +7,7 @@ TYPE      remote / log injection
 
 DESCRIPTION
   Triggers JNDI lookup in vulnerable log4j installations by injecting
-  ${jndi:ldap://...} into any logged HTTP field. Generic — pairs with
+  ${jndi:ldap://...} into any logged HTTP field. Generic -- pairs with
   any application that logs user-controlled input.
 
 OPTIONS

@@ -15,7 +15,7 @@ and the prompt goes blank. You're on the Jenkins box now. Run:
     cat /var/m0use/blueprint.txt
 
 The flag is on the line that starts with "Flag:". Copy the value
-inside m0use{...} — that's what you'll submit.
+inside m0use{...} -- that's what you'll submit.
 
 To leave the shell session:    exit
 To leave msfconsole:            exit

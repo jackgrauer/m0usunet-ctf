@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# fake-nmap — canned output that walks the player to the jenkins-old
+# fake-nmap -- canned output that walks the player to the jenkins-old
 # leak on 10.4.12.88. No real network involved; output is generated
 # from a host table so it stays consistent across runs.
 #
@@ -126,7 +126,7 @@ _GOLD_B  = "\x1b[1;33m"
 def fmt_report(host, with_versions):
     ip, fwd, rdns, ports = host
     lines = []
-    # Hostname / IP header — bold white, the visual anchor for each host.
+    # Hostname / IP header -- bold white, the visual anchor for each host.
     lines.append(f"{_WHITE_B}Nmap scan report for {fwd} ({ip}){_R}")
     lines.append(f"{_DIM}Host is up ({random.uniform(0.000040, 0.000220):.6f}s latency).{_R}")
     # The leak: extra rDNS line on the one host whose fwd/rev DNS
@@ -171,7 +171,7 @@ def main(argv):
         elif a == "-v":
             verbose = True
         elif a.startswith("-"):
-            # unknown flag — ignore quietly, like a teaching shim
+            # unknown flag -- ignore quietly, like a teaching shim
             pass
         else:
             target = a
@@ -204,7 +204,7 @@ def main(argv):
     print(f"Nmap done: {n_ips} IP addresses ({n_hosts} hosts up) scanned in {elapsed:.2f} seconds")
 
     # After a subnet sweep, the player has the info they need to
-    # submit. Tell them how, right where they're looking — not 30
+    # submit. Tell them how, right where they're looking -- not 30
     # screens up in the recon intro before they ran the scan.
     if target == "10.4.12.0/24":
         sys.stdout.write(

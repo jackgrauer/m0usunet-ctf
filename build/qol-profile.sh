@@ -1,4 +1,4 @@
-# /etc/profile.d/qol.sh — quality-of-life defaults sourced by every
+# /etc/profile.d/qol.sh -- quality-of-life defaults sourced by every
 # interactive shell (login + portal + game subshell). Single source
 # of truth used by both the VM build and the local devshell.
 
@@ -22,12 +22,12 @@ stty sane 2>/dev/null || true
 #    then prints "^?" instead of deleting).
 stty erase '^?' 2>/dev/null || true
 
-# 4. Don't echo control chars as ^X — when the player hits Ctrl-C
+# 4. Don't echo control chars as ^X -- when the player hits Ctrl-C
 #    they shouldn't see "^C" leaking into the next line.
 stty -echoctl 2>/dev/null || true
 
 # 5. Tell bash to recheck COLUMNS/LINES after every command. If the
-#    terminal does resize (it shouldn't — we pin — but belt and
+#    terminal does resize (it shouldn't -- we pin -- but belt and
 #    braces), readline picks up the new size immediately instead of
 #    drawing with stale dimensions.
 [ -n "$BASH_VERSION" ] && shopt -s checkwinsize 2>/dev/null || true

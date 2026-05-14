@@ -8,7 +8,7 @@ TYPE      auxiliary / scanner (detection only)
 DESCRIPTION
   Detects whether a Jenkins instance is vulnerable to CVE-2018-1000861
   by issuing a benign checkScript GET and observing the response. Does
-  not deliver a payload — pairs with the exploit module of the same
+  not deliver a payload -- pairs with the exploit module of the same
   CVE.
 
 OPTIONS

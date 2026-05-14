@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# fake-msfconsole — enough of the real msfconsole REPL to walk the
+# fake-msfconsole -- enough of the real msfconsole REPL to walk the
 # player through CVE-2018-1000861 against the Crazy Ants Jenkins
 # host. Same structure a real session has: search → use → show
 # options → set → check → exploit → shell session → cat the flag
@@ -70,7 +70,7 @@ f"""
 
 def prompt(state):
     if state["session"]:
-        # session prompt is bare — same as a real shell
+        # session prompt is bare -- same as a real shell
         return ""
     if state["module"]:
         return f"{RED_B}msf6{R} {BOLD}exploit({CYAN_B}multi/http/jenkins_metaprogramming{R}{BOLD}){R} > "
@@ -354,7 +354,7 @@ def run_session(state):
         if line == "pwd":
             sys.stdout.write("/var/lib/jenkins\n")
             continue
-        # Pass anything else through to /bin/sh — `cat`, `ls`, `head`,
+        # Pass anything else through to /bin/sh -- `cat`, `ls`, `head`,
         # etc. all work, which means `cat /var/m0use/blueprint.txt`
         # prints the real flag file.
         try:

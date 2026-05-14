@@ -1,5 +1,5 @@
 #!/bin/sh
-# answer — phase-aware finding submitter. The way the player advances
+# answer -- phase-aware finding submitter. The way the player advances
 # through TASK 2. Accepts plain values:
 #
 #   answer 10.4.12.88
@@ -23,7 +23,7 @@ usage: answer <finding>
     answer jenkins_was_a_mistake
 
   This is how you advance through the assignment. Each phase tells
-  you what kind of finding it wants — an IP, a CVE, a string — and
+  you what kind of finding it wants -- an IP, a CVE, a string -- and
   you submit it with `answer`.
 EOF
   exit 1

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# fake-nikto — canned scanner output that fingerprints the target as
+# fake-nikto -- canned scanner output that fingerprints the target as
 # Jenkins 2.121.1. Only the version-identifier line matters for the
 # game; everything else is realistic noise to teach the player how to
 # skim past it.
@@ -71,7 +71,7 @@ def report(host_arg, ip, port):
         "+ 1 host(s) tested\n"
     )
     # Same "where to go next" hint pattern we added to nmap. nikto by
-    # itself doesn't print CVE numbers — it reports the version. The
+    # itself doesn't print CVE numbers -- it reports the version. The
     # CVE lookup happens in the advisories table; tell the player that
     # right where they're reading, not 30 lines back in some other doc.
     sys.stdout.write(

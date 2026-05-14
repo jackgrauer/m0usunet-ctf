@@ -1,5 +1,5 @@
 #!/bin/sh
-# devshell.sh — run the full m0usunet experience in a local Alpine
+# devshell.sh -- run the full m0usunet experience in a local Alpine
 # container instead of v86. Same OS, same scripts, no boot wait.
 # Iteration loop: edit on host → ./build/devshell.sh → walk the flow.
 #

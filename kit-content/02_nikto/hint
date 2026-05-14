@@ -1,5 +1,5 @@
 nikto's output is noisy. The line that matters is the version
-identifier — somewhere near the top, nikto will tell you what
+identifier -- somewhere near the top, nikto will tell you what
 software is running on the target and what version it is.
 
 You're looking for "Jenkins" and a version number like 2.121.1.
@@ -14,7 +14,7 @@ disclosure, etc).
 
 Cross-reference: which CVE applies to the version you found AND
 gives you unauth RCE? Anything that requires authentication is
-useless — we don't have credentials. Anything that's just info
+useless -- we don't have credentials. Anything that's just info
 disclosure or XSS won't get us inside.
 
 When you have the right one, type it at the prompt and hit Enter:

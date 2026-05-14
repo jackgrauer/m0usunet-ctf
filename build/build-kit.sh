@@ -1,5 +1,5 @@
 #!/bin/sh
-# build-kit.sh — produce build/out/kit.img (ext2, mounted as /dev/sdb in the VM).
+# build-kit.sh -- produce build/out/kit.img (ext2, mounted as /dev/sdb in the VM).
 set -eu
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)

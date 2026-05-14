@@ -1,7 +1,7 @@
 target: 10.4.12.0/24   (the Crazy Ants subnet)
 
 Find a host that's exposed to the outside but clearly meant to stay
-internal — a staging box, a forgotten test server. That's the back
+internal -- a staging box, a forgotten test server. That's the back
 office.
 
     nmap 10.4.12.0/24        sweep the subnet
@@ -16,7 +16,7 @@ What recon is actually for
 ──────────────────────────
 Recon isn't about "vulnerabilities." It's about human carelessness.
 Somebody at this company did something they didn't think anybody
-would notice — and left a trace.
+would notice -- and left a trace.
 
 Most of what nmap returns will be normal: their public website, the
 mail server, the customer-facing API. These are well-locked-down and
@@ -32,7 +32,7 @@ When you have it, just type it at the prompt and hit Enter:
 
     10.4.12.88            or       jenkins-old
 
-That's it — no `answer` keyword, no curly braces. Every phase ends
+That's it -- no `answer` keyword, no curly braces. Every phase ends
 the same way: type the finding, press Enter.
 
-Stuck?  cat hint  — no penalty.
+Stuck?  cat hint  -- no penalty.

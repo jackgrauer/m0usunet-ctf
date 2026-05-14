@@ -1,4 +1,4 @@
-PHASE 3 — OPERATIONS
+PHASE 3 -- OPERATIONS
 ════════════════════
 tool:  msfconsole
 
@@ -65,7 +65,7 @@ If check returns "The target is vulnerable", fire:
     exploit
 
 Metasploit sends the payload, opens a reverse shell back to you,
-and drops you onto the target. The prompt goes blank — you're now
+and drops you onto the target. The prompt goes blank -- you're now
 typing commands AS the jenkins user on the Jenkins box.
 
 Read the blueprint:
@@ -80,4 +80,4 @@ That returns you to the msfconsole prompt. Type `exit` again to
 leave metasploit entirely. Then type the flag at the m0usenet
 prompt to advance.
 
-Stuck?  cat hint  — no penalty.
+Stuck?  cat hint  -- no penalty.

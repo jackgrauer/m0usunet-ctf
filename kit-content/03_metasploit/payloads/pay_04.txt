@@ -2,5 +2,5 @@ NAME    linux_x64_meterpreter_reverse_tcp
 ARCH    x86_64 (64-bit)
 OS      Linux
 SIZE    ~1100 bytes
-NOTES   64-bit meterpreter. Will not execute on 32-bit kernels — the
+NOTES   64-bit meterpreter. Will not execute on 32-bit kernels -- the
         ELF header refuses to load.

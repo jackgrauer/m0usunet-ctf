@@ -1,5 +1,5 @@
 #!/bin/sh
-# devshell-entrypoint.sh — runs INSIDE the Alpine dev container.
+# devshell-entrypoint.sh -- runs INSIDE the Alpine dev container.
 # Wires the repo's build/ + kit-content/ into the rootfs paths the
 # portal expects, brings up the fake crazy.ants network, and execs
 # the portal. The host repo is mounted read-only at /work.
@@ -57,7 +57,7 @@ ln -sfn /work/kit-content/02_nikto        /mnt/kit/02_nikto
 ln -sfn /work/kit-content/03_metasploit  /mnt/kit/03_metasploit
 cp /work/kit-content/BRIEFING            /mnt/kit/BRIEFING
 
-# Fake crazy.ants network — same IPs the m0usenet initd sets up.
+# Fake crazy.ants network -- same IPs the m0usenet initd sets up.
 # First alias is /24 so the kernel installs a 10.4.12.0/24 → lo route
 # in the main table; otherwise default nmap SYN scans bail.
 ip link set lo up 2>/dev/null || true
@@ -69,7 +69,7 @@ for ip in 10.4.12.10 10.4.12.20 10.4.12.21 \
 done
 echo "nameserver 127.0.0.1" > /etc/resolv.conf
 
-# Background services. Quiet — their output would clobber the portal.
+# Background services. Quiet -- their output would clobber the portal.
 dnsmasq --keep-in-foreground --conf-file=/etc/m0use-dnsmasq.conf \
         >/run/m0use-dnsmasq.log 2>&1 &
 sleep 0.3

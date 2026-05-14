@@ -1,5 +1,5 @@
 #!/bin/sh
-# replay — replays a captured burp request against the live target
+# replay -- replays a captured burp request against the live target
 # using real curl, so the player can verify the bug still works.
 
 [ -z "$1" ] && { echo "usage: replay <N>          (N = capture number, e.g. 17)"; exit 1; }

@@ -7,7 +7,7 @@ TYPE      remote / web (LFI)
 
 DESCRIPTION
   Path traversal in Grafana plugin URL routing permits arbitrary file
-  read on the host filesystem. Not RCE — useful for credential and
+  read on the host filesystem. Not RCE -- useful for credential and
   config exfiltration only.
 
 OPTIONS

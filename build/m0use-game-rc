@@ -1,4 +1,4 @@
-# m0use-game-rc — sourced by the interactive bash subshell that runs
+# m0use-game-rc -- sourced by the interactive bash subshell that runs
 # during TASK 2 of the portal. Sets a colored prompt, lands the
 # player in /mnt/kit/01_nmap, prints the recon intro, and aliases
 # `continue` to `exit` so they have an obvious way out.
@@ -18,7 +18,7 @@ cd /mnt/kit/01_nmap 2>/dev/null
 
 # Catch bare findings typed straight at the prompt. The player types
 # `10.4.12.88` or `jenkins-old` and bash can't find a binary by that
-# name — this handler intercepts, sniffs whether the input looks
+# name -- this handler intercepts, sniffs whether the input looks
 # like a finding attempt, and if so routes it through `answer`. If
 # it doesn't look like a finding (just a typo'd command), we print
 # a normal command-not-found message instead of a misleading "not
@@ -44,15 +44,15 @@ export -f command_not_found_handle
 E=$'\033'
 wrap <<EOF
 
-  ${E}[1;31mtarget:${E}[0m ${E}[1;37m10.4.12.0/24${E}[0m   ${E}[2m— the Crazy Ants subnet${E}[0m
+  ${E}[1;31mtarget:${E}[0m ${E}[1;37m10.4.12.0/24${E}[0m   ${E}[2m-- the Crazy Ants subnet${E}[0m
 
 This is the network the Ants run their company on. They don't know you're sitting on it.
 
-Use ${E}[1;36mnmap${E}[0m to map it. nmap is a network scanner. You give it a range of IP addresses; it touches every port on every host and reports back what's listening — web servers, e-mail, anything. It catalogues unfamiliar networks from the outside.
+Use ${E}[1;36mnmap${E}[0m to map it. nmap is a network scanner. You give it a range of IP addresses; it touches every port on every host and reports back what's listening -- web servers, e-mail, anything. It catalogues unfamiliar networks from the outside.
 
-Somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragrance compounder computor runs on isolated infrastructure — by policy. But people get tired. People make exceptions. They slip up. They forget they slipped up. A staging box left up from a sprint three years ago. A test environment someone "temporarily" exposed for a vendor demo and forgot. A back-office service that was supposed to live inside their VPN but escaped through a misconfigured firewall.
+Somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragrance compounder computor runs on isolated infrastructure -- by policy. But people get tired. People make exceptions. They slip up. They forget they slipped up. A staging box left up from a sprint three years ago. A test environment someone "temporarily" exposed for a vendor demo and forgot. A back-office service that was supposed to live inside their VPN but escaped through a misconfigured firewall.
 
-${E}[2mWhat we're looking for:${E}[0m not vulnerabilities — ${E}[1;37mcarelessness${E}[0m. The host that's visible from outside but was clearly not meant for someone outside the company to see. The back office.
+${E}[2mWhat we're looking for:${E}[0m not vulnerabilities -- ${E}[1;37mcarelessness${E}[0m. The host that's visible from outside but was clearly not meant for someone outside the company to see. The back office.
 
   ${E}[1;36mnmap 10.4.12.0/24${E}[0m        ${E}[2msweep the subnet${E}[0m
   ${E}[1;36mnmap -sV 10.4.12.0/24${E}[0m    ${E}[2mlist service versions${E}[0m

@@ -1,30 +1,30 @@
 #!/bin/bash
-# m0use-portal — the four-task Junior Sniffer aptitude battery.
+# m0use-portal -- the four-task Junior Sniffer aptitude battery.
 # Called from /etc/profile.d on first login. The order matters:
 # the player meets the terminal BEFORE they have credentials, so
 # the pre-auth screen tells them where to GET credentials (TASK 1).
 # Only after they authenticate do they see the Mouse Bites welcome
 # letter + the mission briefing.
 #
-#   TASK 1 (pre-auth — go to Jefferson Square Park)
+#   TASK 1 (pre-auth -- go to Jefferson Square Park)
 #     ↓
-#   PASSWORD prompt        — the code received at the park
+#   PASSWORD prompt        -- the code received at the park
 #     ↓
-#   NAME prompt            — operator handle
+#   NAME prompt            -- operator handle
 #     ↓
-#   Cold-open letter       — Mouse Bites welcome + 4-task overview
+#   Cold-open letter       -- Mouse Bites welcome + 4-task overview
 #     ↓
-#   TASK 2 intro           — Operation Parmesan Rose
+#   TASK 2 intro           -- Operation Parmesan Rose
 #     ↓
-#   m0usunet game shell    — nmap / nikto / curl puzzle
+#   m0usunet game shell    -- nmap / nikto / curl puzzle
 #     ↓
-#   PASSWORD prompt        — code received at HQ
+#   PASSWORD prompt        -- code received at HQ
 #     ↓
-#   TASK 3                 — culinary
+#   TASK 3                 -- culinary
 #     ↓
-#   PASSWORD prompt        — for TASK 4 gate
+#   PASSWORD prompt        -- for TASK 4 gate
 #     ↓
-#   TASK 4                 — reflection
+#   TASK 4                 -- reflection
 #     ↓
 #   ASSESSMENT COMPLETE
 
@@ -45,7 +45,7 @@ GREY="${E}[2;37m"
 
 PROMPT="${DIM}>${R}"
 
-# page_break — clears the screen and pads the top with blank lines so
+# page_break -- clears the screen and pads the top with blank lines so
 # the next section visually starts as a fresh page, not flush against
 # the previous prompt. Used at every major transition.
 page_break() {
@@ -130,14 +130,14 @@ ${GOLD}Dear ${WHITE}${HANDLE}${GOLD},${R}
 
 Thank you for your interest in the ${CYAN}Junior Sniffer${R} position at ${WHITE}Mouse Bites Inc.${R}
 
-Due to the number of applications we receive — daily, every second, while you are probably sleeping or on the toilet, and generally how much everyone loves our company and it's so ${MAGENTA}fucking incredible${R} — we will not be able to directly respect, or even conceive of, your individual personal agency, let alone your skills or value as a prospective employee.
+Due to the number of applications we receive -- daily, every second, while you are probably sleeping or on the toilet, and generally how much everyone loves our company and it's so ${MAGENTA}fucking incredible${R} -- we will not be able to directly respect, or even conceive of, your individual personal agency, let alone your skills or value as a prospective employee.
 
 Regardless of performance during the assessment, ${RED}the CEO's son-in-law will receive the position anyway.${R} Save your energy. Don't try very hard. Enjoy yourself. You think you deserve this pain. ${B}${WHITE}You don't.${R}
 
 The ${WHITE}Junior Sniffer assessment${R} consists of four parts, each targeting one aptitude expected of Mouse Bites Inc. Junior Sniffers:
 
-   ${GOLD}1)${R}  ${GREEN}resourcefulness${R}    ${DIM}(complete — you got here)${R}
-   ${GOLD}2)${R}  ${CYAN}intuition${R}          ${DIM}(next — at this terminal)${R}
+   ${GOLD}1)${R}  ${GREEN}resourcefulness${R}    ${DIM}(complete -- you got here)${R}
+   ${GOLD}2)${R}  ${CYAN}intuition${R}          ${DIM}(next -- at this terminal)${R}
    ${GOLD}3)${R}  ${GOLD}the culinary art${R}   ${DIM}(at HQ, after this)${R}
    ${GOLD}4)${R}  ${MAGENTA}emotional intelligence${R}
 
@@ -182,7 +182,7 @@ they start yoking investors.
 
 Your first assignment: scan the ${RED}Crazy Ants${R} network with ${CYAN}nmap${R} and
 find the back-office host that's accidentally exposed to the outside
-— the one wired into their fragrance compounding subsidiary.
+-- the one wired into their fragrance compounding subsidiary.
 
 EOF
 

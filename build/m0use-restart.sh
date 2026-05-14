@@ -1,5 +1,5 @@
 #!/bin/sh
-# restart — wipe portal state so the next login re-enters from the
+# restart -- wipe portal state so the next login re-enters from the
 # cold open. Does NOT clear /root/.operator (keep the handle).
 
 rm -f /root/.portal_done /root/.portal_task2 /root/.portal_reflection.txt

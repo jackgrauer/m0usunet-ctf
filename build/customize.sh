@@ -1,5 +1,5 @@
 #!/bin/sh
-# customize.sh — runs inside the Alpine image during alpine-make-vm-image build.
+# customize.sh -- runs inside the Alpine image during alpine-make-vm-image build.
 set -e
 
 echo m0usunet > /etc/hostname
@@ -29,29 +29,31 @@ EOF
 
 E=$(printf '\033')
 
-# pre-login banner — replaces Alpine's "Welcome to Alpine Linux" default.
+# pre-login banner -- replaces Alpine's "Welcome to Alpine Linux" default.
 cat > /etc/issue <<EOF
-${E}[1;32mm0usunet${E}[0m ${E}[2m—${E}[0m ${E}[37mField Operations Terminal${E}[0m  ${E}[2mv0.9.7 on \r (\l)${E}[0m
+${E}[1;32mm0usunet${E}[0m ${E}[2m--${E}[0m ${E}[37mField Operations Terminal${E}[0m  ${E}[2mv0.9.7 on \r (\l)${E}[0m
 
 EOF
 
-# motd — colored. login(1) preserves ANSI escapes when piping to tty.
+# motd -- colored. login(1) preserves ANSI escapes when piping to tty.
+# Keep it short. The OPERATION reveal happens inside TASK 2 of the
+# portal, not at the pre-portal banner -- the player hasn't been
+# briefed yet.
 cat > /etc/motd <<EOF
   ${E}[1;32mm0usunet v0.9.7${E}[0m    ${E}[1;37mField Operations Terminal${E}[0m
-  ${E}[1;33mOPERATION: PARMESAN ROSE${E}[0m
 EOF
 
-# profile.d hook — on first login, hand off to /usr/local/bin/m0use-portal
+# profile.d hook -- on first login, hand off to /usr/local/bin/m0use-portal
 # which walks the player through the four-task aptitude battery. Subsequent
 # shells skip the portal (it sets /root/.portal_done) and just give a
 # normal prompt.
+#
+# No "Press Enter to continue" gate here: the portal's first screen
+# (TASK 1) page_breaks anyway, so boot output flashes past and TASK 1
+# appears -- no human-controlled idle in between.
 cat > /etc/profile.d/01-m0usunet.sh <<'EOF'
 if [ -z "$M0USE_SEEN" ]; then
   export M0USE_SEEN=1
-
-  printf '  \033[2mPress \033[0m\033[1;37mEnter\033[0m\033[2m to continue\033[0m'
-  read _ </dev/tty
-  printf '\n'
 
   # Operator handle: take from kernel cmdline (browser passes
   # m0use.handle=NAME); else use a fallback.

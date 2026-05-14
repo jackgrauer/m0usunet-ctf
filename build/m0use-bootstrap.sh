@@ -1,10 +1,10 @@
 #!/bin/sh
-# m0use-bootstrap — fires once from busybox init via ::sysinit.
+# m0use-bootstrap -- fires once from busybox init via ::sysinit.
 # Prints OpenRC-style "* msg ... [ ok ]" lines so the page's
 # colorizer (site/boot.js) tags them green/cyan and the boot reads
 # as a real Linux boot.
 #
-# We no longer set up a fake network — the recon tools (nmap, nikto,
+# We no longer set up a fake network -- the recon tools (nmap, nikto,
 # curl) are canned scripts that don't need real services. So this
 # bootstrap only does the essential filesystem mounts + hostname.
 

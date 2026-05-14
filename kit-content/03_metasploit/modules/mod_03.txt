@@ -8,7 +8,7 @@ TYPE      remote / web
 DESCRIPTION
   Executes Groovy code via Jenkins' /script console. Requires valid
   credentials with the Overall/RunScripts permission. Not a vulnerability
-  per se — this is the documented administrative feature.
+  per se -- this is the documented administrative feature.
 
 OPTIONS
   RHOST       (required) target host

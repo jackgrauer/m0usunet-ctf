@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# fake-curl — recognizes the Jenkins checkScript URL pattern and the
+# fake-curl -- recognizes the Jenkins checkScript URL pattern and the
 # Groovy `value=` payload. Everything else gets a generic 404 / DNS
 # fail so the player learns by trying. The two payloads that matter:
 #
@@ -78,7 +78,7 @@ def parse_args(argv):
                 elif c == "s": opts["silent"] = True
                 elif c == "S": opts["show_error"] = True
         elif a.startswith("-"):
-            # unknown short flag — swallow quietly
+            # unknown short flag -- swallow quietly
             pass
         else:
             if url is None:
@@ -119,7 +119,7 @@ def respond_jenkins_checkscript(value, opts):
                 if not body.endswith("\n"):
                     body += "\n"
             return http_response(200, "OK", body, opts, ctype="text/plain;charset=UTF-8")
-        # Some other file path — Groovy would throw FileNotFoundException.
+        # Some other file path -- Groovy would throw FileNotFoundException.
         body = (
             "javax.servlet.ServletException: groovy.lang.GroovyRuntimeException: "
             f"java.io.FileNotFoundException: {path} (No such file or directory)\n"
@@ -127,7 +127,7 @@ def respond_jenkins_checkscript(value, opts):
         return http_response(500, "Internal Server Error", body, opts,
                              ctype="text/plain;charset=UTF-8")
 
-    # Anything else — Jenkins responds 200 with empty body for unparsable
+    # Anything else -- Jenkins responds 200 with empty body for unparsable
     # expressions in this endpoint. Mimic that so the player gets useful
     # feedback when they typo.
     body = "Result: \n"

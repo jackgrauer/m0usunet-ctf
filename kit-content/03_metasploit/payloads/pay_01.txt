@@ -2,5 +2,5 @@ NAME    cmd_unix_generic
 ARCH    cmd (architecture-neutral)
 OS      Unix-like
 SIZE    ~50 bytes
-NOTES   Generic /bin/sh one-liner. No staging. Tiny but fragile —
+NOTES   Generic /bin/sh one-liner. No staging. Tiny but fragile --
         relies on the target having /bin/sh and a reachable LHOST.

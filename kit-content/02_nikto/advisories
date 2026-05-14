@@ -141,7 +141,7 @@ notes:   Agent registration accepts arbitrary
 CVE-2025-1234
 product: GitLab CE
 type:    UNAUTH RCE
-affects: GitLab CE 17.2 — 17.6
+affects: GitLab CE 17.2 -- 17.6
 notes:   Wrong product. We are targeting a
          Jenkins host, not GitLab. Skip.
 
@@ -160,5 +160,5 @@ the target you fingerprinted with nikto.
 OPERATION PARMESAN ROSE needs UNAUTH RCE on
 Jenkins. anything authenticated, anything
 limited to disclosure / XSS / CSRF, anything
-against a different product — wrong tool for
+against a different product -- wrong tool for
 the job.

@@ -3,11 +3,11 @@
   [OK] CVE CONFIRMED.
   ═══════════════════════════════════════════════════════════════════
 
-  CVE-2018-1000861 — Stapler unauthenticated RCE.
+  CVE-2018-1000861 -- Stapler unauthenticated RCE.
 
   The Jenkins URL router can be tricked into invoking arbitrary
   methods on internal objects, including the Groovy script console
-  — with no authentication. The version on this host is in range.
+  -- with no authentication. The version on this host is in range.
 
   You now have:
     - the host (10.4.12.X)
@@ -19,7 +19,7 @@
   ─── next ──────────────────────────────────────────────────────────
 
   To actually walk through the open door we've found, use
-  metasploit. It's an exploitation framework — a library of
+  metasploit. It's an exploitation framework -- a library of
   pre-scripted code snippets organized according to the particular
   CVE they exploit. Almost any time someone discovers a given
   vulnerability, someone else writes and logs a corresponding
@@ -39,5 +39,5 @@
       1.  cd /mnt/kit/03_metasploit
       2.  cat README
 
-  Stuck?  cat hint  — no penalty.
+  Stuck?  cat hint  -- no penalty.
 

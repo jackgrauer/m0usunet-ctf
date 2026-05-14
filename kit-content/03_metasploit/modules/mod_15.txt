@@ -8,7 +8,7 @@ TYPE      remote / web
 DESCRIPTION
   Uploads a malicious WAR file via Tomcat's /manager/text/deploy
   endpoint, achieving RCE inside the servlet container. Requires
-  valid manager credentials — pairs with tomcat_mgr_login.
+  valid manager credentials -- pairs with tomcat_mgr_login.
 
 OPTIONS
   RHOST       (required) target host
