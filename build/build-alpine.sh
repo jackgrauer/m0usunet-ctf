@@ -44,12 +44,15 @@ cp "$ROOT/kit-content/phase3-done.txt"  "$TMP/etc/m0use.phase3.done"
 cp "$ROOT/build/m0use-banners.py"   "$TMP/usr/local/bin/m0use-banners"
 cp "$ROOT/build/m0use-jenkins.py"   "$TMP/usr/local/bin/m0use-jenkins"
 cp "$ROOT/build/m0use-dnsmasq.conf" "$TMP/etc/m0use-dnsmasq.conf"
-cp "$ROOT/build/m0usenet.initd"     "$TMP/etc/init.d/m0usenet"
 chmod 755 "$TMP/usr/local/bin/m0use-banners" "$TMP/usr/local/bin/m0use-jenkins"
-chmod 755 "$TMP/etc/init.d/m0usenet"
 mkdir -p "$TMP/var/m0use"
 cp "$ROOT/build/m0use-blueprint.txt" "$TMP/var/m0use/blueprint.txt"
 chmod 644 "$TMP/var/m0use/blueprint.txt"
+
+# Minimal PID-1 bootstrap: replaces OpenRC. Runs once at boot via
+# inittab's ::sysinit, does mounts + lo aliases + background services.
+cp "$ROOT/build/m0use-bootstrap.sh"  "$TMP/sbin/m0use-bootstrap"
+chmod 755 "$TMP/sbin/m0use-bootstrap"
 
 # Flag validator + burp replay tool.
 cp "$ROOT/build/m0use-apply.sh"     "$TMP/usr/local/bin/apply"
