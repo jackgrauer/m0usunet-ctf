@@ -38,33 +38,24 @@ fi
 clear
 wrap <<EOF
 ${GREEN}╔════════════════════════════════════════════════════════════════════╗${R}
-${GREEN}║${R}                     ${WHITE}M O U S E   B I T E S   I N C .${R}                ${GREEN}║${R}
-${GREEN}║${R}                ${DIM}Office of Junior Sniffer Recruitment${R}                ${GREEN}║${R}
+${GREEN}║${R}                     ${GOLD}M O U S E   B I T E S   I N C .${R}                ${GREEN}║${R}
+${GREEN}║${R}                ${CYAN_DIM}Office of Junior Sniffer Recruitment${R}                ${GREEN}║${R}
 ${GREEN}╚════════════════════════════════════════════════════════════════════╝${R}
 
-${GOLD}Dear Applicant,${R}
+${GOLD}Dear ${WHITE}Applicant${GOLD},${R}
 
-Thank you for your interest in the ${CYAN}Junior Sniffer${R} position at Mouse
-Bites Inc.
+Thank you for your interest in the ${CYAN}Junior Sniffer${R} position at ${WHITE}Mouse Bites Inc.${R}
 
-Due to the number of applications we receive — daily, every second,
-while you are probably sleeping or on the toilet, and generally how
-much everyone loves our company and it's so fucking incredible — we
-will not be able to directly respect, or even conceive of, your
-individual personal agency, let alone your skills or value as a
-prospective employee.
+Due to the number of applications we receive — daily, every second, while you are probably sleeping or on the toilet, and generally how much everyone loves our company and it's so ${MAGENTA}fucking incredible${R} — we will not be able to directly respect, or even conceive of, your individual personal agency, let alone your skills or value as a prospective employee.
 
-Regardless of performance during the assessment, ${RED}the CEO's son-in-law${R}
-${RED}will receive the position anyway.${R} Save your energy. Don't try very
-hard. Enjoy yourself. You think you deserve this pain. You don't.
+Regardless of performance during the assessment, ${RED}the CEO's son-in-law will receive the position anyway.${R} Save your energy. Don't try very hard. Enjoy yourself. You think you deserve this pain. ${B}${WHITE}You don't.${R}
 
-The ${WHITE}Junior Sniffer assessment${R} consists of four parts, each targeting
-one aptitude expected of Mouse Bites Inc. Junior Sniffers:
+The ${WHITE}Junior Sniffer assessment${R} consists of four parts, each targeting one aptitude expected of Mouse Bites Inc. Junior Sniffers:
 
-   ${GOLD}1)${R}  ${WHITE}resourcefulness${R}
-   ${GOLD}2)${R}  ${WHITE}intuition${R}
-   ${GOLD}3)${R}  ${WHITE}the culinary art${R}
-   ${GOLD}4)${R}  ${WHITE}emotional intelligence${R}
+   ${GOLD}1)${R}  ${GREEN}resourcefulness${R}
+   ${GOLD}2)${R}  ${CYAN}intuition${R}
+   ${GOLD}3)${R}  ${GOLD}the culinary art${R}
+   ${GOLD}4)${R}  ${MAGENTA}emotional intelligence${R}
 
 EOF
 

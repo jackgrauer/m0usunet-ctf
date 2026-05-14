@@ -8,7 +8,7 @@ set -e
 # Packages. apk add is cached across runs by the layer if we ever
 # move to a Dockerfile; for now it re-fetches each container start
 # (~5-10 s on a warm mirror).
-apk add --no-cache -q bash bash-completion nmap nmap-nselibs nmap-scripts curl python3 dnsmasq iproute2 less >/dev/null 2>&1 || true
+apk add --no-cache -q bash bash-completion nmap nmap-nselibs nmap-scripts nikto curl python3 dnsmasq iproute2 less >/dev/null 2>&1 || true
 
 # nmap SYN scans need raw-packet ioctls that OrbStack / Lima's
 # lightweight kernel does not expose. Wrap nmap so it transparently
@@ -53,7 +53,7 @@ cp /work/kit-content/phase3-done.txt  /etc/m0use.phase3.done
 # Kit at /mnt/kit. Symlinks point at the read-only host mount so
 # live edits to kit-content/ show up immediately on the next run.
 ln -sfn /work/kit-content/01_nmap        /mnt/kit/01_nmap
-ln -sfn /work/kit-content/02_burp        /mnt/kit/02_burp
+ln -sfn /work/kit-content/02_nikto        /mnt/kit/02_nikto
 ln -sfn /work/kit-content/03_metasploit  /mnt/kit/03_metasploit
 cp /work/kit-content/BRIEFING            /mnt/kit/BRIEFING
 

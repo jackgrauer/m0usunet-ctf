@@ -1,0 +1,22 @@
+nikto's output is noisy. The line that matters is the version
+identifier — somewhere near the top, nikto will tell you what
+software is running on the target and what version it is.
+
+You're looking for "Jenkins" and a version number like 2.121.1.
+
+Once you have it, open the advisories file:
+
+    cat advisories
+
+The advisories table lists known Jenkins CVEs, the version ranges
+they affect, and what type of bug each one is (unauth RCE, info
+disclosure, etc).
+
+Cross-reference: which CVE applies to the version you found AND
+gives you unauth RCE? Anything that requires authentication is
+useless — we don't have credentials. Anything that's just info
+disclosure or XSS won't get us inside.
+
+When you have the right one, submit it:
+
+    apply m0use{CVE-XXXX-XXXXXXX}

@@ -1,13 +1,34 @@
 
   ═══════════════════════════════════════════════════════════════════
-  PHASE 2 COMPLETE — vulnerability identified
+  ✓ CVE CONFIRMED.
   ═══════════════════════════════════════════════════════════════════
 
-  You found the way in. Now we exploit it.
+  CVE-2018-1000861 — Stapler unauthenticated RCE.
 
-  This terminal has a working exploit harness loaded. You'll need to
-  pick the right module, pick the right payload, plug in what you've
-  learned from phases 1 and 2, and fire.
+  The Jenkins URL router can be tricked into invoking arbitrary
+  methods on internal objects, including the Groovy script console
+  — with no authentication. The version on this host is in range.
 
-  Next:  cd ../03_metasploit && cat README
+  You now have:
+    - the host (10.4.12.X)
+    - the vulnerability (CVE-2018-1000861)
+    - a known public exploit
+
+  Time to actually walk in.
+
+  ─── next ──────────────────────────────────────────────────────────
+
+  We'll use metasploit. An exploitation framework — a library of
+  pre-written break-in tools, organized by CVE. For nearly every
+  public vulnerability you'd care to use, somebody has already
+  written a metasploit module that automates the exploitation. You
+  pick a module, point it at a host, run it, and it pops a shell.
+
+  Most pentest workflows end here: nmap finds it, a scanner
+  fingerprints it, metasploit walks through the door.
+
+      cd /mnt/kit/03_metasploit
+      cat README
+
+  Stuck?  cat hint  — no penalty.
 

@@ -15,7 +15,7 @@ mkfs.ext4 -F -O ^has_journal -L M0USUNET_KIT "$OUT"
 TMP=$(mktemp -d)
 LOOP=$(losetup -f --show "$OUT")
 mount "$LOOP" "$TMP"
-cp -r "$SRC"/BRIEFING "$SRC"/01_nmap "$SRC"/02_burp "$SRC"/03_metasploit "$TMP"/
+cp -r "$SRC"/BRIEFING "$SRC"/01_nmap "$SRC"/02_nikto "$SRC"/03_metasploit "$TMP"/
 chown -R 0:0 "$TMP"
 sync
 umount "$TMP"

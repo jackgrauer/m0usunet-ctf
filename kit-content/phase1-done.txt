@@ -1,20 +1,36 @@
 
   ═══════════════════════════════════════════════════════════════════
-  PHASE 1 COMPLETE — back office located
+  ✓ BACK OFFICE LOCATED.
   ═══════════════════════════════════════════════════════════════════
 
-  Nice work, Cadet. You spotted what their IT team didn't: a server
-  named for the inside that's reachable from the outside. That's the
-  Crazy Ants' fragrance compounding back office.
+  Nice work. The host you found is a Jenkins server.
 
-  Finding it doesn't get us through the door. We need a way IN.
+  What is Jenkins?  A build automation server. Software companies
+  run Jenkins to compile and ship their code on every commit — test,
+  package, deploy, repeat. It's industrial machinery. If you find
+  someone's Jenkins, you find the recipe for everything they make.
 
-  Last Friday a contractor was poking at that server with a tool
-  called Burp Suite — basically a recording device that captures
-  every web request and response. Twenty captures came back. Nineteen
-  of them are the boring stuff: hitting the login page, getting told
-  "no." But one of them got a response the server should never have
-  given. That's our way in.
+  The Crazy Ants' Jenkins should live behind their corporate VPN. It
+  does not. We can see it from here. That means we can see how they
+  build their fragrance compounder. We just need a way in.
 
-  Next:  cd ../02_burp && cat README
+  Old Jenkins versions are catastrophically broken. There are at
+  least a dozen unauth RCE bugs in the Jenkins CVE history — paths
+  that let you execute code on the server without logging in. The
+  one we want is whatever bug this specific version has.
+
+  ─── next ──────────────────────────────────────────────────────────
+
+  We'll use nikto to fingerprint the host and learn its version.
+  Nikto is a web vulnerability scanner — perl, small, classic. You
+  point it at a host and it runs thousands of probes against known
+  software versions, dangerous endpoints, misconfigurations, default
+  credentials. When it finds something, it shouts.
+
+      cd /mnt/kit/02_nikto
+      nikto -h http://<the IP you just identified>:8080/
+      cat advisories
+
+  Submit:  apply m0use{<CVE-id>}
+  Stuck?   cat hint  — no penalty.
 
