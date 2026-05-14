@@ -9,17 +9,22 @@ Open: `https://jackgrauer.github.io/m0usunet-ctf/?bust=<anything>`
 
 Bump `bust=` to force a cache-fresh fetch when iterating.
 
-## Passwords
-
-All four portal gates accept the same code (the IRL event hands
-distinct codes out; the digital prototype just uses one).
+## Flow + passwords
 
 ```
-PASSWORD1: 4123
-PASSWORD2: 4123
-PASSWORD3: 4123     (also revealed in-game in the phase3-done banner)
-PASSWORD4: 4123
+1. TASK 1 screen        (pre-auth: "proceed to Jefferson Park")
+2. password prompt      → 4123       (IRL: handed out at the park)
+3. name prompt          → any handle; blank = use the auto-generated one
+4. Mouse Bites letter   (post-auth welcome + 4-task overview)
+5. TASK 2 intro         → enter the m0usenet shell, do the puzzle
+6. password prompt      → 4123       (IRL: handed out at HQ)
+7. TASK 3 (culinary)
+8. password prompt      → 4123       (IRL: gate to reflection)
+9. TASK 4 (reflection)
+10. ASSESSMENT COMPLETE
 ```
+
+All three passwords are `4123` in the prototype.
 
 ## TASK 2 — Operation Parmesan Rose (digital phase)
 

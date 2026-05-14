@@ -1,9 +1,32 @@
 #!/bin/bash
 # m0use-portal — the four-task Junior Sniffer aptitude battery.
-# Called from /etc/profile.d on first login. Walks the player through:
-#   cold-open letter → PASSWORD1 → TASK 1 → PASSWORD2 → TASK 2 (the
-#   m0usunet hack game, in a subshell) → PASSWORD3 → TASK 3 →
-#   PASSWORD4 → TASK 4 reflection → done.
+# Called from /etc/profile.d on first login. The order matters:
+# the player meets the terminal BEFORE they have credentials, so
+# the pre-auth screen tells them where to GET credentials (TASK 1).
+# Only after they authenticate do they see the Mouse Bites welcome
+# letter + the mission briefing.
+#
+#   TASK 1 (pre-auth — go to Jefferson Square Park)
+#     ↓
+#   PASSWORD prompt        — the code received at the park
+#     ↓
+#   NAME prompt            — operator handle
+#     ↓
+#   Cold-open letter       — Mouse Bites welcome + 4-task overview
+#     ↓
+#   TASK 2 intro           — Operation Parmesan Rose
+#     ↓
+#   m0usunet game shell    — nmap / nikto / curl puzzle
+#     ↓
+#   PASSWORD prompt        — code received at HQ
+#     ↓
+#   TASK 3                 — culinary
+#     ↓
+#   PASSWORD prompt        — for TASK 4 gate
+#     ↓
+#   TASK 4                 — reflection
+#     ↓
+#   ASSESSMENT COMPLETE
 
 # Colors
 E=$'\033'
@@ -23,8 +46,8 @@ GREY="${E}[2;37m"
 PROMPT="${DIM}>${R}"
 
 # page_break — clears the screen and pads the top with blank lines so
-# the next section visually starts as a *fresh* page, not flush
-# against the previous prompt. Used at every major transition.
+# the next section visually starts as a fresh page, not flush against
+# the previous prompt. Used at every major transition.
 page_break() {
   clear
   printf '\n\n\n'
@@ -41,45 +64,8 @@ fi
 # Skip the portal flow if we've already finished it.
 [ -f "$STATE_DIR/.portal_done" ] && return 0 2>/dev/null
 
-# ─── COLD OPEN ────────────────────────────────────────────────────────
-
-page_break
-wrap <<EOF
-${GREEN}╔════════════════════════════════════════════════════════════════════╗${R}
-${GREEN}║${R}                     ${GOLD}M O U S E   B I T E S   I N C .${R}                ${GREEN}║${R}
-${GREEN}║${R}                ${CYAN_DIM}Office of Junior Sniffer Recruitment${R}                ${GREEN}║${R}
-${GREEN}╚════════════════════════════════════════════════════════════════════╝${R}
-
-${GOLD}Dear ${WHITE}Applicant${GOLD},${R}
-
-Thank you for your interest in the ${CYAN}Junior Sniffer${R} position at ${WHITE}Mouse Bites Inc.${R}
-
-Due to the number of applications we receive — daily, every second, while you are probably sleeping or on the toilet, and generally how much everyone loves our company and it's so ${MAGENTA}fucking incredible${R} — we will not be able to directly respect, or even conceive of, your individual personal agency, let alone your skills or value as a prospective employee.
-
-Regardless of performance during the assessment, ${RED}the CEO's son-in-law will receive the position anyway.${R} Save your energy. Don't try very hard. Enjoy yourself. You think you deserve this pain. ${B}${WHITE}You don't.${R}
-
-The ${WHITE}Junior Sniffer assessment${R} consists of four parts, each targeting one aptitude expected of Mouse Bites Inc. Junior Sniffers:
-
-   ${GOLD}1)${R}  ${GREEN}resourcefulness${R}
-   ${GOLD}2)${R}  ${CYAN}intuition${R}
-   ${GOLD}3)${R}  ${GOLD}the culinary art${R}
-   ${GOLD}4)${R}  ${MAGENTA}emotional intelligence${R}
-
-EOF
-
-# ─── PASSWORD1 ────────────────────────────────────────────────────────
-
-while :; do
-  printf "${PROMPT} ${DIM}enter PASSWORD1 to proceed to TASK 1:${R} "
-  read -r PW </dev/tty
-  if [ "$PW" = "4123" ]; then
-    printf "${GREEN}[OK]${R} accepted\n\n"
-    break
-  fi
-  printf "${RED}[!!]${R} incorrect.\n\n"
-done
-
-# ─── TASK 1 ──────────────────────────────────────────────────────────
+# ─── TASK 1 (pre-auth) ────────────────────────────────────────────────
+# First thing the player sees. Tells them to go get credentials.
 
 page_break
 wrap <<EOF
@@ -99,12 +85,15 @@ Proceed with food items to the center of ${CYAN}Jefferson Square Park${R}
 between 3rd St. and 4th St. and Federal St. and Washington Ave.
 There, you will be provided ${GREEN}m0usunet access credentials${R}.
 
+${DIM}Return to this terminal and enter the password to log in.${R}
+
 EOF
 
-# ─── PASSWORD2 ────────────────────────────────────────────────────────
+# ─── PASSWORD (entry) ─────────────────────────────────────────────────
+# The code the applicant received at the park.
 
 while :; do
-  printf "${PROMPT} ${DIM}enter PASSWORD2 to proceed to TASK 2:${R} "
+  printf "${PROMPT} ${DIM}enter password:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}[OK]${R} accepted\n\n"
@@ -112,6 +101,51 @@ while :; do
   fi
   printf "${RED}[!!]${R} incorrect.\n\n"
 done
+
+# ─── NAME prompt ──────────────────────────────────────────────────────
+# Operator handle. nicks.js / kernel cmdline may have pre-seeded one;
+# either way, the player gets to confirm or replace it here.
+
+PREFILL=$(cat /root/.operator 2>/dev/null)
+[ -z "$PREFILL" ] && PREFILL="cadet"
+
+printf "${PROMPT} ${DIM}operator handle${R} ${GREY}[blank = ${PREFILL}]${R}${DIM}:${R} "
+read -r HANDLE </dev/tty
+HANDLE=$(echo "$HANDLE" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
+[ -z "$HANDLE" ] && HANDLE="$PREFILL"
+echo "$HANDLE" > /root/.operator
+printf "${GREEN}[OK]${R} welcome, ${CYAN}${HANDLE}${R}.\n\n"
+
+# ─── COLD OPEN ────────────────────────────────────────────────────────
+# Post-auth: the welcome letter explaining the full assessment.
+
+page_break
+wrap <<EOF
+${GREEN}╔════════════════════════════════════════════════════════════════════╗${R}
+${GREEN}║${R}                     ${GOLD}M O U S E   B I T E S   I N C .${R}                ${GREEN}║${R}
+${GREEN}║${R}                ${CYAN_DIM}Office of Junior Sniffer Recruitment${R}                ${GREEN}║${R}
+${GREEN}╚════════════════════════════════════════════════════════════════════╝${R}
+
+${GOLD}Dear ${WHITE}${HANDLE}${GOLD},${R}
+
+Thank you for your interest in the ${CYAN}Junior Sniffer${R} position at ${WHITE}Mouse Bites Inc.${R}
+
+Due to the number of applications we receive — daily, every second, while you are probably sleeping or on the toilet, and generally how much everyone loves our company and it's so ${MAGENTA}fucking incredible${R} — we will not be able to directly respect, or even conceive of, your individual personal agency, let alone your skills or value as a prospective employee.
+
+Regardless of performance during the assessment, ${RED}the CEO's son-in-law will receive the position anyway.${R} Save your energy. Don't try very hard. Enjoy yourself. You think you deserve this pain. ${B}${WHITE}You don't.${R}
+
+The ${WHITE}Junior Sniffer assessment${R} consists of four parts, each targeting one aptitude expected of Mouse Bites Inc. Junior Sniffers:
+
+   ${GOLD}1)${R}  ${GREEN}resourcefulness${R}    ${DIM}(complete — you got here)${R}
+   ${GOLD}2)${R}  ${CYAN}intuition${R}          ${DIM}(next — at this terminal)${R}
+   ${GOLD}3)${R}  ${GOLD}the culinary art${R}   ${DIM}(at HQ, after this)${R}
+   ${GOLD}4)${R}  ${MAGENTA}emotional intelligence${R}
+
+EOF
+
+printf "  ${DIM}Press ${R}${WHITE}Enter${R}${DIM} to begin TASK 2${R}"
+read -r _ </dev/tty
+printf "\n"
 
 # ─── TASK 2 INTRO ────────────────────────────────────────────────────
 
@@ -143,8 +177,8 @@ ${DIM}What we know so far:${R}
     Mischief City.
 
 Right now we can see the shape. We need the blueprint. That's where
-you come in, ${CYAN}Sniffer Cadet${R}. We need to cripple the ${RED}Ants${R}' deck
-before they start yoking investors.
+you come in, ${CYAN}${HANDLE}${R}. We need to cripple the ${RED}Ants${R}' deck before
+they start yoking investors.
 
 Your first assignment: scan the ${RED}Crazy Ants${R} network with ${CYAN}nmap${R} and
 find the back-office host that's accidentally exposed to the outside
@@ -155,14 +189,11 @@ EOF
 # Mark task 2 reached
 touch "$STATE_DIR/.portal_task2"
 
-printf "  ${DIM}Press ${R}${WHITE}Enter${R}${DIM} to continue${R}"
+printf "  ${DIM}Press ${R}${WHITE}Enter${R}${DIM} to enter the m0usunet shell${R}"
 read -r _ </dev/tty
 printf "\n"
 
 # ─── TASK 2 GAME SUBSHELL ────────────────────────────────────────────
-# Drop the player into the m0usunet game shell. The rc file sets the
-# prompt, cd's to phase 1, prints the recon intro, and aliases
-# `continue` to `exit` so the player has an obvious way back out.
 
 if [ -n "$PORTAL_SKIP_GAME" ]; then
   printf "${DIM}(dryrun: skipping m0usunet game shell)${R}\n\n"
@@ -170,13 +201,13 @@ else
   bash --rcfile "$GAME_RC" -i || true
 fi
 
-# ─── PASSWORD3 ────────────────────────────────────────────────────────
+# ─── PASSWORD (HQ) ────────────────────────────────────────────────────
 
 page_break
 printf "${GREEN_DIM}operator returning from m0usunet shell...${R}\n\n"
 
 while :; do
-  printf "${PROMPT} ${DIM}enter PASSWORD3 to proceed to TASK 3:${R} "
+  printf "${PROMPT} ${DIM}enter password to proceed to TASK 3:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}[OK]${R} accepted\n\n"
@@ -202,10 +233,10 @@ Your dish will be assessed via ${MAGENTA}blind peer review${R}.
 
 EOF
 
-# ─── PASSWORD4 ────────────────────────────────────────────────────────
+# ─── PASSWORD (TASK 4 gate) ──────────────────────────────────────────
 
 while :; do
-  printf "${PROMPT} ${DIM}enter PASSWORD4 to proceed to TASK 4:${R} "
+  printf "${PROMPT} ${DIM}enter password to proceed to TASK 4:${R} "
   read -r PW </dev/tty
   if [ "$PW" = "4123" ]; then
     printf "${GREEN}[OK]${R} accepted\n\n"
