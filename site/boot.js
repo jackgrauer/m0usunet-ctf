@@ -90,44 +90,52 @@
     ? new WebLinksAddon.WebLinksAddon() : null;
   if (webLinksAddon) term.loadAddon(webLinksAddon);
 
+  // FitAddon measures xterm's actual cell width/height from the
+  // rendered font, instead of us estimating with CELL_W_RATIO.
+  // That estimate was leaving a blank gutter on the right at narrow
+  // widths because VT323's real cell width didn't match 0.55x font.
+  const fitAddon = (typeof FitAddon !== "undefined" && FitAddon.FitAddon)
+    ? new FitAddon.FitAddon() : null;
+  if (fitAddon) term.loadAddon(fitAddon);
+
   const terminalEl = document.getElementById("terminal");
   term.open(terminalEl);
 
-  // Pick a readable font size for the viewport, then compute COLS to
-  // fit at that font. Soft-wrap is handled by xterm for raw writes
-  // and by io.writeWrapped for prose (ANSI-aware word break).
-  // Previously COLS was pinned to 80 — that overflowed phones.
-  const CELL_W_RATIO = 0.55;
-
   function refit() {
-    // Set --vh to the live visual viewport height so <main> (and the
-    // terminal inside it) tracks the soft keyboard. 100dvh in CSS
-    // doesn't reliably update on Android Chrome when the keyboard
-    // pops up. A scroll-buffer div below <main> gives the player a
-    // manual escape hatch — swipe up to reveal anything the keyboard
-    // covered.
+    // Set --vh to the live visual viewport so <main> tracks the soft
+    // keyboard (100dvh doesn't reliably update on Android Chrome).
+    // The scroll-buffer div below <main> is the manual escape hatch.
     const vv = window.visualViewport;
     const viewW = vv ? vv.width  : window.innerWidth;
     const viewH = vv ? vv.height : window.innerHeight;
     if (!viewW || !viewH) return;
     document.documentElement.style.setProperty("--vh", viewH + "px");
 
-    // Now read the actual terminal element dimensions (post-layout).
-    const w = terminalEl.clientWidth || viewW;
-    const h = terminalEl.clientHeight || viewH;
-
+    // Pick a readable font size for the viewport.
     let fontSize;
-    if (w < 360)       fontSize = 14;
-    else if (w < 480)  fontSize = 16;
-    else if (w < 768)  fontSize = 18;
-    else if (w < 1024) fontSize = 20;
-    else               fontSize = 22;
+    if (viewW < 360)       fontSize = 14;
+    else if (viewW < 480)  fontSize = 16;
+    else if (viewW < 768)  fontSize = 18;
+    else if (viewW < 1024) fontSize = 20;
+    else                   fontSize = 22;
     term.options.fontSize = fontSize;
-    const cellW = fontSize * CELL_W_RATIO;
-    const cellH = fontSize * 1.0;
-    const cols = Math.max(20, Math.floor((w - 8) / cellW));
-    const rows = Math.max(10, Math.floor((h - 8) / cellH));
-    try { term.resize(cols, rows); } catch (_) {}
+
+    // Let FitAddon measure xterm's real cell dimensions and pick
+    // cols/rows that exactly fit the container. This kills the
+    // right-edge gutter our estimate (0.55 * fontSize) was leaving.
+    if (fitAddon) {
+      try { fitAddon.fit(); } catch (_) {}
+    } else {
+      // Fallback if FitAddon didn't load — same conservative estimate
+      // as before.
+      const cellW = fontSize * 0.55;
+      const cellH = fontSize * 1.0;
+      const w = terminalEl.clientWidth  || viewW;
+      const h = terminalEl.clientHeight || viewH;
+      const cols = Math.max(20, Math.floor((w - 8) / cellW));
+      const rows = Math.max(10, Math.floor((h - 8) / cellH));
+      try { term.resize(cols, rows); } catch (_) {}
+    }
     try { term.scrollToBottom(); } catch (_) {}
   }
   refit();
