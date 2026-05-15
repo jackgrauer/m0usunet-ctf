@@ -333,9 +333,19 @@ def run_session(state):
         line = line.strip()
         if not line:
             continue
-        if line in ("exit", "quit", "background", "bg"):
+        if line in ("background", "bg"):
             sys.stdout.write(f"[*] Backgrounding session 1...\n")
             state["session"] = None
+            return
+        if line in ("exit", "quit"):
+            # Cascade out: close the session AND leave msfconsole.
+            # Pentest pedants can `background` if they want to keep the
+            # session alive, but for the walkthrough flow one `exit`
+            # should drop the player back at the m0usenet prompt so
+            # they can submit the flag.
+            sys.stdout.write(f"[*] Closing session 1 and exiting metasploit.\n")
+            state["session"] = None
+            state["exit_after_session"] = True
             return
         # Spoof a few outputs so the player feels like they're on a
         # Jenkins box, not the m0usenet host.
@@ -364,15 +374,37 @@ def run_session(state):
                 sys.stdout.write(r.stderr)
         except subprocess.TimeoutExpired:
             sys.stdout.write("[!] command timed out\n")
+        # Nudge the player toward the exit once they've actually read
+        # the blueprint -- otherwise they wander around the session
+        # looking for what to do next.
+        if "blueprint.txt" in line and "cat" in line:
+            sys.stdout.write(f"\n{DIM}[*] Got the flag? Type {CYAN_B}exit{R}{DIM} to leave metasploit and submit it at the m0usenet prompt.{R}\n")
 
 
 # ─── main REPL ─────────────────────────────────────────────────────
 def main():
-    state = {"module": None, "options": {}, "session": None}
+    # Module and callback address are pre-loaded for this engagement.
+    # The "metasploit pattern" (search → use → options → set → check
+    # → exploit) is in the brief as background; the player only has
+    # to do the parts that carry the lesson: point at target, fire.
+    state = {
+        "module":  MODULE,
+        "options": {k: dict(v) for k, v in OPTION_DEFAULTS.items()},
+        "session": None,
+        "exit_after_session": False,
+    }
+    state["options"]["LHOST"]["value"] = "10.4.12.99"
     banner()
+    sys.stdout.write(
+        f"{DIM}[*] Engagement preloaded:{R} {CYAN_B}{MODULE['path']}{R}\n"
+        f"{DIM}[*] LHOST auto-set to {WHITE_B}10.4.12.99{R}{DIM} (your callback){R}\n"
+        f"{DIM}[*] You need:{R}  {CYAN_B}set RHOSTS <target>{R}   {DIM}then{R}   {CYAN_B}exploit{R}\n\n"
+    )
     while True:
         if state["session"]:
             run_session(state)
+            if state.get("exit_after_session"):
+                break
             continue
         try:
             sys.stdout.write(prompt(state))

