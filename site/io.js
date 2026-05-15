@@ -63,13 +63,59 @@
     return out;
   }
 
+  // Strip box-drawing chars out, replace with whitespace so any
+  // residual prose between the rails survives word-wrap. The leading
+  // ANSI color code (if any) is preserved so a deboxed rule keeps
+  // its color.
+  const BOX_RE = /[═║╔╗╚╝╠╣╦╩╬─│┌┐└┘├┤┬┴┼━┃┏┓┗┛┣┫┳┻╋]/g;
+  function deboxLine(line) {
+    return line.replace(BOX_RE, " ").replace(/[ \t]+/g, " ").trim();
+  }
+  function ruleFor(line, width) {
+    // Capture the line's leading color so a deboxed pure rule keeps
+    // its tint instead of going default-foreground.
+    const m = line.match(/^(\x1b\[[0-9;]*[A-Za-z])/);
+    const prefix = m ? m[0] : "";
+    const suffix = prefix ? "\x1b[0m" : "";
+    return prefix + "═".repeat(Math.max(0, width)) + suffix;
+  }
+
   function reflow(lines, width) {
     const out = [];
     let i = 0;
     while (i < lines.length) {
       const line = lines[i];
       if (!line.trim()) { out.push(""); i++; continue; }
-      if (looksLikeArt(line)) { out.push(line); i++; continue; }
+
+      const stripped = line.replace(ANSI, "");
+      const hasBox = /[═║╔╗╚╝╠╣╦╩╬─│┌┐└┘├┤┬┴┼━┃┏┓┗┛┣┫┳┻╋]/.test(stripped);
+      // Only treat a line as a column-aligned table if it has NO box
+      // chars. Otherwise centered-text rows in box headers
+      // (║   FOO   ║) match TABLE_LIKE and never get deboxed.
+      const isTable = !hasBox && TABLE_LIKE.test(stripped);
+      const tooWide = visibleLen(line) > width;
+
+      // Aligned tables: always preserve. Intentional column layouts.
+      if (isTable) { out.push(line); i++; continue; }
+
+      // Box-art that already fits: preserve the decoration.
+      if (hasBox && !tooWide) { out.push(line); i++; continue; }
+
+      // Box-art that doesn't fit: strip the rails. If anything
+      // visible remains, word-wrap it as prose. Otherwise emit a
+      // width-fitted rule line in the same color.
+      if (hasBox && tooWide) {
+        const debox = deboxLine(line);
+        if (debox.replace(ANSI, "").trim() === "") {
+          out.push(ruleFor(line, width));
+        } else {
+          out.push(...wrapParagraph(debox, width, ""));
+        }
+        i++;
+        continue;
+      }
+
+      // Regular prose paragraph reflow.
       const indent = detectIndent(line);
       const para = [line.replace(/^[ \t]+/, "")];
       let j = i + 1;
