@@ -4,9 +4,10 @@ Find a host that's exposed to the outside but clearly meant to stay
 internal -- a staging box, a forgotten test server. That's the back
 office.
 
-    nmap 10.4.12.0/24        sweep the subnet
-    nmap -sV 10.4.12.0/24    + service versions
-    nmap 10.4.12.88          one host
+    nmap 10.4.12.0/24
+
+That's the only command you need. The scan will surface the
+careless host and advance you to the next phase on its own.
 
 
 What recon is actually for
@@ -24,11 +25,5 @@ decision they didn't clean up after. A test server spun up for a
 sprint three years ago and never torn down. A staging environment
 that was supposed to be internal but got accidentally exposed when
 someone set up a port forward "just for today" and forgot.
-
-Got it? Type the IP or hostname at the prompt and press Enter:
-
-    10.4.12.88            or       jenkins-old
-
-No `answer` keyword, no curly braces. Just the finding.
 
 Stuck?  cat hint  -- no penalty.

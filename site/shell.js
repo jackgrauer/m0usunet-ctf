@@ -244,12 +244,10 @@ Somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragra
 ${DIM}What we're looking for:${R} not vulnerabilities -- ${WHITE_B}carelessness${R}. The host that's visible from outside but was clearly not meant for someone outside the company to see. The back office.
 `);
     io.write("\r\n");
-    io.write(`  ${DIM}Start here:${R}\r\n\r\n`);
-    io.write(`  ${CYAN_B}nmap 10.4.12.0/24${R}        ${DIM}sweep the subnet${R}\r\n`);
-    io.write(`  ${CYAN_B}nmap -sV 10.4.12.0/24${R}    ${DIM}with service versions${R}\r\n\r\n`);
-    io.write(`  ${DIM}When you spot the back-office host, type its IP or${R}\r\n`);
-    io.write(`  ${DIM}hostname at the prompt and press Enter.${R}\r\n\r\n`);
-    io.write(`  ${DIM}Stuck?${R} ${CYAN_B}cat hint${R}  ${DIM}-- no penalty.${R}\r\n\r\n`);
+    io.write(`  ${DIM}Run this one command:${R}\r\n\r\n`);
+    io.write(`  ${CYAN_B}nmap 10.4.12.0/24${R}\r\n\r\n`);
+    io.write(`  ${DIM}That's it. The scan surfaces the careless host on its${R}\r\n`);
+    io.write(`  ${DIM}own and walks you straight into the next phase.${R}\r\n\r\n`);
   }
 
   // ── help ──────────────────────────────────────────────────────────
