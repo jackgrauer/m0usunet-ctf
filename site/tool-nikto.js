@@ -75,7 +75,7 @@
     io.write(lines.join("\r\n") + "\r\n");
   }
 
-  async function run(io, args) {
+  async function run(io, args, ctx) {
     if (args.length === 0) { usage(io); return; }
 
     let host = null;
@@ -112,6 +112,16 @@
 
     await io.sleep(600 + Math.random() * 400);
     report(io, host, rawIp, port);
+
+    // Auto-advance: nikto just exposed Jenkins 2.121.1 in the
+    // x-jenkins header. The matching CVE is 2018-1000861. Submit
+    // it so the phase-2-done payoff (msfconsole handoff) plays
+    // automatically. Same model as nmap and msfconsole auto-submit.
+    const alreadyDone = ctx && ctx.state && ctx.state.completed && ctx.state.completed[2];
+    if (!alreadyDone && ctx && typeof ctx.submitAnswer === "function") {
+      await io.sleep(400);
+      await ctx.submitAnswer("CVE-2018-1000861");
+    }
   }
 
   window.M0useNikto = { run };
