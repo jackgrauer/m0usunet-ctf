@@ -152,7 +152,12 @@
     bzimage:  { url: u("vmlinuz-virt"),   async: false },
     initrd:   { url: u("initramfs-virt"), async: false },
     cmdline:  cmdline,
-    hda:      { url: u("alpine.img"), async: false },
+    // hda is async so v86 streams disk blocks via HTTP range requests
+    // instead of loading the whole 96 MB into JS heap up front. This
+    // is what lets the boot fit in Chrome's per-tab memory budget on
+    // older phones (Android 8.1 / SDM660-class). v86 discovers the
+    // file size with a HEAD request; GitHub Pages handles both.
+    hda:      { url: u("alpine.img"), async: true  },
     hdb:      { url: u("kit.img"),    async: false },
     memory_size:     128 * 1024 * 1024,
     vga_memory_size:   4 * 1024 * 1024,
