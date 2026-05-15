@@ -14,6 +14,83 @@
       .replace(/\x1b\[201~/g, "");
   }
 
+  // ── ANSI-aware word-wrap (port of build/m0use-wrap.py) ────────────
+  // Reflows consecutive non-empty, same-indent, non-art lines into a
+  // paragraph and word-wraps it to `width`. Lines containing box-
+  // drawing chars or table-like spacing pass through unchanged.
+
+  const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
+  const BOX_CHARS = new Set("═║╔╗╚╝╠╣╦╩╬─│┌┐└┘├┤┬┴┼━┃┏┓┗┛┣┫┳┻╋");
+  const TABLE_LIKE = /\S {2,}\S/;
+
+  function visibleLen(s) { return s.replace(ANSI, "").length; }
+
+  function looksLikeArt(line) {
+    const stripped = line.replace(ANSI, "");
+    for (let i = 0; i < stripped.length; i++) {
+      if (BOX_CHARS.has(stripped[i])) return true;
+    }
+    return TABLE_LIKE.test(stripped);
+  }
+
+  function detectIndent(line) {
+    const m = line.match(/^[ \t]*/);
+    return m ? m[0] : "";
+  }
+
+  function wrapParagraph(text, width, indent) {
+    const parts = text.split(/(\s+)/);
+    const out = [];
+    let cur = indent;
+    let curW = indent.length;
+    let pending = "";
+    for (const p of parts) {
+      if (!p) continue;
+      if (/^\s+$/.test(p)) { pending = " "; continue; }
+      const pw = visibleLen(p);
+      if (curW + pending.length + pw > width && cur.trim()) {
+        out.push(cur.replace(/\s+$/, ""));
+        cur = indent + p;
+        curW = indent.length + pw;
+        pending = "";
+      } else {
+        cur += pending + p;
+        curW += pending.length + pw;
+        pending = "";
+      }
+    }
+    if (cur.trim()) out.push(cur.replace(/\s+$/, ""));
+    return out;
+  }
+
+  function reflow(lines, width) {
+    const out = [];
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      if (!line.trim()) { out.push(""); i++; continue; }
+      if (looksLikeArt(line)) { out.push(line); i++; continue; }
+      const indent = detectIndent(line);
+      const para = [line.replace(/^[ \t]+/, "")];
+      let j = i + 1;
+      while (j < lines.length) {
+        const nxt = lines[j];
+        if (!nxt.trim() || looksLikeArt(nxt) || detectIndent(nxt) !== indent) break;
+        para.push(nxt.replace(/^[ \t]+/, ""));
+        j++;
+      }
+      out.push(...wrapParagraph(para.join(" "), width, indent));
+      i = j;
+    }
+    return out;
+  }
+
+  function wrap(text, width) {
+    width = Math.max(20, Math.min(width, 78));
+    return reflow(text.split("\n"), width).join("\n");
+  }
+
+  // ── IO factory ────────────────────────────────────────────────────
   function createIO(term) {
     let reader = null;
     const pending = [];
@@ -38,10 +115,14 @@
     return {
       write(s) { term.write(s); },
 
+      // Word-wrap to the current terminal width and write.
+      writeWrapped(text) {
+        const w = (term.cols || 78);
+        term.write(wrap(text, w) + (text.endsWith("\n") ? "" : "\n"));
+      },
+
       sleep(ms) { return new Promise(r => setTimeout(r, ms)); },
 
-      // Wait for an Enter keypress. Discards anything typed before
-      // it; pushes anything typed after back into the pending queue.
       async waitEnter() {
         return new Promise(resolve => {
           reader = function consume(data) {
@@ -60,9 +141,6 @@
         });
       },
 
-      // Read a single line with simple echo + backspace handling.
-      // No history, no readline tricks. mask=true draws "*" instead
-      // of the typed character (password fields).
       async readline({ echo = true, prompt = null, mask = false } = {}) {
         if (prompt != null) term.write(prompt);
         let line = "";
@@ -83,7 +161,6 @@
                   if (echo) term.write("\b \b");
                 }
               } else if (ch === "\x03") {
-                // Ctrl-C: abandon and return empty.
                 term.write("^C\r\n");
                 reader = null;
                 resolve("");
@@ -92,17 +169,15 @@
                 line += ch;
                 if (echo) term.write(mask ? "*" : ch);
               }
-              // Other control bytes: ignore.
             }
           };
           drainPending();
         });
       },
 
-      // Read a multi-line block. Blank line terminates. Returns
-      // the joined text (with internal newlines, no trailing).
-      async readBlock({ prompt = null } = {}) {
-        if (prompt != null) term.write(prompt);
+      // Read a multi-line block. Blank line terminates. Returns the
+      // joined text (with internal newlines, no trailing).
+      async readBlock() {
         const lines = [];
         while (true) {
           const line = await this.readline({ echo: true });
@@ -114,5 +189,5 @@
     };
   }
 
-  window.M0useIO = { createIO, sanitize };
+  window.M0useIO = { createIO, sanitize, wrap };
 })();

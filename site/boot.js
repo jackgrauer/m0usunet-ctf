@@ -86,21 +86,28 @@
   const terminalEl = document.getElementById("terminal");
   term.open(terminalEl);
 
-  // Pin to 80 cols, scale font size to fit. VT323's cell width is
-  // roughly 0.55 of its font size.
-  const COLS = 80;
+  // Pick a readable font size for the viewport, then compute COLS to
+  // fit at that font. Soft-wrap is handled by xterm for raw writes
+  // and by io.writeWrapped for prose (ANSI-aware word break).
+  // Previously COLS was pinned to 80 — that overflowed phones.
   const CELL_W_RATIO = 0.55;
 
   function refit() {
     const w = terminalEl.clientWidth;
     const h = terminalEl.clientHeight;
     if (!w || !h) return;
-    let fontSize = Math.floor((w - 4) / COLS / CELL_W_RATIO);
-    fontSize = Math.max(10, Math.min(28, fontSize));
+    let fontSize;
+    if (w < 360)       fontSize = 14;
+    else if (w < 480)  fontSize = 16;
+    else if (w < 768)  fontSize = 18;
+    else if (w < 1024) fontSize = 20;
+    else               fontSize = 22;
     term.options.fontSize = fontSize;
+    const cellW = fontSize * CELL_W_RATIO;
     const cellH = fontSize * 1.0;
-    const rows = Math.max(10, Math.floor((h - 4) / cellH));
-    try { term.resize(COLS, rows); } catch (_) {}
+    const cols = Math.max(20, Math.floor((w - 8) / cellW));
+    const rows = Math.max(10, Math.floor((h - 8) / cellH));
+    try { term.resize(cols, rows); } catch (_) {}
   }
   refit();
 
