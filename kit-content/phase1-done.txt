@@ -26,8 +26,12 @@
   hitting Enter after each:
 
       1.  cd nikto
-      2.  nikto -h http://<the IP you identified above using nmap>:8080/
+      2.  nikto -h http://10.4.12.88:8080/
       3.  cat advisories
+
+  Step 2: type the IP address. The IP you found is 10.4.12.88
+  (four numbers separated by dots — that's what an IP looks
+  like).
 
   Now we have to find a CVE that does two things at once:
 

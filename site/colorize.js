@@ -50,7 +50,9 @@
     s = s.replace(TOOL_RE, (_match, prefix, name) =>
       prefix + CYAN_B + name + R);
     s = s.replace(PLACEHOLDER_RE, MAGENTA + "<$1>" + R);
-    s = s.replace(IP_RE,          WHITE_B + "$1" + R);
+    // IPs in bold yellow + underline so they pop distinctly from
+    // CVE-gold (no underline) and tool-cyan in instruction lines.
+    s = s.replace(IP_RE,          "\x1b[1;33;4m" + "$1" + R);
     s = s.replace(OK_RE,          GREEN_B + "[OK]" + R);
     s = s.replace(BAD_RE,         RED_B  + "[!!]" + R);
     return s;
