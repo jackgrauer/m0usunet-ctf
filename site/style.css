@@ -17,21 +17,42 @@ html, body {
   overscroll-behavior: none;
   font-family: var(--retro);
   font-size: 14px;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  /* Allow vertical page scroll so the player can swipe down to
+     reveal the prompt if the soft keyboard covers it. JS pins
+     --vh to visualViewport.height so the terminal sizes correctly
+     when the keyboard opens. */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
 }
 
 main {
   display: flex;
   width: 100%;
-  height: 100%;
+  /* Fixed at the live visualViewport height; updated by boot.js.
+     Fallback to 100dvh for first paint before JS runs. */
+  height: var(--vh, 100dvh);
+  flex: 0 0 var(--vh, 100dvh);
   background: #000;
   /* Keep terminal content out from under the iPhone notch / dynamic island. */
   padding-left: env(safe-area-inset-left, 0);
   padding-right: env(safe-area-inset-right, 0);
   padding-top: env(safe-area-inset-top, 0);
   padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Black escape-hatch buffer below the terminal. The player can
+   swipe up to scroll past the visible terminal frame and reveal
+   any prompt that the keyboard managed to cover. Pure visual; no
+   content. */
+#scroll-buffer {
+  flex: 0 0 35vh;
+  background: #000;
+  min-height: 200px;
 }
 
 #terminal {

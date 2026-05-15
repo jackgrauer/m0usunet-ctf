@@ -100,17 +100,17 @@
   const CELL_W_RATIO = 0.55;
 
   function refit() {
-    // Force the layout to match the visual viewport in pixels. 100dvh
-    // doesn't reliably track the soft keyboard on Android Chrome —
-    // without this, the keyboard overlaps the prompt and the player
-    // can't see what they're typing.
+    // Set --vh to the live visual viewport height so <main> (and the
+    // terminal inside it) tracks the soft keyboard. 100dvh in CSS
+    // doesn't reliably update on Android Chrome when the keyboard
+    // pops up. A scroll-buffer div below <main> gives the player a
+    // manual escape hatch — swipe up to reveal anything the keyboard
+    // covered.
     const vv = window.visualViewport;
     const viewW = vv ? vv.width  : window.innerWidth;
     const viewH = vv ? vv.height : window.innerHeight;
     if (!viewW || !viewH) return;
-    document.body.style.height = viewH + "px";
-    // Undo any iOS auto-scroll that pushed content above the keyboard.
-    window.scrollTo(0, 0);
+    document.documentElement.style.setProperty("--vh", viewH + "px");
 
     // Now read the actual terminal element dimensions (post-layout).
     const w = terminalEl.clientWidth || viewW;

@@ -16,6 +16,10 @@
   <main>
     <div id="terminal"></div>
   </main>
+  <!-- Scrollable buffer below the terminal. If the keyboard ever
+       covers the prompt despite the visualViewport-aware refit,
+       the player can swipe up to reveal what's hidden. -->
+  <div id="scroll-buffer"></div>
 
   <!-- xterm.js + addons self-hosted under vendor/ so the page works on
        phones that can't reach unpkg.com (captive portals, dead TLS,
