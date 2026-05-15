@@ -3,7 +3,8 @@ HINT -- phase 3 (msfconsole)
 
 THE FOUR COMMANDS
 ─────────────────
-Module and callback are preloaded. Type these in order:
+Module and callback are preloaded. Type the following in the
+terminal, one line at a time:
 
     msfconsole
     set RHOSTS 10.4.12.1

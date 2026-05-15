@@ -22,6 +22,8 @@
   against known software versions. When it finds something, it
   shouts.
 
+  Type the following in the terminal, one line at a time:
+
       cd nikto
       nikto -h http://10.4.12.88:8080/
 

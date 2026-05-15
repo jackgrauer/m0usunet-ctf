@@ -13,6 +13,8 @@ mounted at /mnt/exec/. The IC memo we want is at:
 
 ─── do this ──────────────────────────────────────────────────────
 
+Type the following in the terminal, one line at a time:
+
     msfconsole
     set RHOSTS 10.4.12.1
     exploit

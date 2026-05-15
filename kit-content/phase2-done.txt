@@ -26,6 +26,8 @@
   Most pentest workflows end here: nmap finds it, a scanner
   fingerprints it, metasploit walks through the door.
 
+  Type the following in the terminal, one line at a time:
+
       cd msf
       cat brief
 

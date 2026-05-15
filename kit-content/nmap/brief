@@ -4,6 +4,8 @@ Find a host that's exposed to the outside but clearly meant to stay
 internal -- a staging box, a forgotten test server. That's the back
 office.
 
+Type the following in the terminal:
+
     nmap 10.4.12.0/24
 
 That's the only command you need. The scan will surface the
