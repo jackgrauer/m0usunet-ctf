@@ -95,7 +95,7 @@ EOF
 while :; do
   printf "${PROMPT} ${DIM}enter password:${R} "
   read -r PW </dev/tty
-  if [ "$PW" = "4123" ]; then
+  if [ "$PW" = "4161" ]; then
     printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
@@ -212,7 +212,7 @@ printf "${GREEN_DIM}operator returning from m0usunet shell...${R}\n\n"
 while :; do
   printf "${PROMPT} ${DIM}enter password to proceed to TASK 3:${R} "
   read -r PW </dev/tty
-  if [ "$PW" = "4123" ]; then
+  if [ "$PW" = "1736" ]; then
     printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
@@ -241,7 +241,7 @@ EOF
 while :; do
   printf "${PROMPT} ${DIM}enter password to proceed to TASK 4:${R} "
   read -r PW </dev/tty
-  if [ "$PW" = "4123" ]; then
+  if [ "$PW" = "3750" ]; then
     printf "${GREEN}[OK]${R} accepted\n\n"
     break
   fi
