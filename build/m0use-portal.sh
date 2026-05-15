@@ -304,3 +304,13 @@ ${DIM}A reminder: the CEO's son-in-law will receive the position anyway.${R}
 EOF
 
 touch "$STATE_DIR/.portal_done"
+
+# Hold the final screen indefinitely. There's no next step after
+# ASSESSMENT COMPLETE -- the applicant closes the browser tab when
+# they're done reading. We don't drop back to a bash prompt; there
+# is nothing for them to do at a shell, and the prompt would imply
+# otherwise. The read loop swallows stray Enter presses so the
+# cursor stays put on the final screen.
+while :; do
+  read -r _ </dev/tty 2>/dev/null || break
+done
