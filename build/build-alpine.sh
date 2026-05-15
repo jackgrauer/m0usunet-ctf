@@ -74,11 +74,13 @@ cp "$ROOT/build/m0use-help.sh"       "$TMP/usr/local/bin/help"
 cp "$ROOT/build/m0use-restart.sh"    "$TMP/usr/local/bin/restart"
 cp "$ROOT/build/m0use-replay.sh"     "$TMP/usr/local/bin/replay"
 cp "$ROOT/build/m0use-wrap.py"       "$TMP/usr/local/bin/wrap"
+cp "$ROOT/build/m0use-colorize.py"   "$TMP/usr/local/bin/m0use-colorize"
 chmod 755 "$TMP/usr/local/bin/answer" \
           "$TMP/usr/local/bin/help" \
           "$TMP/usr/local/bin/restart" \
           "$TMP/usr/local/bin/replay" \
-          "$TMP/usr/local/bin/wrap"
+          "$TMP/usr/local/bin/wrap" \
+          "$TMP/usr/local/bin/m0use-colorize"
 # `answer` aliases so old prose / muscle memory still works.
 ln -sf answer "$TMP/usr/local/bin/apply"
 ln -sf answer "$TMP/usr/local/bin/check"

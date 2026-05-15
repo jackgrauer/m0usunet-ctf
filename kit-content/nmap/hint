@@ -1,0 +1,26 @@
+HINT -- phase 1 (nmap)
+══════════════════════════════════════════════════════════════════
+
+WHAT TO LOOK FOR
+────────────────
+The giveaway is usually in the language. Words in a hostname that
+mark something as staff-only:
+
+    internal     private      staging     legacy
+    admin        old          backup      test
+
+If any of those words show up on a host that's visible from the
+outside, somebody screwed up. That's your target.
+
+WHERE TO LOOK
+─────────────
+Look at the hostnames in your scan, and also at the lines right
+under each hostname. Most hosts on this scan don't have anything
+between their name and their port list -- but one does.
+
+HOW TO SUBMIT
+─────────────
+Type the host name or the IP straight at the prompt and hit Enter:
+
+    10.4.12.88
+    jenkins-old

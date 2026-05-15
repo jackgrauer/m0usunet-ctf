@@ -15,7 +15,16 @@ mkfs.ext4 -F -O ^has_journal -L M0USUNET_KIT "$OUT"
 TMP=$(mktemp -d)
 LOOP=$(losetup -f --show "$OUT")
 mount "$LOOP" "$TMP"
-cp -r "$SRC"/BRIEFING "$SRC"/01_nmap "$SRC"/02_nikto "$SRC"/03_metasploit "$TMP"/
+cp -r "$SRC"/briefing "$SRC"/nmap "$SRC"/nikto "$SRC"/burp "$SRC"/msf "$TMP"/
+
+# Case-fold safety: players type `cat readme` or `cat README` from
+# habit. The canonical names are lowercase; add uppercase symlinks
+# so both work. Same for briefing.
+for d in "$TMP"/nmap "$TMP"/nikto "$TMP"/msf; do
+  [ -e "$d/readme" ] && ln -sf readme "$d/README"
+done
+[ -e "$TMP/briefing" ] && ln -sf briefing "$TMP/BRIEFING"
+
 chown -R 0:0 "$TMP"
 sync
 umount "$TMP"

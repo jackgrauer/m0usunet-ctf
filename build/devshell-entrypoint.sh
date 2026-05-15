@@ -52,9 +52,9 @@ cp /work/kit-content/phase3-done.txt  /etc/m0use.phase3.done
 
 # Kit at /mnt/kit. Symlinks point at the read-only host mount so
 # live edits to kit-content/ show up immediately on the next run.
-ln -sfn /work/kit-content/01_nmap        /mnt/kit/01_nmap
-ln -sfn /work/kit-content/02_nikto        /mnt/kit/02_nikto
-ln -sfn /work/kit-content/03_metasploit  /mnt/kit/03_metasploit
+ln -sfn /work/kit-content/nmap        /mnt/kit/nmap
+ln -sfn /work/kit-content/nikto        /mnt/kit/nikto
+ln -sfn /work/kit-content/msf  /mnt/kit/msf
 cp /work/kit-content/BRIEFING            /mnt/kit/BRIEFING
 
 # Fake crazy.ants network -- same IPs the m0usenet initd sets up.

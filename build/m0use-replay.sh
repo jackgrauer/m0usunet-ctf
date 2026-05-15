@@ -4,7 +4,7 @@
 
 [ -z "$1" ] && { echo "usage: replay <N>          (N = capture number, e.g. 17)"; exit 1; }
 N=$(printf '%03d' "$1" 2>/dev/null) || N="$1"
-FILE="/mnt/kit/02_burp/req_${N}.txt"
+FILE="/mnt/kit/burp/req_${N}.txt"
 if [ ! -f "$FILE" ]; then
   echo "replay: no capture matching #$N"; exit 1
 fi

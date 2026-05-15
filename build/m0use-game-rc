@@ -1,6 +1,6 @@
 # m0use-game-rc -- sourced by the interactive bash subshell that runs
 # during TASK 2 of the portal. Sets a colored prompt, lands the
-# player in /mnt/kit/01_nmap, prints the recon intro, and aliases
+# player in /mnt/kit/nmap, prints the recon intro, and aliases
 # `continue` to `exit` so they have an obvious way out.
 
 HANDLE=$(cat /root/.operator 2>/dev/null)
@@ -14,7 +14,12 @@ alias ll='ls -la'
 alias l='ls'
 alias continue='exit'
 
-cd /mnt/kit/01_nmap 2>/dev/null
+# CDPATH so the player can `cd nikto` from anywhere in the kit
+# without typing the absolute path. With this set, bash searches
+# /mnt/kit first when resolving a relative `cd`.
+export CDPATH="/mnt/kit:."
+
+cd nmap 2>/dev/null
 
 # Catch bare findings typed straight at the prompt. The player types
 # `10.4.12.88` or `jenkins-old` and bash can't find a binary by that

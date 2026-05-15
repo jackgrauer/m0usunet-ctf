@@ -16,37 +16,43 @@
 
   ─── next ──────────────────────────────────────────────────────────
 
-  We'll use nikto to fingerprint the host and learn its version.
-  Nikto is a web vulnerability scanner -- perl, small, classic. You
-  point it at a host and it runs thousands of probes against known
-  software versions, dangerous endpoints, misconfigurations, default
-  credentials. When it finds something, it shouts.
+  We'll use nikto to fingerprint the host and learn its exact
+  version number. nikto is a web vulnerability scanner -- perl,
+  small, classic. Point it at a host, it runs thousands of probes
+  against known software versions and noisy endpoints. When it
+  finds something, it shouts.
 
-  Type each of these three commands in order, one at a time, hitting
-  Enter after each. The first one moves you into the right folder;
-  the second runs the scan; the third shows you the CVE table.
+  Type each of these three commands in order, one at a time,
+  hitting Enter after each:
 
-      1.  cd /mnt/kit/02_nikto
-      2.  nikto -h http://<the IP you just identified>:8080/
+      1.  cd nikto
+      2.  nikto -h http://<the IP you identified above using nmap>:8080/
       3.  cat advisories
 
-  nikto will tell you the Jenkins version on the host. The
-  advisories file is a table of known CVEs.
+  Now we have to find a CVE that does two things at once:
+
+    (a) it has to apply to the EXACT VERSION of Jenkins nikto
+        just reported.
+
+    (b) it has to grant us INTERNAL CONTROL of that server
+        without us having to log in -- because we don't have
+        credentials. Anything requiring a login is useless to us.
+        Anything that's just info disclosure or XSS gets us
+        information but no way to actually run commands.
+
+  Lining up (a) and (b) means we have a known, public exploit
+  that turns our outside view of the box into a shell on the
+  inside. That's the door.
 
   A CVE (Common Vulnerabilities and Exposures) is just a public
-  catalog number for a known software bug. Every serious bug
-  somebody publishes gets one -- CVE-YYYY-NNNNNN -- and the catalog
-  records what software it affects, what versions, what kind of
-  attack it enables (info disclosure, RCE, etc.), and whether it
-  needs login credentials to exploit. The advisories file is a
-  slice of that catalog.
+  catalog number for a known software bug. Every serious bug gets
+  one -- CVE-YYYY-NNNNNN -- and the catalog records what software
+  it affects, what versions, what kind of attack it enables, and
+  whether it needs login credentials.
 
-  Your job is to find the one CVE that BOTH (a) covers the Jenkins
-  version nikto reported AND (b) gives us unauthenticated RCE -- we
-  don't have credentials, so any bug that requires login is
-  useless. Only one row in the table fits both.
+  Only one row in the advisories table fits both (a) and (b).
 
-  When you find it, type that CVE id at the prompt and hit Enter.
+  When you find it, type the CVE id at the prompt and hit Enter.
 
   Stuck?  cat hint  -- no penalty.
 

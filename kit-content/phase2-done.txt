@@ -36,8 +36,8 @@
   Enter after each. The first moves you into the phase 3 folder;
   the second prints the briefing for the metasploit walk.
 
-      1.  cd /mnt/kit/03_metasploit
-      2.  cat README
+      1.  cd msf
+      2.  cat readme
 
   Stuck?  cat hint  -- no penalty.
 

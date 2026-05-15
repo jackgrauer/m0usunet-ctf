@@ -199,14 +199,27 @@
     // OpenRC banner.
     s = s.replace(/^(\s*)(OpenRC \S+ is starting up Linux .*)$/, '$1\x1b[1;33m$2\x1b[0m');
     s = s.replace(/^(\s*)(Alpine Init \S+)/, '$1\x1b[1;36m$2\x1b[0m');
-    // Leading "* " of an OpenRC step → bold cyan.
+    // Leading "* " of an OpenRC / m0use-bootstrap step → bold cyan.
     s = s.replace(/^(\s*)\*( )/, '$1\x1b[1;36m*\x1b[0m$2');
-    // "[ ok ]" → bold green.  "[ !! ]" / FAIL → red.
-    s = s.replace(/\[ ok \]/g, '\x1b[1;32m[ ok ]\x1b[0m');
+    // [OK] / [ok] / [ ok ] → bold green.  [!!] / FAIL → red.
+    s = s.replace(/\[\s*(?:OK|ok)\s*\]/g, '\x1b[1;32m[ ok ]\x1b[0m');
     s = s.replace(/\[\s*(?:!!|fail|FAIL)\s*\]/g, '\x1b[1;31m[ !! ]\x1b[0m');
     // Standalone "ok." → green.
     s = s.replace(/^(\s*Mounting root:\s*)(ok\.)/, '$1\x1b[1;32m$2\x1b[0m');
     s = s.replace(/^(\s*Loading boot drivers:\s*)(ok\.)/, '$1\x1b[1;32m$2\x1b[0m');
+    // m0use-bootstrap banner lines ("m0usunet 0.9.7 / busybox-init...",
+    // "m0usunet ready. Welcome to Field Operations.") → bold gold.
+    s = s.replace(/^(\s*m0usunet [^\n]*starting up.*)$/, '\x1b[1;33m$1\x1b[0m');
+    s = s.replace(/^(\s*m0usunet ready[^\n]*)$/, '\x1b[1;33m$1\x1b[0m');
+    // Welcome to / Field Operations → white-bold inside the banner line.
+    s = s.replace(/(Welcome to Field Operations\.?)/, '\x1b[1;37m$1\x1b[0m');
+    // Highlight IP addresses anywhere they appear in boot output → bold white.
+    s = s.replace(/(\b(?:\d{1,3}\.){3}\d{1,3}\b)/g, '\x1b[1;37m$1\x1b[0m');
+    // Highlight common file-system + device paths in boot output.
+    s = s.replace(/(\/dev\/(?:sda|sdb|loop\d+|nbd\d+|null|tty\S*))/g, '\x1b[1;35m$1\x1b[0m');
+    s = s.replace(/(\/(?:proc|sys|dev|run|tmp|mnt\/kit)\b)/g, '\x1b[0;35m$1\x1b[0m');
+    // Sizes ("128 MB", "256 MB") → cyan-dim.
+    s = s.replace(/\b(\d+(?:\.\d+)?\s*(?:KB|MB|GB|bytes?))\b/g, '\x1b[0;36m$1\x1b[0m');
     // Subsystem prefixes after a kernel timestamp.
     s = s.replace(/(\x1b\[0m\s+)(EXT4-fs[^:]*:|sd \d+:\d+:\d+:\d+: \[\w+\]|cdrom:|scsi \d+:\d+:\d+:\d+:|ata\d+(?:\.\d+)?:)/, '$1\x1b[1;36m$2\x1b[0m');
     s = s.replace(/(\x1b\[0m\s+)(pci \S+|PCI:|clocksource:|usb \d+-\d+:)/, '$1\x1b[1;35m$2\x1b[0m');
