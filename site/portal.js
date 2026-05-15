@@ -70,9 +70,11 @@ ${DIM}Return to this terminal and enter the password to log in.${R}
 
   // ── name prompt ───────────────────────────────────────────────────
   async function namePrompt(io, prefill) {
-    io.write(`\n${DIM}Pick a callsign. This is the name the assessment will use to${R}\n`);
-    io.write(`${DIM}address you. Or just press Enter to keep the random one we${R}\n`);
-    io.write(`${DIM}already gave you: ${R}${CYAN}${prefill}${R}${DIM}.${R}\n\n`);
+    io.write("\n");
+    io.writeWrapped(
+`${DIM}Pick a callsign. This is the name the assessment will use to address you. Or just press Enter to keep the random one we already gave you: ${R}${CYAN}${prefill}${R}${DIM}.${R}
+`);
+    io.write("\n");
     const input = await io.readline({
       prompt: `${PROMPT} ${DIM}your callsign (press Enter for ${R}${CYAN}${prefill}${R}${DIM}):${R} `,
     });
