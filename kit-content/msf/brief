@@ -5,41 +5,36 @@ tool:  msfconsole
 You found the bug in phase 2: CVE-2018-1000861, unauth RCE in
 Jenkins 2.121.1. Now we walk through it.
 
-The blueprint we want is on the Jenkins host at:
+Your job: use the metasploit module for this CVE to pop a shell on
+the Jenkins box and read the file at:
 
     /var/m0use/blueprint.txt
-
-Your job: use the metasploit module for this CVE to pop a shell on
-the Jenkins box, read that file, and submit the flag.
 
 
 YOUR WALK
 ─────────
-We've preloaded the module and your callback address for this
-engagement, so you only have to do the parts that matter -- point
-at the target and fire. Five commands:
+We've preloaded the module and your callback address. You only do
+the parts that carry the lesson -- point at the target, fire, read.
+Four commands:
 
     1.  msfconsole
     2.  set RHOSTS 10.4.12.1
     3.  exploit
     4.  cat /var/m0use/blueprint.txt
-    5.  exit
 
 Step 1 enters metasploit. The prompt changes to:
 
     msf6 exploit(multi/http/jenkins_metaprogramming) >
 
 Step 2 tells metasploit where the target is. Step 3 fires it --
-metasploit runs a check first, then sends the payload, then opens
-a reverse shell. The prompt goes blank: you're now typing as the
-jenkins user on the Jenkins box.
+metasploit auto-checks, sends the payload, opens a reverse shell.
+The prompt goes blank: you're on the Jenkins box now, typing as
+the jenkins user.
 
-Step 4 reads the blueprint. The flag is on the line that starts
-with "Flag:" -- copy the value from inside m0use{...}.
-
-Step 5 closes the session and leaves metasploit. You're back at
-the m0usenet prompt. Type the flag value (no m0use{...} wrap, no
-keyword, just the value) and hit Enter.
+Step 4 reads the blueprint. That's the win. The narrative takes
+over -- press Enter through the screens. When it's done you'll be
+back at the m0usenet prompt; type `continue` to leave and report
+to HQ for TASK 3.
 
 
 THE BIG PICTURE

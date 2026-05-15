@@ -30,11 +30,3 @@ Master compounding formula (proprietary):
 
 Regulatory status: pending OSHA review on contract facilities.
 SDS sheets withheld at counsel's direction.
-
-──────────────────────────────────────────────────────────────────
-
-  Flag: m0use{jenkins_was_a_mistake}
-
-──────────────────────────────────────────────────────────────────
-
-Type this at the prompt to submit:  jenkins_was_a_mistake

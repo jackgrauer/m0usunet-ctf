@@ -1,32 +1,24 @@
 HINT -- phase 3 (msfconsole)
 ══════════════════════════════════════════════════════════════════
 
-THE FIVE COMMANDS
+THE FOUR COMMANDS
 ─────────────────
-Module and callback are preloaded for you. Type these in order,
-one at a time:
+Module and callback are preloaded. Type these in order, one at
+a time:
 
     msfconsole
     set RHOSTS 10.4.12.1
     exploit
     cat /var/m0use/blueprint.txt
-    exit
 
 WHAT YOU'LL SEE
 ───────────────
 After `exploit` you'll see "Command shell session 1 opened" and
-the prompt goes blank. You're on the Jenkins box -- typing as the
-jenkins user.
+the prompt goes blank. You're on the Jenkins box.
 
-After `cat /var/m0use/blueprint.txt` the flag is on the line that
-starts with "Flag:". Copy what's inside m0use{...}.
+After `cat /var/m0use/blueprint.txt`, the payoff sequence plays.
+Press Enter through three screens (the memo, the analysis, the
+debrief). The game advances automatically -- no flag to type.
 
-After `exit` you're back at the m0usenet prompt (one exit closes
-the session AND leaves metasploit).
-
-HOW TO SUBMIT
-─────────────
-Type the flag value at the m0usenet prompt (no m0use{...} wrap, no
-keyword):
-
-    jenkins_was_a_mistake
+When it lets you out, you're back at the m0usenet prompt. Type
+`continue` to leave and report to HQ.

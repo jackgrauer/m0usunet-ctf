@@ -54,6 +54,122 @@ VALID_RHOSTS = {"10.4.12.1", "gw.crazy.ants",
                 "legacy-build-03.crazy.ants"}
 
 
+# ─── post-exploit payoff: triggered by `cat /var/m0use/blueprint.txt`
+#     inside the session. Three screens, press-Enter gated, then
+#     auto-submits the flag and exits all the way out.
+YOU_IN_BANNER = f"""
+{GREEN_B}═══════════════════════════════════════════════════════════════════{R}
+{GREEN_B}  YOU'RE IN.{R}
+{GREEN_B}═══════════════════════════════════════════════════════════════════{R}
+
+  The Jenkins box has a fileshare mounted from the executive
+  network. Sitting on top of it: an Investment Committee memo for
+  an operation they call {GOLD_B}OPERATION PARMESAN ROSE{R}.
+
+  Reading...
+"""
+
+IC_MEMO = f"""
+═══════════════════════════════════════════════════════════════════
+{RED_B}CRAZY ANTS — FRAGRANCE COMPOUNDER SUBSIDIARY{R}
+{DIM}INTERNAL DOCUMENT — DO NOT DISTRIBUTE{R}
+═══════════════════════════════════════════════════════════════════
+
+Project:           FY Q3 2026 — Hotel Fragrances Roll-up
+Status:            {GREEN_B}ACTIVE{R}
+Authorized by:     Pemberton (Acting CFO)
+Filed:             2026-04-18
+
+Subsidiaries acquired (Q1-Q2 2026):
+  • Aunt Mary's Candle Loft (Trenton, NJ)
+  • Bayard St. Botanicals (Philadelphia, PA)
+  • Hollow Reed Co. (Newark, NJ)
+  • Pine Box Apothecary (Camden, NJ)
+  • Linden & Yew Soaperie (Allentown, PA)
+
+Target chains (Q3 2026):
+  • 71x Yankee Candle mall kiosks (negotiations open)
+  • Bath & Body Works hotel-amenity contracts (term sheet draft)
+  • 14 independent crafters across Mischief City (LoI signed)
+
+Cover branding to retain at point-of-sale:
+  "SAME ARTISAN QUALITY, NEW OWNERSHIP"
+
+Master compounding formula (proprietary):
+  Base:   ethanolamine + isothiazolinone (industrial)
+  Top:    synthetic rose accord, fougère undertones
+  Note:   undisclosed phthalate carrier (cost optimization)
+
+Regulatory status: pending OSHA review on contract facilities.
+SDS sheets withheld at counsel's direction.
+"""
+
+SIGNIFICANCE = f"""
+{GOLD_B}WHAT YOU JUST READ{R}
+{DIM}──────────────────{R}
+
+  That's the deck. The Ants are quietly buying every artisan
+  candle and soap brand in the corridor, swapping the actual
+  formulas for industrial ethanolamine and an undisclosed
+  phthalate carrier, and shipping under the original boutique
+  labels.
+
+  "SAME ARTISAN QUALITY, NEW OWNERSHIP" isn't marketing. It's
+  the substitution disclosure, buried in point-of-sale language
+  nobody reads.
+
+  The respiratory clusters at the urgent-care clinics aren't a
+  coincidence. They're the cost optimization.
+
+  This is what the back-office Jenkins box was for. Now Mouse
+  Bites Inc. has it.
+"""
+
+DEBRIEF = f"""
+{GOLD_B}OPERATION PARMESAN ROSE — DEBRIEF{R}
+{GREEN_B}═════════════════════════════════{R}
+{DIM}How Mouse Bites took the contra side:{R}
+
+  • Choke point: every Ants fragrance SKU ships in wicker.
+  • We cornered the wicker float — five producers, Lancaster
+    to Doylestown, three weeks. Long every basket weaver in
+    the corridor.
+  • Pulled the bid. No street inventory left.
+  • Ants now sitting on {WHITE_B}50 tons of phthalate potpourri{R} at
+    the Camden warehouse, no packaging exit. Working capital
+    frozen.
+  • Bid/ask collapsed. Mark to market: zero. They're holding
+    the bag.
+
+  Distribution arb dead. We squeezed it through supply.
+
+  The Editor has the FOIA package and a list of the candle
+  brands that are actually still candles. Press goes Friday.
+
+  Your part is done.
+"""
+
+
+def press_enter(prompt_text=""):
+    sys.stdout.write(prompt_text)
+    sys.stdout.flush()
+    try:
+        input()
+    except (EOFError, KeyboardInterrupt):
+        sys.stdout.write("\n")
+
+
+def show_blueprint_payoff():
+    sys.stdout.write(YOU_IN_BANNER)
+    time.sleep(0.4)
+    sys.stdout.write(IC_MEMO)
+    press_enter(f"\n  {DIM}Press {WHITE_B}Enter{R}{DIM} for the situation analysis.{R}")
+    sys.stdout.write(SIGNIFICANCE)
+    press_enter(f"\n  {DIM}Press {WHITE_B}Enter{R}{DIM} for the Mouse Bites debrief.{R}")
+    sys.stdout.write(DEBRIEF)
+    press_enter(f"\n  {DIM}Press {WHITE_B}Enter{R}{DIM} to leave m0usunet and report to HQ.{R}")
+
+
 def banner():
     sys.stdout.write(
 f"""
@@ -309,7 +425,7 @@ def do_exploit(state):
     sys.stdout.write(f"[*] {GREEN_B}Command shell session 1 opened{R} ({lhost}:{lport} -> {rhost}:{rport}) at {now}\n\n")
     state["session"] = 1
     sys.stdout.write(f"{DIM}you are now executing commands as the jenkins service account on the target.{R}\n")
-    sys.stdout.write(f"{DIM}try:{R}  {CYAN_B}id{R}   {CYAN_B}cat /var/m0use/blueprint.txt{R}   {CYAN_B}exit{R}  (to leave the session)\n\n")
+    sys.stdout.write(f"{DIM}try:{R}  {CYAN_B}cat /var/m0use/blueprint.txt{R}   {DIM}(that's the goal){R}\n\n")
 
 
 def do_sessions(state):
@@ -364,9 +480,22 @@ def run_session(state):
         if line == "pwd":
             sys.stdout.write("/var/lib/jenkins\n")
             continue
+        # Win condition: reading the blueprint triggers the payoff
+        # sequence. Don't pass through to /bin/sh -- we replace the
+        # raw file dump with the gated multi-screen narrative, then
+        # auto-submit the flag and cascade out so the player doesn't
+        # have to manually copy/paste anything.
+        if "blueprint.txt" in line and "cat" in line:
+            show_blueprint_payoff()
+            try:
+                subprocess.run(["/usr/local/bin/answer", "jenkins_was_a_mistake"], timeout=5)
+            except Exception:
+                pass
+            state["session"] = None
+            state["exit_after_session"] = True
+            return
         # Pass anything else through to /bin/sh -- `cat`, `ls`, `head`,
-        # etc. all work, which means `cat /var/m0use/blueprint.txt`
-        # prints the real flag file.
+        # etc. all work for poking around the box.
         try:
             r = subprocess.run(["/bin/sh", "-c", line], capture_output=True, text=True, timeout=10)
             sys.stdout.write(r.stdout)
@@ -374,11 +503,6 @@ def run_session(state):
                 sys.stdout.write(r.stderr)
         except subprocess.TimeoutExpired:
             sys.stdout.write("[!] command timed out\n")
-        # Nudge the player toward the exit once they've actually read
-        # the blueprint -- otherwise they wander around the session
-        # looking for what to do next.
-        if "blueprint.txt" in line and "cat" in line:
-            sys.stdout.write(f"\n{DIM}[*] Got the flag? Type {CYAN_B}exit{R}{DIM} to leave metasploit and submit it at the m0usenet prompt.{R}\n")
 
 
 # ─── main REPL ─────────────────────────────────────────────────────
