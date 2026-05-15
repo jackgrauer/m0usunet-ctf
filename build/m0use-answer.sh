@@ -56,13 +56,13 @@ match_phase() {
 
 if   match_phase /etc/m0use.flags1; then
   printf '\n\n\n\033[1;32m[OK] finding accepted.\033[0m\n'
-  /usr/local/bin/m0use-colorize < /etc/m0use.phase1.done
+  /usr/local/bin/m0use-colorize /etc/m0use.phase1.done
 elif match_phase /etc/m0use.flags2; then
   printf '\n\n\n\033[1;32m[OK] finding accepted.\033[0m\n'
-  /usr/local/bin/m0use-colorize < /etc/m0use.phase2.done
+  /usr/local/bin/m0use-colorize /etc/m0use.phase2.done
 elif match_phase /etc/m0use.flags3; then
   printf '\n\n\n\033[1;32m[OK] finding accepted.\033[0m\n'
-  /usr/local/bin/m0use-colorize < /etc/m0use.phase3.done
+  /usr/local/bin/m0use-colorize /etc/m0use.phase3.done
 else
   printf '\033[1;31m[!!] not quite\033[0m (read as %s). try again, or \033[1;36mcat hint\033[0m if stuck.\n' "$INPUT"
 fi

@@ -109,7 +109,10 @@ done
 PREFILL=$(cat /root/.operator 2>/dev/null)
 [ -z "$PREFILL" ] && PREFILL="cadet"
 
-printf "${PROMPT} ${DIM}operator handle${R} ${GREY}[blank = ${PREFILL}]${R}${DIM}:${R} "
+printf "\n${DIM}Pick a callsign. This is the name the assessment will use to${R}\n"
+printf "${DIM}address you. Or just press Enter to keep the random one we${R}\n"
+printf "${DIM}already gave you: ${R}${CYAN}${PREFILL}${R}${DIM}.${R}\n\n"
+printf "${PROMPT} ${DIM}your callsign (press Enter for ${R}${CYAN}${PREFILL}${R}${DIM}):${R} "
 read -r HANDLE </dev/tty
 HANDLE=$(echo "$HANDLE" | tr -cd 'A-Za-z0-9_-' | cut -c1-24)
 [ -z "$HANDLE" ] && HANDLE="$PREFILL"

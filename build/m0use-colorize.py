@@ -65,9 +65,21 @@ def colorize(line: str) -> str:
 
 
 def main() -> int:
+    # Read content from argv[1] if given, else stdin. Reading from
+    # argv keeps stdin free for the player's Enter keypress at the
+    # press-Enter gate -- otherwise input() races against the file
+    # contents, sees EOF immediately, and the gate aborts without
+    # showing the post-rule text. (This was the actual bug.)
+    if len(sys.argv) > 1:
+        with open(sys.argv[1]) as f:
+            lines = f.readlines()
+    else:
+        lines = sys.stdin.readlines()
+
     pre, post = [], []
     saw_rule = False
-    for raw in sys.stdin:
+    rule_line = ""
+    for raw in lines:
         if not saw_rule and NEXT_RULE_RE.match(raw):
             saw_rule = True
             rule_line = raw
@@ -81,9 +93,12 @@ def main() -> int:
     if saw_rule:
         sys.stdout.write(f"\n  {DIM}-- Press Enter to continue --{R}")
         sys.stdout.flush()
+        # Read the keypress directly from /dev/tty so this works when
+        # the caller piped the file in (stdin already exhausted).
         try:
-            input()
-        except (KeyboardInterrupt, EOFError):
+            with open("/dev/tty") as tty:
+                tty.readline()
+        except (OSError, KeyboardInterrupt):
             sys.stdout.write("\n")
             return 0
         sys.stdout.write("\n")
