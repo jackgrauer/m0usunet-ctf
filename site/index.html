@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=block" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/xterm@5.3.0/css/xterm.css">
+  <link rel="stylesheet" href="vendor/xterm.css">
   <link rel="stylesheet" href="style.css?v=20260514vt323">
 </head>
 <body>
@@ -17,10 +17,12 @@
     <div id="terminal"></div>
   </main>
 
-  <script src="https://unpkg.com/xterm@5.3.0/lib/xterm.js"></script>
-  <script src="https://unpkg.com/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
-  <script src="https://unpkg.com/xterm-addon-search@0.13.0/lib/xterm-addon-search.js"></script>
-  <script src="https://unpkg.com/xterm-addon-web-links@0.9.0/lib/xterm-addon-web-links.js"></script>
+  <!-- xterm.js + addons self-hosted under vendor/ so the page works on
+       phones that can't reach unpkg.com (captive portals, dead TLS,
+       slow CDN edges). -->
+  <script src="vendor/xterm.js"></script>
+  <script src="vendor/xterm-addon-search.js"></script>
+  <script src="vendor/xterm-addon-web-links.js"></script>
   <script src="nicks.js"></script>
   <script src="io.js"></script>
   <script src="portal.js"></script>

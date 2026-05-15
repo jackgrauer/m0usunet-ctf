@@ -13,8 +13,21 @@
 (async function () {
   "use strict";
 
-  if (typeof Terminal === "undefined" || typeof window.M0useIO === "undefined") {
-    document.body.textContent = "required libraries missing";
+  // Identify which dep failed so phone diagnostics aren't a guess.
+  const missing = [];
+  if (typeof Terminal === "undefined")           missing.push("xterm.js (Terminal)");
+  if (typeof window.M0useIO === "undefined")     missing.push("io.js (M0useIO)");
+  if (typeof window.M0usePortal === "undefined") missing.push("portal.js (M0usePortal)");
+  if (typeof window.M0useNicks === "undefined")  missing.push("nicks.js (M0useNicks)");
+  if (missing.length) {
+    document.body.innerHTML =
+      "<pre style='color:#c8ffc8;background:#000;padding:1em;font:14px monospace'>" +
+      "[m0usunet] required libraries failed to load:\n  - " +
+      missing.join("\n  - ") +
+      "\n\nLikely causes: blocked network (corporate proxy, captive portal),\n" +
+      "old TLS that can't reach the host, or a stale browser cache.\n\n" +
+      "Try: full reload, switch network, or another browser." +
+      "</pre>";
     return;
   }
 
