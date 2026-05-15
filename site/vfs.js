@@ -7,15 +7,21 @@
 (function () {
   "use strict";
 
-  function range(n, fmt) {
-    const out = {};
-    for (let i = 1; i <= n; i++) out[fmt(i)] = i;
-    return out;
-  }
-
   function f(url) { return { type: "file", url }; }
   function d(children) { return { type: "dir", children }; }
   function sym(target) { return { type: "symlink", target }; }
+
+  // Helper: build a flat children object from a count + name fn + url fn.
+  // Replaces Object.fromEntries (Chrome 73+, Safari 12.1+) with a
+  // plain loop so the vfs tree initializes on older mobile browsers.
+  function dirOfNumbered(count, nameFn, urlFn) {
+    const out = {};
+    for (let i = 1; i <= count; i++) {
+      const name = nameFn(i);
+      out[name] = f(urlFn(name));
+    }
+    return out;
+  }
 
   // Static tree. Symlink targets resolve relative to their parent.
   const TREE = {
@@ -33,31 +39,30 @@
           advisories: f("kit-content/nikto/advisories"),
           hint:       f("kit-content/nikto/hint"),
         }),
-        burp: d(Object.assign(
-          { hint: f("kit-content/burp/hint") },
-          Object.fromEntries(
-            Array.from({ length: 20 }, (_, i) => {
-              const n = `req_${String(i + 1).padStart(3, "0")}.txt`;
-              return [n, f(`kit-content/burp/${n}`)];
-            })
-          )
-        )),
+        burp: (function () {
+          const c = { hint: f("kit-content/burp/hint") };
+          const items = dirOfNumbered(
+            20,
+            (i) => "req_" + String(i).padStart(3, "0") + ".txt",
+            (n) => "kit-content/burp/" + n
+          );
+          for (const k in items) c[k] = items[k];
+          return d(c);
+        })(),
         msf: d({
           brief:  f("kit-content/msf/brief"),
           hint:   f("kit-content/msf/hint"),
           BRIEF:  sym("brief"),
           readme: sym("brief"),
-          modules: d(Object.fromEntries(
-            Array.from({ length: 15 }, (_, i) => {
-              const n = `mod_${String(i + 1).padStart(2, "0")}.txt`;
-              return [n, f(`kit-content/msf/modules/${n}`)];
-            })
+          modules: d(dirOfNumbered(
+            15,
+            (i) => "mod_" + String(i).padStart(2, "0") + ".txt",
+            (n) => "kit-content/msf/modules/" + n
           )),
-          payloads: d(Object.fromEntries(
-            Array.from({ length: 8 }, (_, i) => {
-              const n = `pay_${String(i + 1).padStart(2, "0")}.txt`;
-              return [n, f(`kit-content/msf/payloads/${n}`)];
-            })
+          payloads: d(dirOfNumbered(
+            8,
+            (i) => "pay_" + String(i).padStart(2, "0") + ".txt",
+            (n) => "kit-content/msf/payloads/" + n
           )),
         }),
       }),

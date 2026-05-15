@@ -6,12 +6,21 @@
 (function () {
   "use strict";
 
-  // Catch the typical paste-of-doom and bracketed-paste markers.
+  // Catch the typical paste-of-doom and bracketed-paste markers,
+  // plus the iOS / Android autocorrect substitutions that mangle
+  // commands ('cat' typed as "Cat", quotes turned into smart quotes,
+  // double-hyphen turned into em-dash). The terminal expects ASCII.
   function sanitize(data) {
     return data
       .replace(/\r\n/g, "\r")
       .replace(/\x1b\[200~/g, "")
-      .replace(/\x1b\[201~/g, "");
+      .replace(/\x1b\[201~/g, "")
+      .replace(/[‘’]/g, "'")   // smart single quotes
+      .replace(/[“”]/g, '"')   // smart double quotes
+      .replace(/—/g, "--")          // em-dash
+      .replace(/–/g, "-")           // en-dash
+      .replace(/…/g, "...")         // ellipsis
+      .replace(/ /g, " ");          // non-breaking space
   }
 
   // ── ANSI-aware word-wrap (port of build/m0use-wrap.py) ────────────

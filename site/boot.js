@@ -101,6 +101,20 @@
   const terminalEl = document.getElementById("terminal");
   term.open(terminalEl);
 
+  // xterm renders a hidden helper textarea that catches the soft
+  // keyboard input. iOS / Android default it to autocapitalize +
+  // autocorrect + spellcheck — those mangle command names ("cat"
+  // becomes "Cat" → command not found). Turn all of it off so the
+  // bytes the terminal sees match the bytes the player typed.
+  const helper = terminalEl.querySelector(".xterm-helper-textarea");
+  if (helper) {
+    helper.setAttribute("autocapitalize", "off");
+    helper.setAttribute("autocorrect", "off");
+    helper.setAttribute("autocomplete", "off");
+    helper.setAttribute("spellcheck", "false");
+    helper.setAttribute("inputmode", "text");
+  }
+
   function refit() {
     // Set --vh to the live visual viewport so <main> tracks the soft
     // keyboard (100dvh doesn't reliably update on Android Chrome).

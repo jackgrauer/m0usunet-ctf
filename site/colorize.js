@@ -18,9 +18,12 @@
   const WHITE_B = "\x1b[1;37m";
 
   const CVE_RE = /\b(CVE[-_]\d{4}[-_]\d+)\b/g;
-  // Cyan tool / command names. Mirrors the regex in m0use-colorize.py.
+  // Cyan tool / command names. The leading boundary is a captured
+  // group (start-of-string OR a non-word char) instead of a lookbehind
+  // (?<!...) so this parses on Safari < 16.4 / iOS 16.3 and earlier.
+  // Apply via a callback that puts the captured prefix back unchanged.
   const TOOL_RE = new RegExp(
-    "(?<![A-Za-z0-9_-])" +
+    "(^|[^A-Za-z0-9_-])" +
     "(nmap|nikto|curl|msfconsole|metasploit|msf|cat|cd|ls|less|grep|" +
     "answer|hint|brief|briefing|advisories|wrap|" +
     "set|exploit|check|search|exit|continue|RHOSTS|LHOST)" +
@@ -42,7 +45,10 @@
     }
     let s = line;
     s = s.replace(CVE_RE,         GOLD_B + "$1" + R);
-    s = s.replace(TOOL_RE,        CYAN_B + "$1" + R);
+    // TOOL_RE captures a leading boundary char (or empty for start).
+    // Preserve it in the replacement so we don't eat the prefix.
+    s = s.replace(TOOL_RE, (_match, prefix, name) =>
+      prefix + CYAN_B + name + R);
     s = s.replace(PLACEHOLDER_RE, MAGENTA + "<$1>" + R);
     s = s.replace(IP_RE,          WHITE_B + "$1" + R);
     s = s.replace(OK_RE,          GREEN_B + "[OK]" + R);
