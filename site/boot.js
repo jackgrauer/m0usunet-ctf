@@ -1,27 +1,27 @@
-// boot.js — wire v86's emulated serial port to an xterm.js terminal.
-// xterm fills the page; v86 runs headless. All meta-frame flow lives
-// inside the VM (see /usr/local/bin/m0use-portal), not here.
+// boot.js — pure-JS m0usunet runtime. No emulator, no disk image.
+// Drives xterm.js directly: a fake boot animation (kernel jargon,
+// OpenRC ceremony, motd, agetty auto-login) hands off to portal.js.
+//
+// Why we ditched v86: older phone browsers (Android 8.1 / SDM660-
+// class) either OOM on the disk-into-JS-heap step or freeze on the
+// WASM JIT. The whole experience is shimmed anyway (fake-nmap,
+// fake-curl, fake-msfconsole), so the "real Linux" property was
+// paid-for-but-unused on the players' devices. This runtime keeps
+// every visible thing — the boot jargon, the prompts, the narrative,
+// the pacing — and removes the emulator that made it slow.
 
 (async function () {
   "use strict";
 
-  if (typeof V86 === "undefined" || typeof Terminal === "undefined") {
+  if (typeof Terminal === "undefined" || typeof window.M0useIO === "undefined") {
     document.body.textContent = "required libraries missing";
     return;
   }
 
-  // ?bust= on the page URL propagates to fetched VM assets so the
-  // GitHub Pages CDN can be forced to re-serve.
-  const bust = (() => {
-    const p = new URLSearchParams(location.search).get("bust");
-    return p ? `?bust=${encodeURIComponent(p)}` : "";
-  })();
-  const u = (path) => path + bust;
-
   // Wait for the terminal font so xterm doesn't measure a fallback.
   if (document.fonts && document.fonts.ready) {
     try {
-      await document.fonts.load('20px "Share Tech Mono"');
+      await document.fonts.load('20px "VT323"');
       await document.fonts.ready;
     } catch (_) {}
   }
@@ -73,12 +73,8 @@
   const terminalEl = document.getElementById("terminal");
   term.open(terminalEl);
 
-  // We pin xterm to 80 cols because that's what the VM's serial
-  // console defaults to. If the two disagree, readline redraws over
-  // the prompt when the player types past the shorter of the two
-  // widths. Instead of changing cols on resize, we scale the font
-  // size so 80 cells fit the available width — VT323's cell width
-  // is roughly 0.55 of its font size.
+  // Pin to 80 cols, scale font size to fit. VT323's cell width is
+  // roughly 0.55 of its font size.
   const COLS = 80;
   const CELL_W_RATIO = 0.55;
 
@@ -89,7 +85,7 @@
     let fontSize = Math.floor((w - 4) / COLS / CELL_W_RATIO);
     fontSize = Math.max(10, Math.min(28, fontSize));
     term.options.fontSize = fontSize;
-    const cellH = fontSize * 1.0; // lineHeight 1.0
+    const cellH = fontSize * 1.0;
     const rows = Math.max(10, Math.floor((h - 4) / cellH));
     try { term.resize(COLS, rows); } catch (_) {}
   }
@@ -98,17 +94,13 @@
   window.addEventListener("resize", refit);
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", refit);
+    window.visualViewport.addEventListener("scroll", refit);
   }
-  // iOS Safari settles its viewport over a few hundred ms (URL bar
-  // collapse, safe-area, notch). Re-run refit at a few intervals so
-  // the final layout is locked in before the VM writes much.
   for (const t of [50, 200, 500, 1200]) setTimeout(refit, t);
   if (typeof ResizeObserver !== "undefined") {
     new ResizeObserver(refit).observe(terminalEl);
   }
 
-  // Ctrl-F → search scrollback. Crude prompt() for v1; can be
-  // upgraded to an in-page search bar later.
   if (searchAddon) {
     term.attachCustomKeyEventHandler((ev) => {
       if (ev.type === "keydown" && (ev.ctrlKey || ev.metaKey) && ev.key === "f") {
@@ -121,216 +113,100 @@
     });
   }
 
-  // Tap the terminal area on mobile → focus xterm → soft keyboard.
-  terminalEl.addEventListener("click", () => {
-    term.focus();
-  });
-
-  // ── boot v86 ──────────────────────────────────────────────────────
-  let cmdline = await fetch(u("cmdline.txt"))
-    .then(r => r.ok ? r.text() : Promise.reject("no cmdline.txt"))
-    .catch(() => "root=/dev/sda rw modules=ext4 console=tty0 console=ttyS0,115200 quiet");
-  cmdline = cmdline.trim();
-
-  if (window.M0useNicks) {
-    const handle = window.M0useNicks.get();
-    if (handle) {
-      const clean = handle.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 24);
-      if (clean) cmdline += " m0use.handle=" + clean;
-    }
-  }
-
-  // Print a tiny "powering on" line into xterm before v86 starts so
-  // the player sees something while disks download.
-  term.write("\x1b[1;32m[m0usunet]\x1b[0m powering on...\r\n");
-
-  const emulator = new V86({
-    wasm_path: "v86/v86.wasm",
-    screen_container: document.getElementById("v86-headless"),
-    bios:     { url: u("v86/seabios.bin") },
-    vga_bios: { url: u("v86/vgabios.bin") },
-    bzimage:  { url: u("vmlinuz-virt"),   async: false },
-    initrd:   { url: u("initramfs-virt"), async: false },
-    cmdline:  cmdline,
-    // hda is async so v86 streams disk blocks via HTTP range requests
-    // instead of loading the whole 96 MB into JS heap up front. This
-    // is what lets the boot fit in Chrome's per-tab memory budget on
-    // older phones (Android 8.1 / SDM660-class). v86 discovers the
-    // file size with a HEAD request; GitHub Pages handles both.
-    hda:      { url: u("alpine.img"), async: true  },
-    hdb:      { url: u("kit.img"),    async: false },
-    memory_size:     128 * 1024 * 1024,
-    vga_memory_size:   4 * 1024 * 1024,
-    autostart: true,
-  });
-
-  emulator.add_listener("emulator-started", () => {
-    setTimeout(refit, 200);
-    term.focus();
-  });
-  emulator.add_listener("download-progress", (e) => {
-    if (!e || !e.file_name) return;
-    const mb = (e.loaded / 1024 / 1024).toFixed(1);
-    const name = e.file_name.split("/").pop();
-    term.write(`\r\x1b[2K\x1b[1;32m[m0usunet]\x1b[0m loading \x1b[1;36m${name}\x1b[0m — ${mb} MB`);
-  });
-
-  // ── boot-output colorizer ────────────────────────────────────────
-  // Line-buffer v86's serial bytes, regex-tag well-known kernel /
-  // OpenRC patterns with ANSI escapes, then write to xterm. Stops
-  // touching the stream once the VM hands off to a real shell (the
-  // m0usunet motd / cold-open shows up — at that point our own
-  // scripts are emitting all the ANSI we need, so we get out of
-  // the way).
-  let _lbuf = '';
-  let _flushTimer = null;
-  let _colorizeOn = true;
-
-  const ANSI_PRESENT = /\x1b\[/;
-  function colorizeLine(line) {
-    if (!_colorizeOn) return line;
-    // If the VM started writing ANSI itself, that's our cold open or
-    // a colored OpenRC line — passthrough.
-    if (ANSI_PRESENT.test(line)) {
-      // The motd/cold-open marks shell handoff. Stop colorizing.
-      if (/m0usunet v0\.9\.7|M O U S E   B I T E S|operator@mouse-bites|cadet@m0usunet|@m0usunet:|Dear Applicant/.test(line)) {
-        _colorizeOn = false;
-      }
-      return line;
-    }
-    let s = line;
-    // Kernel timestamps [    4.729255]  → dim.
-    s = s.replace(/^(\[\s*\d+\.\d+\])/, '\x1b[2m$1\x1b[0m');
-    // OpenRC banner.
-    s = s.replace(/^(\s*)(OpenRC \S+ is starting up Linux .*)$/, '$1\x1b[1;33m$2\x1b[0m');
-    s = s.replace(/^(\s*)(Alpine Init \S+)/, '$1\x1b[1;36m$2\x1b[0m');
-    // Leading "* " of an OpenRC / m0use-bootstrap step → bold cyan.
-    s = s.replace(/^(\s*)\*( )/, '$1\x1b[1;36m*\x1b[0m$2');
-    // [OK] / [ok] / [ ok ] → bold green.  [!!] / FAIL → red.
-    s = s.replace(/\[\s*(?:OK|ok)\s*\]/g, '\x1b[1;32m[ ok ]\x1b[0m');
-    s = s.replace(/\[\s*(?:!!|fail|FAIL)\s*\]/g, '\x1b[1;31m[ !! ]\x1b[0m');
-    // Standalone "ok." → green.
-    s = s.replace(/^(\s*Mounting root:\s*)(ok\.)/, '$1\x1b[1;32m$2\x1b[0m');
-    s = s.replace(/^(\s*Loading boot drivers:\s*)(ok\.)/, '$1\x1b[1;32m$2\x1b[0m');
-    // m0use-bootstrap banner lines ("m0usunet 0.9.7 / busybox-init...",
-    // "m0usunet ready. Welcome to Field Operations.") → bold gold.
-    s = s.replace(/^(\s*m0usunet [^\n]*starting up.*)$/, '\x1b[1;33m$1\x1b[0m');
-    s = s.replace(/^(\s*m0usunet ready[^\n]*)$/, '\x1b[1;33m$1\x1b[0m');
-    // Welcome to / Field Operations → white-bold inside the banner line.
-    s = s.replace(/(Welcome to Field Operations\.?)/, '\x1b[1;37m$1\x1b[0m');
-    // Highlight IP addresses anywhere they appear in boot output → bold white.
-    s = s.replace(/(\b(?:\d{1,3}\.){3}\d{1,3}\b)/g, '\x1b[1;37m$1\x1b[0m');
-    // Highlight common file-system + device paths in boot output.
-    s = s.replace(/(\/dev\/(?:sda|sdb|loop\d+|nbd\d+|null|tty\S*))/g, '\x1b[1;35m$1\x1b[0m');
-    s = s.replace(/(\/(?:proc|sys|dev|run|tmp|mnt\/kit)\b)/g, '\x1b[0;35m$1\x1b[0m');
-    // Sizes ("128 MB", "256 MB") → cyan-dim.
-    s = s.replace(/\b(\d+(?:\.\d+)?\s*(?:KB|MB|GB|bytes?))\b/g, '\x1b[0;36m$1\x1b[0m');
-    // Subsystem prefixes after a kernel timestamp.
-    s = s.replace(/(\x1b\[0m\s+)(EXT4-fs[^:]*:|sd \d+:\d+:\d+:\d+: \[\w+\]|cdrom:|scsi \d+:\d+:\d+:\d+:|ata\d+(?:\.\d+)?:)/, '$1\x1b[1;36m$2\x1b[0m');
-    s = s.replace(/(\x1b\[0m\s+)(pci \S+|PCI:|clocksource:|usb \d+-\d+:)/, '$1\x1b[1;35m$2\x1b[0m');
-    s = s.replace(/(\x1b\[0m\s+)(Booting paravirtualized kernel.*|Linux \S+ .*|smpboot:|rcu:|TCP:|NET:|IP\b)/, '$1\x1b[0;32m$2\x1b[0m');
-    return s;
-  }
-
-  function flushBuf() {
-    if (_lbuf) {
-      term.write(colorizeLine(_lbuf));
-      _lbuf = '';
-    }
-    _flushTimer = null;
-  }
-
-  function feed(byte) {
-    // Once we've handed off to the m0usunet shell, the VM's own
-    // output is doing all the coloring — bypass the buffer entirely
-    // so keystroke echo stays responsive.
-    if (!_colorizeOn) {
-      term.write(new Uint8Array([byte]));
-      return;
-    }
-    if (byte === 10 /* \n */) {
-      term.write(colorizeLine(_lbuf) + '\n');
-      _lbuf = '';
-      if (_flushTimer) { clearTimeout(_flushTimer); _flushTimer = null; }
-      return;
-    }
-    _lbuf += String.fromCharCode(byte);
-    // Flush partial lines (interactive prompts) after a short idle so
-    // they actually appear on screen.
-    if (_flushTimer) clearTimeout(_flushTimer);
-    _flushTimer = setTimeout(flushBuf, 40);
-  }
-
-  emulator.add_listener("serial0-output-byte", feed);
-  // Older v86 builds emit char strings on this event — handle both.
-  emulator.add_listener("serial0-output-char", (chr) => {
-    if (typeof chr === "string") {
-      for (let i = 0; i < chr.length; i++) feed(chr.charCodeAt(i));
-    }
-  });
-
-  // ── input sanitizer ──────────────────────────────────────────────
-  // Catch the typical paste-of-doom: a multi-line snippet where every
-  // line ends in \r\n. xterm sends both bytes; bash sees \r (CR) and
-  // executes whatever was buffered up to that point. Collapse \r\n -> \r
-  // so paste-as-one-command still works, then forward.
-  // Strip bracketed-paste markers (\e[200~ ... \e[201~) — the VM's
-  // bash doesn't set bracketed-paste mode, so those escapes would
-  // land in the command line as literal "200~" / "201~" garbage.
-  function sanitizeInput(data) {
-    return data
-      .replace(/\r\n/g, "\r")
-      .replace(/\x1b\[200~/g, "")
-      .replace(/\x1b\[201~/g, "");
-  }
-
-  function sendToVM(data) {
-    if (!data) return;
-    if (typeof emulator.serial0_send === "function") {
-      emulator.serial0_send(data);
-    } else if (typeof emulator.serial_send_string === "function") {
-      emulator.serial_send_string(0, data);
-    }
-  }
-
-  term.onData((data) => sendToVM(sanitizeInput(data)));
-
-  // ── safety nets ──────────────────────────────────────────────────
-
-  // 1. Emulator crash: if v86 throws or stops, tell the player
-  //    instead of leaving a frozen black terminal. Suggesting reload
-  //    is better than silence.
-  emulator.add_listener("emulator-stopped", () => {
-    term.write("\r\n\r\n\x1b[1;31m[m0usunet]\x1b[0m VM stopped. Reload the page to restart.\r\n");
-  });
-  window.addEventListener("error", (e) => {
-    // Only fire on errors from this script's own module — don't show
-    // anything for downstream library hiccups.
-    if (e && e.filename && e.filename.includes("boot.js")) {
-      try {
-        term.write("\r\n\x1b[1;31m[m0usunet]\x1b[0m page error: " +
-                   (e.message || "unknown") + "\r\n");
-      } catch (_) {}
-    }
-  });
-
-  // 2. When the terminal regains focus (player tabbed away and back,
-  //    or rotated the device), reset xterm's input mode and re-fit.
-  //    Prevents the "I typed something but nothing happened" case.
+  terminalEl.addEventListener("click", () => term.focus());
   terminalEl.addEventListener("focus", refit, true);
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      refit();
-      term.focus();
-    }
+    if (!document.hidden) { refit(); term.focus(); }
   });
 
-  // 3. Mobile soft keyboard pops up after first tap; visualViewport
-  //    fires resize when it does. Make sure we re-pin the size.
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("scroll", refit);
+  // ── IO + handle ────────────────────────────────────────────────────
+  const io = window.M0useIO.createIO(term);
+  const handle = (window.M0useNicks && window.M0useNicks.get()) || "cadet";
+
+  // ── boot animation ─────────────────────────────────────────────────
+  // Lines below pre-color with ANSI escapes. Sequence mirrors a real
+  // Alpine boot in v86 — same kernel timestamps, same OpenRC banner,
+  // same motd handoff to agetty. Delays are tight so the whole boot
+  // lands in ~2.5 s on any device.
+
+  const D  = (s) => `\x1b[2m${s}\x1b[0m`;     // dim
+  const G  = (s) => `\x1b[1;32m${s}\x1b[0m`;  // green-bold
+  const C  = (s) => `\x1b[1;36m${s}\x1b[0m`;  // cyan-bold
+  const Y  = (s) => `\x1b[1;33m${s}\x1b[0m`;  // gold-bold
+  const W  = (s) => `\x1b[1;37m${s}\x1b[0m`;  // white-bold
+  const M  = (s) => `\x1b[1;35m${s}\x1b[0m`;  // magenta-bold
+  const Md = (s) => `\x1b[0;35m${s}\x1b[0m`;  // magenta-dim
+
+  function ts(t) { return D(`[${t.padStart(11)}]`); }
+  function okLine(label) {
+    const padLen = Math.max(2, 65 - stripAnsi(label).length);
+    return `  ${C("*")} ${label}${" ".repeat(padLen)}${G("[ ok ]")}`;
+  }
+  function stripAnsi(s) { return s.replace(/\x1b\[[0-9;]*m/g, ""); }
+
+  const bootLines = [
+    [0,    `SeaBIOS (version 1.16.0-prebuilt.qemu.org)`],
+    [40,   `iPXE (https://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+07F912F0+07EF12F0 CA00`],
+    [60,   ``],
+    [30,   `Booting from Hard Disk...`],
+    [80,   `${ts("0.000000")} Linux version 5.15.55-0-virt (buildozer@build-3-18-x86_64) #1-Alpine SMP Wed Aug 9 14:01:11 UTC 2026`],
+    [10,   `${ts("0.000000")} Command line: root=${Md("/dev/sda")} rw modules=ext4 console=tty0 console=ttyS0,115200`],
+    [10,   `${ts("0.012000")} BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable`],
+    [10,   `${ts("0.024000")} BIOS-e820: [mem 0x0000000000100000-0x0000000007ffffff] usable`],
+    [10,   `${ts("0.035000")} DMI: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0`],
+    [10,   `${ts("0.058000")} tsc: Detected ${C("2700.000 MHz")} processor`],
+    [10,   `${ts("0.142000")} ${G("Booting paravirtualized kernel on bare hardware")}`],
+    [10,   `${ts("0.181000")} ${M("PCI:")} Using configuration type 1 for base access`],
+    [10,   `${ts("0.218000")} ${G("clocksource:")} tsc-early: mask: 0xffffffffffffffff max_cycles: 0x26d3aff858f`],
+    [10,   `${ts("0.301000")} ${G("NET:")} Registered PF_INET protocol family`],
+    [10,   `${ts("0.355000")} ${G("TCP:")} Hash tables configured (established 2048 bind 2048)`],
+    [30,   `${ts("0.394000")} ${C("sd 0:0:0:0: [sda]")} 196608 512-byte logical blocks: (${C("100 MB")}/${C("96.0 MiB")})`],
+    [10,   `${ts("0.412000")} ${C("sd 0:0:0:0: [sda]")} Write Protect is off`],
+    [10,   `${ts("0.428000")} ${C("sd 1:0:0:0: [sdb]")} 4096 512-byte logical blocks: (${C("2.10 MB")}/${C("2.00 MiB")})`],
+    [40,   `${ts("0.501000")} ${C("EXT4-fs (sda):")} mounted filesystem with ordered data mode. Opts: (null)`],
+    [10,   `${ts("0.522000")} devtmpfs: mounted`],
+    [30,   `${ts("0.589000")} Run /sbin/init as init process`],
+    [60,   ``],
+    [10,   `  ${Y("m0usunet 0.9.7 / busybox-init")} ${D("--")} ${Y("m0usunet starting up...")}`],
+    [50,   ``],
+    [10,   `  ${C("*")} Mounting root: ${G("ok.")}`],
+    [10,   `  ${C("*")} Loading boot drivers: ${G("ok.")}`],
+    [10,   okLine(`Bringing up ${Md("lo")} interface`)],
+    [10,   okLine(`Setting clock locally from RTC`)],
+    [10,   okLine(`Mounting ${Md("/mnt/kit")} (read-only)`)],
+    [10,   okLine(`Starting m0use-banners`)],
+    [10,   okLine(`Starting m0use-jenkins (crazy.ants back-office)`)],
+    [60,   ``],
+    [10,   `  ${Y("m0usunet ready.")} ${W("Welcome to Field Operations.")}`],
+    [80,   ``],
+    [10,   `Welcome to Alpine Linux 3.18`],
+    [10,   `Kernel 5.15.55-0-virt on an x86_64 (ttyS0)`],
+    [40,   ``],
+    [10,   `m0usunet login: ${D("root (automatic login)")}`],
+    [60,   ``],
+    [10,   `  ${G("m0usunet v0.9.7")}    ${W("Field Operations Terminal")}`],
+    [400,  ``],
+  ];
+
+  for (const [delay, text] of bootLines) {
+    if (delay) await io.sleep(delay);
+    term.write(text + "\r\n");
   }
 
-  window.__m0usunet_emu  = emulator;
+  // ── handoff to portal ──────────────────────────────────────────────
+  term.focus();
+  try {
+    await window.M0usePortal.run(io, { handle });
+  } catch (e) {
+    term.write(`\r\n\x1b[1;31m[m0usunet]\x1b[0m portal error: ${e && e.message ? e.message : e}\r\n`);
+    throw e;
+  }
+
+  // ── after portal returns ──────────────────────────────────────────
+  // The real portal holds on the final screen indefinitely (its own
+  // read loop). If we ever fall out, write a power-down marker.
+  term.write(`\r\n${D("-- session ended --")}\r\n`);
+
   window.__m0usunet_term = term;
+  window.__m0usunet_io = io;
 })();

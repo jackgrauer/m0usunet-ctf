@@ -14,53 +14,17 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# Skeleton-era workflow: the runtime is pure JS now (no v86, no
+# Alpine disk image). The build job exists only to ship site/ to
+# Pages. The full Alpine-build pipeline is preserved in git history;
+# the build/*.sh scripts will be removed once the JS port is feature
+# complete and we're sure we don't want to roll back.
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Fetch v86 artifacts
-        run: |
-          set -euo pipefail
-          mkdir -p site/v86
-          REL="https://github.com/copy/v86/releases/download/latest"
-          for f in libv86.js v86.wasm; do
-            echo "fetching $f"
-            curl -fsSL "$REL/$f" -o "site/v86/$f"
-          done
-          RAW="https://raw.githubusercontent.com/copy/v86/master/bios"
-          for f in seabios.bin vgabios.bin; do
-            echo "fetching $f"
-            curl -fsSL "$RAW/$f" -o "site/v86/$f"
-          done
-          ls -lh site/v86/
-
-      - name: Load NBD kernel module on host
-        run: sudo modprobe nbd max_part=16
-
-      - name: Build Alpine + kit disks
-        run: |
-          set -euo pipefail
-          docker run --rm --privileged \
-            -v "$PWD:/work" -w /work \
-            i386/alpine:3.18 sh -c '
-              set -eu
-              apk add --no-cache git bash e2fsprogs e2fsprogs-extra util-linux coreutils qemu-img syslinux tar
-              ./build/build-alpine.sh
-              ./build/build-kit.sh
-            '
-          ls -lh build/out/
-
-      - name: Stage disk images + kernel into site/
-        run: |
-          cp build/out/alpine.img     site/
-          cp build/out/kit.img        site/
-          cp build/out/vmlinuz-virt   site/
-          cp build/out/initramfs-virt site/
-          cp build/out/cmdline.txt    site/
-          ls -lh site/
-
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
