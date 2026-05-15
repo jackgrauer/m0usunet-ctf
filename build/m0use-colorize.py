@@ -26,7 +26,7 @@ CVE_RE = re.compile(r'\b(CVE[-_]\d{4}[-_]\d+)\b')
 TOOL_RE = re.compile(
     r'(?<![A-Za-z0-9_-])'
     r'(nmap|nikto|curl|msfconsole|metasploit|msf|cat|cd|ls|less|grep|'
-    r'answer|hint|readme|briefing|advisories|wrap)'
+    r'answer|hint|brief|briefing|advisories|wrap)'
     r'(?![A-Za-z0-9_-])'
 )
 

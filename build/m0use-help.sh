@@ -17,7 +17,7 @@ ${DIM}────────────────────────�
 
   ${CYAN}help${R}                       this card
   ${CYAN}cat hint${R}                   non-judgmental hint for the current phase
-  ${CYAN}cat readme${R}                 long-form notes for the current phase
+  ${CYAN}cat brief${R}                  long-form notes for the current phase
 
   ${CYAN}<finding>${R}                  ${B}just type the IP / host / CVE / flag and hit Enter${R}
                              that's how you advance every phase

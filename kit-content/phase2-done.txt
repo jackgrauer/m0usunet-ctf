@@ -37,7 +37,7 @@
   the second prints the briefing for the metasploit walk.
 
       1.  cd msf
-      2.  cat readme
+      2.  cat brief
 
   Stuck?  cat hint  -- no penalty.
 
