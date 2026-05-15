@@ -255,9 +255,16 @@ wrap <<EOF
 ${GOLD}TASK 4) EMOTIONAL INTELLIGENCE${R}
 ${GREEN}══════════════════════════════${R}
 
-Reflect on the evening's events. Write a statement, in this format,
-directed to a fellow participant. Press ENTER on a blank line to
-finish each section.
+Reflect on the evening's events. Write a statement, directed to a
+fellow participant, in four sections:
+
+   ${CYAN}1)  WHEN YOU${R}     ${DIM}-- the behavior you observed${R}
+   ${CYAN}2)  I FEEL${R}       ${DIM}-- the emotion it produced${R}
+   ${CYAN}3)  I NEED${R}       ${DIM}-- what you require going forward${R}
+   ${CYAN}4)  WOULD YOU${R}    ${DIM}-- the specific request you're making${R}
+
+You'll be prompted for each section in turn. Type freely, multi-line
+is fine. Press ENTER on a blank line to move to the next section.
 
 EOF
 

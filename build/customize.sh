@@ -90,6 +90,33 @@ chmod +x /etc/profile.d/01-m0usunet.sh
 # trim documentation, locale, and other dead weight
 rm -rf /usr/share/man /usr/share/doc /usr/share/info \
        /usr/share/help /usr/share/locale \
-       /usr/share/zoneinfo/right /usr/share/zoneinfo/posix \
+       /usr/share/zoneinfo \
        /var/cache/apk/* /var/cache/misc/* \
        /tmp/* /root/.ash_history 2>/dev/null || true
+
+# OpenRC is shipped by alpine-base but we bypass it entirely via the
+# inittab rewrite above (busybox init runs m0use-bootstrap directly).
+# Nothing in our boot path or game shell ever invokes rc-* / openrc-*,
+# so the whole subsystem is dead weight.
+rm -rf /etc/init.d /etc/runlevels /etc/conf.d \
+       /lib/rc /usr/share/openrc \
+       /sbin/openrc /sbin/openrc-init /sbin/openrc-run /sbin/openrc-shutdown \
+       /sbin/rc /sbin/rc-service /sbin/rc-status /sbin/rc-update \
+       /bin/rc-service /bin/rc-status 2>/dev/null || true
+
+# apk-tools is only needed during this build chroot; the live VM never
+# installs anything at runtime. Drop the binary, the index, and keys.
+rm -rf /var/lib/apk /etc/apk /lib/apk /usr/share/apk 2>/dev/null || true
+rm -f  /sbin/apk 2>/dev/null || true
+
+# alpine-conf setup-* scripts: used once during this chroot (setup-hostname),
+# never invoked again in the live VM.
+rm -f  /sbin/setup-* /usr/sbin/setup-* 2>/dev/null || true
+
+# Python stdlib: drop subtrees no shim imports. test/ alone is several MB.
+PY=$(ls -d /usr/lib/python3.* 2>/dev/null | head -1)
+if [ -n "$PY" ]; then
+  rm -rf "$PY/test" "$PY/idlelib" "$PY/turtledemo" "$PY/tkinter" \
+         "$PY/lib2to3" "$PY/ensurepip" "$PY/unittest/test" \
+         "$PY/sqlite3/test" "$PY/email/test" 2>/dev/null || true
+fi

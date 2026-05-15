@@ -14,6 +14,20 @@ alias ll='ls -la'
 alias l='ls'
 alias continue='exit'
 
+# Auto-colorize text files cat'd in the game shell, so brief/hint/etc.
+# render with the same cyan-command + gold-CVE + IP highlighting that
+# the portal heredocs use. Bypass for flags, multi-arg, pipes, and
+# anything that isn't a single existing file. Power users can call
+# `command cat` to get raw bytes.
+cat() {
+    if [ "$#" -eq 1 ] && [ -f "$1" ] && [ -t 1 ]; then
+        /usr/local/bin/m0use-colorize "$1"
+    else
+        command cat "$@"
+    fi
+}
+export -f cat
+
 # CDPATH so the player can `cd nikto` from anywhere in the kit
 # without typing the absolute path. With this set, bash searches
 # /mnt/kit first when resolving a relative `cd`.

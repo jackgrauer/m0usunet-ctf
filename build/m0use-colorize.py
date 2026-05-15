@@ -22,11 +22,14 @@ WHITE_B = "\x1b[1;37m"
 CVE_RE = re.compile(r'\b(CVE[-_]\d{4}[-_]\d+)\b')
 
 # Tool / command names the player types. Cyan to match the in-shell
-# command color scheme.
+# command color scheme. The msfconsole-side commands (set, exploit,
+# check, exit, continue, RHOSTS, LHOST) are included so phase 3
+# walkthroughs render the same way as phase 1/2.
 TOOL_RE = re.compile(
     r'(?<![A-Za-z0-9_-])'
     r'(nmap|nikto|curl|msfconsole|metasploit|msf|cat|cd|ls|less|grep|'
-    r'answer|hint|brief|briefing|advisories|wrap)'
+    r'answer|hint|brief|briefing|advisories|wrap|'
+    r'set|exploit|check|search|exit|continue|RHOSTS|LHOST)'
     r'(?![A-Za-z0-9_-])'
 )
 
