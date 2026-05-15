@@ -100,9 +100,22 @@
   const CELL_W_RATIO = 0.55;
 
   function refit() {
-    const w = terminalEl.clientWidth;
-    const h = terminalEl.clientHeight;
-    if (!w || !h) return;
+    // Force the layout to match the visual viewport in pixels. 100dvh
+    // doesn't reliably track the soft keyboard on Android Chrome —
+    // without this, the keyboard overlaps the prompt and the player
+    // can't see what they're typing.
+    const vv = window.visualViewport;
+    const viewW = vv ? vv.width  : window.innerWidth;
+    const viewH = vv ? vv.height : window.innerHeight;
+    if (!viewW || !viewH) return;
+    document.body.style.height = viewH + "px";
+    // Undo any iOS auto-scroll that pushed content above the keyboard.
+    window.scrollTo(0, 0);
+
+    // Now read the actual terminal element dimensions (post-layout).
+    const w = terminalEl.clientWidth || viewW;
+    const h = terminalEl.clientHeight || viewH;
+
     let fontSize;
     if (w < 360)       fontSize = 14;
     else if (w < 480)  fontSize = 16;
@@ -115,6 +128,7 @@
     const cols = Math.max(20, Math.floor((w - 8) / cellW));
     const rows = Math.max(10, Math.floor((h - 8) / cellH));
     try { term.resize(cols, rows); } catch (_) {}
+    try { term.scrollToBottom(); } catch (_) {}
   }
   refit();
 
