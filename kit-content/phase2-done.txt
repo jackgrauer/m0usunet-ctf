@@ -16,28 +16,20 @@
 
   Time to actually walk in.
 
-  ─── next ──────────────────────────────────────────────────────────
+  ─── next: walk through the door ───────────────────────────────────
 
-  To actually walk through the open door we've found, use
-  metasploit. It's an exploitation framework -- a library of
-  pre-scripted code snippets organized according to the particular
-  CVE they exploit. Almost any time someone discovers a given
-  vulnerability, someone else writes and logs a corresponding
-  metasploit module to automate it. This helps everyone walk
-  through the door once it's found. Pick a module. Point it at a
-  host (in our case, 10.4.12.1).
-
-  That's it. You're logged in. You get a shell.
+  metasploit is the tool that walks through. It's an exploitation
+  framework -- a library of pre-scripted attacks indexed by CVE.
+  Almost every public vulnerability has a matching module. Pick the
+  module for your CVE, point it at the host, fire. You get a shell.
 
   Most pentest workflows end here: nmap finds it, a scanner
   fingerprints it, metasploit walks through the door.
 
-  Type each of these two commands in order, one at a time, hitting
-  Enter after each. The first moves you into the phase 3 folder;
-  the second prints the briefing for the metasploit walk.
+      cd msf
+      cat brief
 
-      1.  cd msf
-      2.  cat brief
+  `cat brief` lays out the four commands for the walk.
 
   Stuck?  cat hint  -- no penalty.
 

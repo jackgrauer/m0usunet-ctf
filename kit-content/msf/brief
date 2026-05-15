@@ -11,36 +11,23 @@ mounted at /mnt/exec/. The IC memo we want is at:
     /mnt/exec/ic-memo.txt
 
 
-YOUR WALK
-─────────
-We've preloaded the module and your callback address. You only do
-the parts that carry the lesson -- point at the target, fire, read.
-Four commands:
+─── do this ──────────────────────────────────────────────────────
 
-    1.  msfconsole
-    2.  set RHOSTS 10.4.12.1
-    3.  exploit
-    4.  cat /mnt/exec/ic-memo.txt
+    msfconsole
+    set RHOSTS 10.4.12.1
+    exploit
+    cat /mnt/exec/ic-memo.txt
 
-Step 1 enters metasploit. The prompt changes to:
-
-    msf6 exploit(multi/http/jenkins_metaprogramming) >
-
-Step 2 tells metasploit where the target is. Step 3 fires it --
-metasploit auto-checks, sends the payload, opens a reverse shell.
-The prompt goes blank: you're on the Jenkins box now, typing as
-the jenkins user.
-
-Step 4 reads the memo. That's the win. The narrative takes over
--- press Enter through the screens. When it's done you'll be back
-at the m0usenet prompt; type `continue` to leave and report to HQ
-for TASK 3.
+Module and callback are preloaded; you point and fire. After
+`exploit`, the prompt goes blank -- you're on the Jenkins box,
+typing as the jenkins user. `cat /mnt/exec/ic-memo.txt` is the
+win. The narrative takes over from there; press Enter through the
+screens, then `continue` at the m0usunet prompt to leave for TASK 3.
 
 
-THE BIG PICTURE
-───────────────
-For context: the full metasploit pattern, for any CVE you'll ever
-exploit with it, is:
+─── the full pattern, for next time ──────────────────────────────
+
+Every metasploit walk, for any CVE you'll ever exploit with it:
 
     search        find the module by CVE id
     use           select it

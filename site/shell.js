@@ -244,10 +244,12 @@ Somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragra
 ${DIM}What we're looking for:${R} not vulnerabilities -- ${WHITE_B}carelessness${R}. The host that's visible from outside but was clearly not meant for someone outside the company to see. The back office.
 `);
     io.write("\r\n");
+    io.write(`  ${DIM}Start here:${R}\r\n\r\n`);
     io.write(`  ${CYAN_B}nmap 10.4.12.0/24${R}        ${DIM}sweep the subnet${R}\r\n`);
-    io.write(`  ${CYAN_B}nmap -sV 10.4.12.0/24${R}    ${DIM}list service versions${R}\r\n`);
-    io.write(`  ${CYAN_B}nmap 10.4.12.88${R}          ${DIM}one host${R}\r\n`);
-    io.write(`  ${CYAN_B}cat hint${R}                 ${DIM}penalty-free hint if you're stuck${R}\r\n\r\n`);
+    io.write(`  ${CYAN_B}nmap -sV 10.4.12.0/24${R}    ${DIM}with service versions${R}\r\n\r\n`);
+    io.write(`  ${DIM}When you spot the back-office host, type its IP or${R}\r\n`);
+    io.write(`  ${DIM}hostname at the prompt and press Enter.${R}\r\n\r\n`);
+    io.write(`  ${DIM}Stuck?${R} ${CYAN_B}cat hint${R}  ${DIM}-- no penalty.${R}\r\n\r\n`);
   }
 
   // ── help ──────────────────────────────────────────────────────────
@@ -257,17 +259,18 @@ ${DIM}What we're looking for:${R} not vulnerabilities -- ${WHITE_B}carelessness$
 `${GOLD_B}m0usunet command reference${R}
 ${DIM}───────────────────────────${R}
 
-  ${CYAN_B}help${R}                       this card
-  ${CYAN_B}cat hint${R}                   non-judgmental hint for the current phase
-  ${CYAN_B}cat brief${R}                  long-form notes for the current phase
+  ${DIM}── advancing ──${R}
+  ${CYAN_B}<finding>${R}                  type the IP / host / CVE at the prompt,
+                             press Enter -- that's how every phase ends
+  ${CYAN_B}continue${R}                   leave the shell when the phase says so
 
-  ${CYAN_B}<finding>${R}                  just type the IP / host / CVE / flag and hit Enter
-                             that's how you advance every phase
-  ${CYAN_B}answer <finding>${R}           same thing, explicit form
+  ${DIM}── getting unstuck ──${R}
+  ${CYAN_B}cat hint${R}                   non-judgmental hint for this phase
+  ${CYAN_B}cat brief${R}                  longer notes for this phase
 
-  ${CYAN_B}continue${R}                   leave the m0usunet shell and proceed
-  ${CYAN_B}ls${R} / ${CYAN_B}ll${R} / ${CYAN_B}cd${R}              navigate the kit (/mnt/kit)
-  ${CYAN_B}nmap${R} / ${CYAN_B}nikto${R} / ${CYAN_B}curl${R} / ${CYAN_B}msfconsole${R}    phase tools (steps 3-4 of the JS port)
+  ${DIM}── moving around ──${R}
+  ${CYAN_B}ls${R} / ${CYAN_B}cd${R} / ${CYAN_B}cat${R}              navigate /mnt/kit
+  ${CYAN_B}nmap${R} / ${CYAN_B}nikto${R} / ${CYAN_B}msfconsole${R}    phase tools
 `);
     io.write("\r\n");
   }

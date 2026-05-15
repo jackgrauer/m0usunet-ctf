@@ -33,16 +33,12 @@ find the back-office host that's accidentally exposed to the
 outside -- the one wired into their fragrance compounding subsidiary.
 
 ═══════════════════════════════════════════════════════════════════
-HOW TO USE THIS TERMINAL
+HOW TO PLAY
 ═══════════════════════════════════════════════════════════════════
 
-  nmap <target>         scan an IP or a range
-  cat <file>            print a file
-  less <file>           page through a long file       (q to quit)
-  grep <pattern> <f>    find lines matching a pattern
-  ls                    list files in the current folder
+  Each phase tells you one tool to run. Run it. When you spot the
+  finding -- an IP, a hostname, a CVE id -- type it at the prompt
+  and press Enter. That advances you.
 
-  <finding>             just type the finding (IP, hostname, CVE id,
-                        flag string) at the prompt and hit Enter.
-                        That advances you to the next phase.
-  cat hint              real help, no penalty   (in any phase folder)
+  Stuck in any phase?   cat hint   (no penalty)
+  Lost?                 help

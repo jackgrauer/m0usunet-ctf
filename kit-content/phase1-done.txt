@@ -14,26 +14,20 @@
   control them without logging in. All we need to do now is find a
   known bug specific to this version of the server.
 
-  ─── next ──────────────────────────────────────────────────────────
+  ─── next: fingerprint the version ─────────────────────────────────
 
-  We'll use nikto to fingerprint the host and learn its exact
-  version number. nikto is a web vulnerability scanner -- perl,
-  small, classic. Point it at a host, it runs thousands of probes
-  against known software versions and noisy endpoints. When it
-  finds something, it shouts.
+  We need the exact Jenkins version so we can pick the right CVE
+  to throw at it. For that, we use nikto -- a small, classic perl
+  web scanner. Point it at a host and it runs thousands of probes
+  against known software versions. When it finds something, it
+  shouts.
 
-  Type these two commands, one at a time, hitting Enter after
-  each:
+      cd nikto
+      nikto -h http://10.4.12.88:8080/
 
-      1.  cd nikto
-      2.  nikto -h http://10.4.12.88:8080/
+  nikto reports the version, matches it to a known CVE, and
+  advances the game on its own.
 
-  Step 2: type the IP address. The IP you found is 10.4.12.88
-  (four numbers separated by dots — that's what an IP looks
-  like).
-
-  nikto will report the version of Jenkins running on the host,
-  match it to a known CVE, and advance the game automatically.
   (Curious how the match works? `cat advisories` lists the
   candidates and which one fits. Optional reading.)
 

@@ -1,32 +1,30 @@
 HINT -- phase 2 (nikto)
 ══════════════════════════════════════════════════════════════════
 
-WHAT TO LOOK FOR IN NIKTO OUTPUT
-────────────────────────────────
-nikto's output is noisy. The line that matters is the version
-identifier -- somewhere near the top, nikto reports the software
-and version. You're looking for "Jenkins" and a number like
-2.121.1.
+WHAT NIKTO TELLS YOU
+────────────────────
+nikto's output is noisy. The line that matters is near the top:
+the software and version. You're looking for "Jenkins" and a
+number like 2.121.1.
 
-WHAT TO LOOK FOR IN THE ADVISORIES TABLE
-────────────────────────────────────────
+PICKING THE CVE
+───────────────
 Open the table:
 
     cat advisories
 
-Each row is a CVE with four fields: product, type, affects,
-notes. The CVE we want has to clear FOUR filters at once:
+Each row is a CVE with four fields: product, type, affects, notes.
+The one we want has to clear all four filters:
 
-    1. product is Jenkins (not GitLab, not Bamboo, not a plugin
-       we don't have)
-    2. type is UNAUTH RCE (no login required, gets us a shell)
-    3. the affected version range covers the version nikto found
-    4. no special preconditions we can't meet
+    1. product is Jenkins (not GitLab, not Bamboo, not a plugin)
+    2. type is UNAUTH RCE (no login, gets a shell)
+    3. the affected version range covers what nikto found
+    4. no preconditions we can't meet
 
-Only one row in the table fits all four.
+Only one row fits all four.
 
 HOW TO SUBMIT
 ─────────────
-Type the CVE id straight at the prompt and hit Enter:
+Type the CVE id at the prompt, hit Enter:
 
     CVE-XXXX-XXXXXXX

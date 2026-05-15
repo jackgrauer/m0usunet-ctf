@@ -14,13 +14,13 @@ outside, somebody screwed up. That's your target.
 
 WHERE TO LOOK
 ─────────────
-Look at the hostnames in your scan, and also at the lines right
-under each hostname. Most hosts on this scan don't have anything
-between their name and their port list -- but one does.
+Scan hostnames -- but also the lines right under each hostname.
+Most hosts here have nothing between their name and their port
+list. One does. That's the giveaway.
 
 HOW TO SUBMIT
 ─────────────
-Type the host name or the IP straight at the prompt and hit Enter:
+Type the hostname or the IP at the prompt, hit Enter:
 
     10.4.12.88
     jenkins-old
