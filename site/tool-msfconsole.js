@@ -339,6 +339,21 @@ Compatible Payloads
 
   function targetIsReal(rhost) { return VALID_RHOSTS.has(rhost); }
 
+  // Player-friendly nudge when RHOSTS is set to something that won't
+  // work. Catches the common 10.4.12 ↔ 10.12.4 digit transposition
+  // explicitly; otherwise falls back to "wrong subnet" guidance.
+  function suggestRhostFix(rhost) {
+    const m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(rhost);
+    if (m && m[1] === "10" && m[2] === "12" && m[3] === "4") {
+      return `    ${GOLD_B}[!]${R} digits transposed -- the Crazy Ants subnet is ` +
+             `${CYAN_B}10.4.12.0/24${R}, not 10.12.4.0/24.\r\n` +
+             `    Did you mean  ${CYAN_B}set RHOSTS 10.4.12.1${R} ?\r\n`;
+    }
+    return `    ${DIM}[!] RHOSTS must be in the${R} ${CYAN_B}10.4.12.0/24${R} ` +
+           `${DIM}subnet. The Jenkins box is${R} ${CYAN_B}10.4.12.1${R} ` +
+           `${DIM}(also valid:${R} ${CYAN_B}gw.crazy.ants${R}${DIM}).${R}\r\n`;
+  }
+
   async function doCheck(io, state) {
     if (!state.module) { io.write("[-] No module selected.\r\n"); return; }
     const missing = requiredUnset(state);
@@ -352,6 +367,7 @@ Compatible Payloads
       io.write(`[*] ${rhost}:${rport} - Sending check request\r\n`);
       await io.sleep(600);
       io.write(`[-] ${rhost}:${rport} - ${RED_B}Connection refused${R}.\r\n`);
+      io.write(suggestRhostFix(rhost));
       return;
     }
     io.write(`[*] ${rhost}:${rport} - Sending check request\r\n`);
@@ -380,6 +396,7 @@ Compatible Payloads
       await io.sleep(500);
       io.write(`[-] ${rhost}:${rport} - ${RED_B}Exploit failed:${R} target not reachable.\r\n`);
       io.write(`[*] Exploit completed, but no session was created.\r\n`);
+      io.write(suggestRhostFix(rhost));
       return;
     }
     io.write(`[*] Started reverse TCP handler on ${lhost}:${lport}\r\n`);
@@ -533,6 +550,14 @@ Active sessions
       else if (cmd === "exploit" || cmd === "run") await doExploit(io, state);
       else if (cmd === "sessions")     doSessions(io, state);
       else if (cmd === "clear" || cmd === "cls") io.write("\x1b[2J\x1b[H");
+      else if (cmd === "cat" || cmd === "ls" || cmd === "pwd" ||
+               cmd === "id"  || cmd === "whoami" || cmd === "uname") {
+        io.write(`[-] Unknown command: ${cmd}\r\n`);
+        io.write(`    ${DIM}\`${cmd}\` is a shell command, not an msfconsole${R}\r\n`);
+        io.write(`    ${DIM}command. You need a session on the target first --${R}\r\n`);
+        io.write(`    ${DIM}set RHOSTS, then${R} ${CYAN_B}exploit${R}${DIM}. Once the prompt goes${R}\r\n`);
+        io.write(`    ${DIM}blank, you're on the Jenkins box and${R} ${CYAN_B}${cmd}${R} ${DIM}works.${R}\r\n`);
+      }
       else io.write(`[-] Unknown command: ${cmd}\r\n`);
     }
 
