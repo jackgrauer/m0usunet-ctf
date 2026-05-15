@@ -131,7 +131,7 @@
     return lines.join("\r\n") + "\r\n";
   }
 
-  async function run(io, args) {
+  async function run(io, args, ctx) {
     if (args.length === 0 || args[0] === "-h" || args[0] === "--help") {
       help(io);
       return;
@@ -172,18 +172,26 @@
     const nIps = target === "10.4.12.0/24" ? 256 : nHosts;
     io.write(`Nmap done: ${nIps} IP addresses (${nHosts} hosts up) scanned in ${elapsed.toFixed(2)} seconds\r\n`);
 
-    // Show the submit hint whenever a scanned host has the rDNS
-    // mismatch (i.e. the phase-1 leak is now visible on screen),
-    // not just on the full /24 sweep. A player who scans the single
-    // target box and sees jenkins-old.internal in the rDNS line
-    // needs to know they can type the finding to advance.
+    // When a scanned host exposes the rDNS-mismatch leak, that IS
+    // the phase-1 discovery. Auto-submit the finding so the player
+    // sees the phase1-done payoff (which sets up phase 2) without
+    // needing to manually type the answer they just found. Same
+    // model as the IC memo auto-submitting phase 3.
     const sawLeak = matches.some(h => h[2] !== null);
     if (sawLeak) {
-      io.write(`\r\n${GOLD_B}TO ADVANCE:${R} just type the IP address or hostname at the prompt\r\n`);
-      io.write(`and hit Enter. That's it. Examples:\r\n\r\n`);
-      io.write(`  ${WHITE_B}10.4.12.88${R}\r\n`);
-      io.write(`  ${WHITE_B}jenkins-old${R}\r\n`);
-      io.write(`  ${WHITE_B}legacy-build-03${R}\r\n\r\n`);
+      const alreadyDone = ctx && ctx.state && ctx.state.completed && ctx.state.completed[1];
+      if (!alreadyDone && ctx && typeof ctx.submitAnswer === "function") {
+        await io.sleep(400);
+        await ctx.submitAnswer("jenkins-old");
+      } else {
+        // Fallback if no submit callback was wired in: print the
+        // typed-finding hint so the player at least knows what to do.
+        io.write(`\r\n${GOLD_B}TO ADVANCE:${R} just type the IP address or hostname at the prompt\r\n`);
+        io.write(`and hit Enter. That's it. Examples:\r\n\r\n`);
+        io.write(`  ${WHITE_B}10.4.12.88${R}\r\n`);
+        io.write(`  ${WHITE_B}jenkins-old${R}\r\n`);
+        io.write(`  ${WHITE_B}legacy-build-03${R}\r\n\r\n`);
+      }
     }
   }
 

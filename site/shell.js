@@ -301,13 +301,22 @@ ${DIM}────────────────────────�
         state.exit = true;
         return;
       case "nmap":
-        if (window.M0useNmap)  return await window.M0useNmap.run(io, args);
+        if (window.M0useNmap)  return await window.M0useNmap.run(io, args, {
+          state,
+          submitAnswer: (flag) => answer(io, state, [flag]),
+        });
         break;
       case "nikto":
-        if (window.M0useNikto) return await window.M0useNikto.run(io, args);
+        if (window.M0useNikto) return await window.M0useNikto.run(io, args, {
+          state,
+          submitAnswer: (flag) => answer(io, state, [flag]),
+        });
         break;
       case "curl":
-        if (window.M0useCurl)  return await window.M0useCurl.run(io, args);
+        if (window.M0useCurl)  return await window.M0useCurl.run(io, args, {
+          state,
+          submitAnswer: (flag) => answer(io, state, [flag]),
+        });
         break;
       case "msfconsole":
       case "msf":
