@@ -21,7 +21,7 @@ WRAP
 chmod 755 /usr/local/bin/nmap
 
 # Layout: place scripts where the portal expects them.
-mkdir -p /usr/local/bin /etc /var/m0use /mnt/kit /run
+mkdir -p /usr/local/bin /etc /mnt/exec /mnt/kit /run
 
 cp /work/build/m0use-portal.sh   /usr/local/bin/m0use-portal
 cp /work/build/m0use-apply.sh    /usr/local/bin/apply
@@ -30,7 +30,7 @@ cp /work/build/m0use-banners.py  /usr/local/bin/m0use-banners
 cp /work/build/m0use-jenkins.py  /usr/local/bin/m0use-jenkins
 cp /work/build/m0use-dnsmasq.conf /etc/m0use-dnsmasq.conf
 cp /work/build/m0use-game-rc     /etc/m0use-game-rc
-cp /work/build/m0use-blueprint.txt /var/m0use/blueprint.txt
+cp /work/build/ic-memo.txt /mnt/exec/ic-memo.txt
 cp /work/build/m0use-help.sh     /usr/local/bin/help
 cp /work/build/m0use-restart.sh  /usr/local/bin/restart
 cp /work/build/m0use-wrap.py     /usr/local/bin/wrap

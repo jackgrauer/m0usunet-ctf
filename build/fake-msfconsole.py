@@ -54,7 +54,7 @@ VALID_RHOSTS = {"10.4.12.1", "gw.crazy.ants",
                 "legacy-build-03.crazy.ants"}
 
 
-# ─── post-exploit payoff: triggered by `cat /var/m0use/blueprint.txt`
+# ─── post-exploit payoff: triggered by `cat /mnt/exec/ic-memo.txt`
 #     inside the session. Three screens, press-Enter gated, then
 #     auto-submits the flag and exits all the way out.
 YOU_IN_BANNER = f"""
@@ -425,7 +425,7 @@ def do_exploit(state):
     sys.stdout.write(f"[*] {GREEN_B}Command shell session 1 opened{R} ({lhost}:{lport} -> {rhost}:{rport}) at {now}\n\n")
     state["session"] = 1
     sys.stdout.write(f"{DIM}you are now executing commands as the jenkins service account on the target.{R}\n")
-    sys.stdout.write(f"{DIM}try:{R}  {CYAN_B}cat /var/m0use/blueprint.txt{R}   {DIM}(that's the goal){R}\n\n")
+    sys.stdout.write(f"{DIM}try:{R}  {CYAN_B}cat /mnt/exec/ic-memo.txt{R}   {DIM}(that's the goal){R}\n\n")
 
 
 def do_sessions(state):
@@ -438,9 +438,9 @@ def do_sessions(state):
 # ─── session shell sub-REPL ────────────────────────────────────────
 def run_session(state):
     """Player is "on the target". Pass commands to a real shell so
-    `cat /var/m0use/blueprint.txt` works for free (the file is on
-    this VM's disk). Spoof a handful of commands so the fiction
-    holds (id, whoami, hostname show jenkins-flavored output)."""
+    `cat /mnt/exec/ic-memo.txt` works for free (the file is on this
+    VM's disk). Spoof a handful of commands so the fiction holds
+    (id, whoami, hostname show jenkins-flavored output)."""
     while state["session"]:
         try:
             line = input()
@@ -480,12 +480,12 @@ def run_session(state):
         if line == "pwd":
             sys.stdout.write("/var/lib/jenkins\n")
             continue
-        # Win condition: reading the blueprint triggers the payoff
+        # Win condition: reading the IC memo triggers the payoff
         # sequence. Don't pass through to /bin/sh -- we replace the
         # raw file dump with the gated multi-screen narrative, then
         # auto-submit the flag and cascade out so the player doesn't
         # have to manually copy/paste anything.
-        if "blueprint.txt" in line and "cat" in line:
+        if "ic-memo.txt" in line and "cat" in line:
             show_blueprint_payoff()
             try:
                 subprocess.run(["/usr/local/bin/answer", "jenkins_was_a_mistake"], timeout=5)

@@ -4,8 +4,8 @@
 # fail so the player learns by trying. The two payloads that matter:
 #
 #   value=println(42)                 → "Result: 42"  (sanity check)
-#   new File("/var/m0use/blueprint.txt").text
-#                                     → file contents (the flag)
+#   new File("/mnt/exec/ic-memo.txt").text
+#                                     → file contents (the IC memo)
 
 import re
 import sys
@@ -13,7 +13,7 @@ import time
 from urllib.parse import urlparse, parse_qs, unquote
 
 
-BLUEPRINT_PATH = "/var/m0use/blueprint.txt"
+MEMO_PATH = "/mnt/exec/ic-memo.txt"
 
 
 def usage():
@@ -108,9 +108,9 @@ def respond_jenkins_checkscript(value, opts):
     m = FILE_READ_RE.match(value)
     if m:
         path = m.group(1)
-        if path == BLUEPRINT_PATH:
+        if path == MEMO_PATH:
             try:
-                with open(BLUEPRINT_PATH, "r") as f:
+                with open(MEMO_PATH, "r") as f:
                     body = f.read()
             except OSError:
                 body = "Result: \n"

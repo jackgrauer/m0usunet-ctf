@@ -179,9 +179,9 @@ ${DIM}What we know so far:${R}
     Mom-and-pop crafters and aging Yankee Candle mall kiosks across
     Mischief City.
 
-Right now we can see the shape. We need the blueprint. That's where
-you come in, ${CYAN}${HANDLE}${R}. We need to cripple the ${RED}Ants${R}' deck before
-they start yoking investors.
+Right now we can see the shape. We need the deck itself -- the IC
+memo. That's where you come in, ${CYAN}${HANDLE}${R}. We need to cripple the
+${RED}Ants${R}' play before they start yoking investors.
 
 Your first assignment: scan the ${RED}Crazy Ants${R} network with ${CYAN}nmap${R} and
 find the back-office host that's accidentally exposed to the outside

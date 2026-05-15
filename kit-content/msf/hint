@@ -9,14 +9,14 @@ a time:
     msfconsole
     set RHOSTS 10.4.12.1
     exploit
-    cat /var/m0use/blueprint.txt
+    cat /mnt/exec/ic-memo.txt
 
 WHAT YOU'LL SEE
 ───────────────
 After `exploit` you'll see "Command shell session 1 opened" and
 the prompt goes blank. You're on the Jenkins box.
 
-After `cat /var/m0use/blueprint.txt`, the payoff sequence plays.
+After `cat /mnt/exec/ic-memo.txt`, the payoff sequence plays.
 Press Enter through three screens (the memo, the analysis, the
 debrief). The game advances automatically -- no flag to type.
 

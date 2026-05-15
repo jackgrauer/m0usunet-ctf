@@ -5,10 +5,10 @@ tool:  msfconsole
 You found the bug in phase 2: CVE-2018-1000861, unauth RCE in
 Jenkins 2.121.1. Now we walk through it.
 
-Your job: use the metasploit module for this CVE to pop a shell on
-the Jenkins box and read the file at:
+The Ants' back-office Jenkins box has the executive fileshare
+mounted at /mnt/exec/. The IC memo we want is at:
 
-    /var/m0use/blueprint.txt
+    /mnt/exec/ic-memo.txt
 
 
 YOUR WALK
@@ -20,7 +20,7 @@ Four commands:
     1.  msfconsole
     2.  set RHOSTS 10.4.12.1
     3.  exploit
-    4.  cat /var/m0use/blueprint.txt
+    4.  cat /mnt/exec/ic-memo.txt
 
 Step 1 enters metasploit. The prompt changes to:
 
@@ -31,10 +31,10 @@ metasploit auto-checks, sends the payload, opens a reverse shell.
 The prompt goes blank: you're on the Jenkins box now, typing as
 the jenkins user.
 
-Step 4 reads the blueprint. That's the win. The narrative takes
-over -- press Enter through the screens. When it's done you'll be
-back at the m0usenet prompt; type `continue` to leave and report
-to HQ for TASK 3.
+Step 4 reads the memo. That's the win. The narrative takes over
+-- press Enter through the screens. When it's done you'll be back
+at the m0usenet prompt; type `continue` to leave and report to HQ
+for TASK 3.
 
 
 THE BIG PICTURE

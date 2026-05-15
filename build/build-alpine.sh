@@ -101,8 +101,10 @@ chmod 755 "$TMP/usr/local/bin/nmap" \
 ln -sf msfconsole "$TMP/usr/local/bin/msf"
 ln -sf msfconsole "$TMP/usr/local/bin/metasploit"
 
-# ---- 6. phase content: answer keys + done banners + the blueprint ---
-#         flag file the player ends up reading inside msfconsole.
+# ---- 6. phase content: answer keys + done banners + the IC memo ----
+#         The IC memo lives at /mnt/exec/ic-memo.txt -- the Ants'
+#         executive fileshare mount on the back-office Jenkins box.
+#         No m0use anywhere in the in-fiction filesystem.
 cp "$ROOT/kit-content/flags-phase1.txt"  "$TMP/etc/m0use.flags1"
 cp "$ROOT/kit-content/flags-phase2.txt"  "$TMP/etc/m0use.flags2"
 cp "$ROOT/kit-content/flags-phase3.txt"  "$TMP/etc/m0use.flags3"
@@ -110,9 +112,9 @@ cp "$ROOT/kit-content/phase1-done.txt"   "$TMP/etc/m0use.phase1.done"
 cp "$ROOT/kit-content/phase2-done.txt"   "$TMP/etc/m0use.phase2.done"
 cp "$ROOT/kit-content/phase3-done.txt"   "$TMP/etc/m0use.phase3.done"
 
-mkdir -p "$TMP/var/m0use"
-cp "$ROOT/build/m0use-blueprint.txt"     "$TMP/var/m0use/blueprint.txt"
-chmod 644 "$TMP/var/m0use/blueprint.txt"
+mkdir -p "$TMP/mnt/exec"
+cp "$ROOT/build/ic-memo.txt"             "$TMP/mnt/exec/ic-memo.txt"
+chmod 644 "$TMP/mnt/exec/ic-memo.txt"
 
 ls "$TMP/boot/"vmlinuz-* >/dev/null 2>&1   || { echo "ERROR: no kernel"; exit 1; }
 ls "$TMP/boot/"initramfs-* >/dev/null 2>&1 || { echo "ERROR: no initramfs"; exit 1; }
