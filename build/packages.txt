@@ -1,7 +1,0 @@
-alpine-base
-busybox
-bash
-less
-linux-firmware-none
-agetty
-python3
