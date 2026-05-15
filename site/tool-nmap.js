@@ -172,7 +172,13 @@
     const nIps = target === "10.4.12.0/24" ? 256 : nHosts;
     io.write(`Nmap done: ${nIps} IP addresses (${nHosts} hosts up) scanned in ${elapsed.toFixed(2)} seconds\r\n`);
 
-    if (target === "10.4.12.0/24") {
+    // Show the submit hint whenever a scanned host has the rDNS
+    // mismatch (i.e. the phase-1 leak is now visible on screen),
+    // not just on the full /24 sweep. A player who scans the single
+    // target box and sees jenkins-old.internal in the rDNS line
+    // needs to know they can type the finding to advance.
+    const sawLeak = matches.some(h => h[2] !== null);
+    if (sawLeak) {
       io.write(`\r\n${GOLD_B}TO ADVANCE:${R} just type the IP address or hostname at the prompt\r\n`);
       io.write(`and hit Enter. That's it. Examples:\r\n\r\n`);
       io.write(`  ${WHITE_B}10.4.12.88${R}\r\n`);
