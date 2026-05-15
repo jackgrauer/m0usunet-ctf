@@ -19,9 +19,13 @@
   if (typeof window.M0useIO === "undefined")       missing.push("io.js (M0useIO)");
   if (typeof window.M0usePortal === "undefined")   missing.push("portal.js (M0usePortal)");
   if (typeof window.M0useNicks === "undefined")    missing.push("nicks.js (M0useNicks)");
-  if (typeof window.M0useColorize === "undefined") missing.push("colorize.js (M0useColorize)");
-  if (typeof window.M0useVFS === "undefined")      missing.push("vfs.js (M0useVFS)");
-  if (typeof window.M0useShell === "undefined")    missing.push("shell.js (M0useShell)");
+  if (typeof window.M0useColorize === "undefined")   missing.push("colorize.js (M0useColorize)");
+  if (typeof window.M0useVFS === "undefined")        missing.push("vfs.js (M0useVFS)");
+  if (typeof window.M0useShell === "undefined")      missing.push("shell.js (M0useShell)");
+  if (typeof window.M0useNmap === "undefined")       missing.push("tool-nmap.js (M0useNmap)");
+  if (typeof window.M0useNikto === "undefined")      missing.push("tool-nikto.js (M0useNikto)");
+  if (typeof window.M0useCurl === "undefined")       missing.push("tool-curl.js (M0useCurl)");
+  if (typeof window.M0useMsfconsole === "undefined") missing.push("tool-msfconsole.js (M0useMsfconsole)");
   if (missing.length) {
     document.body.innerHTML =
       "<pre style='color:#c8ffc8;background:#000;padding:1em;font:14px monospace'>" +

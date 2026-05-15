@@ -301,14 +301,24 @@ ${DIM}────────────────────────�
         state.exit = true;
         return;
       case "nmap":
+        if (window.M0useNmap)  return await window.M0useNmap.run(io, args);
+        break;
       case "nikto":
+        if (window.M0useNikto) return await window.M0useNikto.run(io, args);
+        break;
       case "curl":
+        if (window.M0useCurl)  return await window.M0useCurl.run(io, args);
+        break;
       case "msfconsole":
       case "msf":
       case "metasploit":
-        io.write(`${DIM}[${cmd}: tool not yet ported (step 3-4 of the JS port). ` +
-                 `Use ${R}${CYAN_B}cat hint${R}${DIM} for now.]${R}\r\n`);
-        return;
+        if (window.M0useMsfconsole) {
+          return await window.M0useMsfconsole.run(io, args, {
+            handle: state.handle,
+            submitAnswer: (flag) => answer(io, state, [flag]),
+          });
+        }
+        break;
     }
 
     // Bare-finding intercept (mirrors command_not_found_handle).

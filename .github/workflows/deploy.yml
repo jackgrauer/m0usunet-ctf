@@ -14,17 +14,22 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-# Skeleton-era workflow: the runtime is pure JS now (no v86, no
-# Alpine disk image). The build job exists only to ship site/ to
-# Pages. The full Alpine-build pipeline is preserved in git history;
-# the build/*.sh scripts will be removed once the JS port is feature
-# complete and we're sure we don't want to roll back.
+# Pure-JS runtime now (no v86, no Alpine disk image). Stage the
+# content files into site/ so they're reachable at the deployed
+# origin, then upload site/ to Pages.
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Stage runtime content into site/
+        run: |
+          set -euo pipefail
+          mkdir -p site/build
+          cp -r kit-content site/kit-content
+          cp build/ic-memo.txt site/build/ic-memo.txt
+          ls -lh site/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
