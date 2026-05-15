@@ -15,10 +15,13 @@
 
   // Identify which dep failed so phone diagnostics aren't a guess.
   const missing = [];
-  if (typeof Terminal === "undefined")           missing.push("xterm.js (Terminal)");
-  if (typeof window.M0useIO === "undefined")     missing.push("io.js (M0useIO)");
-  if (typeof window.M0usePortal === "undefined") missing.push("portal.js (M0usePortal)");
-  if (typeof window.M0useNicks === "undefined")  missing.push("nicks.js (M0useNicks)");
+  if (typeof Terminal === "undefined")             missing.push("xterm.js (Terminal)");
+  if (typeof window.M0useIO === "undefined")       missing.push("io.js (M0useIO)");
+  if (typeof window.M0usePortal === "undefined")   missing.push("portal.js (M0usePortal)");
+  if (typeof window.M0useNicks === "undefined")    missing.push("nicks.js (M0useNicks)");
+  if (typeof window.M0useColorize === "undefined") missing.push("colorize.js (M0useColorize)");
+  if (typeof window.M0useVFS === "undefined")      missing.push("vfs.js (M0useVFS)");
+  if (typeof window.M0useShell === "undefined")    missing.push("shell.js (M0useShell)");
   if (missing.length) {
     document.body.innerHTML =
       "<pre style='color:#c8ffc8;background:#000;padding:1em;font:14px monospace'>" +

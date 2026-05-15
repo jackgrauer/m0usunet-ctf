@@ -138,16 +138,17 @@ Your first assignment: scan the ${RED}Crazy Ants${R} network with ${CYAN}nmap${R
     await io.waitEnter();
   }
 
-  // ── game shell stub (replaced by shell.js in step 3) ──────────────
-  async function gameShellStub(io, handle) {
+  // ── game shell (TASK 2 interactive phase) ────────────────────────
+  async function gameShell(io, handle) {
     pageBreak(io);
-    io.write(`${DIM}[step 3 stub — game shell not ported yet. Type ${R}${CYAN}continue${R}${DIM} to advance to the HQ password gate.]${R}\n\n`);
-    const PS1 = `${RED}${handle}${R}@${GREEN}m0usunet${R}:${CYAN}~${R}$ `;
-    while (true) {
-      const line = await io.readline({ prompt: PS1 });
-      const t = line.trim();
-      if (t === "continue" || t === "exit") return;
-      if (t) io.write(`${DIM}[stub] ${t}: command not found${R}\n`);
+    if (window.M0useShell && window.M0useShell.run) {
+      await window.M0useShell.run(io, { handle });
+    } else {
+      io.write(`${DIM}[shell.js not loaded — type ${R}${CYAN}continue${R}${DIM} to advance]${R}\n\n`);
+      while (true) {
+        const line = await io.readline({ prompt: `${RED}${handle}${R}@${GREEN}m0usunet${R}$ ` });
+        if (line.trim() === "continue" || line.trim() === "exit") return;
+      }
     }
   }
 
@@ -233,7 +234,7 @@ ${DIM}A reminder: the CEO's son-in-law will receive the position anyway.${R}
     handle = await namePrompt(io, handle);
     await coldOpen(io, handle);
     await task2Intro(io, handle);
-    await gameShellStub(io, handle);
+    await gameShell(io, handle);
 
     pageBreak(io);
     io.write(`${GREEN_DIM}operator returning from m0usunet shell...${R}\n\n`);
