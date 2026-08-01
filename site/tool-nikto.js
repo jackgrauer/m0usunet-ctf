@@ -40,7 +40,7 @@
       `+ Start Time:         ${now}`,
       "---------------------------------------------------------------------------",
       "+ Server: Jetty(9.4.27.v20200227)",
-      "+ Retrieved x-jenkins header: 2.121.1",
+      "+ Retrieved x-jenkins header: \x1b[1;33m2.121.1\x1b[0m",
       "+ Retrieved x-hudson header: 1.395",
       "+ Retrieved x-jenkins-session header: 0b0a9c12",
       "+ The anti-clickjacking X-Frame-Options header is not present.",
@@ -65,12 +65,22 @@
       "---------------------------------------------------------------------------",
       "+ 1 host(s) tested",
       "",
-      "\x1b[1;33mNEXT:\x1b[0m nikto reports the software + version. To find a CVE that fits this version,",
-      "open the advisories table:",
+      "\x1b[1;33m────────────────────────────────────────────────────────────\x1b[0m",
+      "\x1b[1;33mVULNERABLE SOFTWARE FOUND\x1b[0m",
+      "This server is running known-vulnerable software: \x1b[1;37mJenkins\x1b[0m,",
+      "and nikto read its exact version off the headers -- \x1b[1;37m2.121.1\x1b[0m",
+      "(the highlighted line up above). Software this old has known,",
+      "catalogued holes. Now pin down exactly which one lets us in.",
+      "",
+      "Same idea as the last step: instead of picking the odd host out",
+      "of a scan, now you pick the one matching hole out of a list. Open",
+      "the catalogue of known bugs (each one has an id, called a CVE):",
       "",
       "  \x1b[1;36mcat advisories\x1b[0m",
       "",
-      "Then type the matching CVE id at the prompt to advance.",
+      "Find the single entry that (1) is for Jenkins, (2) affects",
+      "version 2.121.1, and (3) lets you in with no password. Type its",
+      "id -- it looks like \x1b[1;37mCVE-YYYY-NNNNN\x1b[0m -- at the prompt to advance.",
     ];
     io.write(lines.join("\r\n") + "\r\n");
   }
@@ -113,15 +123,10 @@
     await io.sleep(600 + Math.random() * 400);
     report(io, host, rawIp, port);
 
-    // Auto-advance: nikto just exposed Jenkins 2.121.1 in the
-    // x-jenkins header. The matching CVE is 2018-1000861. Submit
-    // it so the phase-2-done payoff (msfconsole handoff) plays
-    // automatically. Same model as nmap and msfconsole auto-submit.
-    const alreadyDone = ctx && ctx.state && ctx.state.completed && ctx.state.completed[2];
-    if (!alreadyDone && ctx && typeof ctx.submitAnswer === "function") {
-      await io.sleep(400);
-      await ctx.submitAnswer("CVE-2018-1000861");
-    }
+    // No auto-submit. nikto hands the player the version (Jenkins
+    // 2.121.1 in the x-jenkins header); it's on them to open the
+    // advisories table, find the one CVE that fits, and type it. The
+    // NEXT block printed by report() points the way.
   }
 
   window.M0useNikto = { run };

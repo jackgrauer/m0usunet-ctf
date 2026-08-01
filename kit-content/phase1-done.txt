@@ -5,31 +5,13 @@
 
   You found a Jenkins build automation server. Companies compile
   and ship code on these while building a website. They're old and
-  famously, catastrophically broken. Normally, this belongs behind
-  the corporate VPN. This one isn't. Someone left it out. This is
-  our window in.
+  famously, catastrophically broken. You'd normally keep this kind
+  of shit behind a VPN. This one isn't. Someone left it out, and
+  doing so, gave us a window through which to climb in.
 
-  Now that we've found our window, we need to climb through. Jenkins
-  servers have dozens of known bugs that let remote users -- us --
-  control them without logging in. All we need to do now is find a
-  known bug specific to this version of the server.
-
-  ─── next: fingerprint the version ─────────────────────────────────
-
-  We need the exact Jenkins version so we can pick the right CVE
-  to throw at it. For that, we use nikto -- a small, classic perl
-  web scanner. Point it at a host and it runs thousands of probes
-  against known software versions. When it finds something, it
-  shouts.
-
-  Type the following in the terminal, one line at a time:
+  To do so, we'll need another tool called Nikto. Open Nikto with
+  the following command, and then use it to search for
+  vulnerabilities in this version of the Jenkins server.
 
       cd nikto
-      nikto -h http://10.4.12.88:8080/
-
-  nikto reports the version, matches it to a known CVE, and
-  advances the game on its own.
-
-  (Curious how the match works? `cat advisories` lists the
-  candidates and which one fits. Optional reading.)
-
+      nikto -h http://jenkins-old.internal.crazy.ants:8080/

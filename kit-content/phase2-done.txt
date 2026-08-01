@@ -5,33 +5,32 @@
 
   CVE-2018-1000861 -- Stapler unauthenticated RCE.
 
-  The Jenkins URL router can be tricked into invoking arbitrary
-  methods on internal objects, including the Groovy script console
-  -- with no authentication. The version on this host is in range.
+  In plain terms: this exact version of Jenkins has a hole that lets
+  a stranger run commands on it with no login at all. That's the one
+  we want, and this host is running a version it affects.
 
   You now have:
-    - the host (10.4.12.X)
-    - the vulnerability (CVE-2018-1000861)
-    - a known public exploit
+    - the host        jenkins-old.internal.crazy.ants
+    - the hole         CVE-2018-1000861
+    - a ready-made break-in for that hole
 
   Time to actually walk in.
 
-  ─── next: walk through the door ───────────────────────────────────
+  ─── next: break in and take the memo ──────────────────────────────
 
-  metasploit is the tool that walks through. It's an exploitation
-  framework -- a library of pre-scripted attacks indexed by CVE.
-  Almost every public vulnerability has a matching module. Pick the
-  module for your CVE, point it at the host, fire. You get a shell.
+  The tool for this is metasploit. It keeps a ready-made attack for
+  almost every known hole; you point it at the machine and it does
+  the break-in. We've already loaded the attack for our hole.
 
-  Most pentest workflows end here: nmap finds it, a scanner
-  fingerprints it, metasploit walks through the door.
+  This is where most break-ins end up: one tool finds the exposed
+  box, one reads off what's vulnerable, and metasploit walks through
+  the door.
 
   Type the following in the terminal, one line at a time:
 
       cd msf
       cat brief
 
-  `cat brief` lays out the four commands for the walk.
+  `cat brief` lays out the handful of commands for the break-in.
 
   Stuck?  cat hint  -- no penalty.
-

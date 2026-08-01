@@ -201,9 +201,39 @@
       );
       return;
     }
-    const flags = await loadFlags();
     const norm = normalize(input);
-    for (const phaseN of [1, 2, 3]) {
+
+    // Phase 1 is a live puzzle: the answer roams with the scan layout,
+    // so match against the current leak rather than the static flag
+    // file. A wrong guess reshuffles the /24 so the addresses can't be
+    // enumerated one at a time.
+    if (!state.completed[1]) {
+      const p1 = state.phase1 ||
+        (window.M0useNmap && window.M0useNmap.ensure && window.M0useNmap.ensure(state));
+      const forms = p1 ? [p1.leakIp, p1.leakHost, p1.leakShort].map(normalize) : [];
+      const ipPort = p1 && norm.startsWith(normalize(p1.leakIp) + ":");
+      if (p1 && (forms.includes(norm) || ipPort)) {
+        io.write(`\r\n\r\n\r\n${GREEN_B}[OK] finding accepted.${R}\r\n`);
+        const phaseDone = await loadPhaseDone(1);
+        await writeContentGated(io, phaseDone);
+        state.completed[1] = true;
+        return;
+      }
+      if (window.M0useNmap && window.M0useNmap.generate) {
+        window.M0useNmap.generate(state);
+      }
+      io.write(
+        `${RED_B}[!!] not that one.${R} ${DIM}(you tried ${norm})${R}\r\n\r\n` +
+        `The Ants' network just renewed its DHCP leases -- every host\r\n` +
+        `picked up a new address. Run ${CYAN_B}nmap 10.4.12.0/24${R} again and find\r\n` +
+        `the host whose name doesn't belong. ${CYAN_B}cat hint${R} if you're stuck.\r\n`
+      );
+      return;
+    }
+
+    // Phases 2 & 3 use the static flag files.
+    const flags = await loadFlags();
+    for (const phaseN of [2, 3]) {
       for (const flag of flags[phaseN]) {
         if (normalize(flag) === norm) {
           io.write(`\r\n\r\n\r\n${GREEN_B}[OK] finding accepted.${R}\r\n`);
@@ -237,17 +267,18 @@
 
 This is the network the Ants run their company on. They don't know you're sitting on it.
 
-Use ${CYAN_B}nmap${R} to map it. nmap is a network scanner. You give it a range of IP addresses; it touches every port on every host and reports back what's listening -- web servers, e-mail, anything. It catalogues unfamiliar networks from the outside.
+Use ${CYAN_B}nmap${R}, a network scanner, to get a list of all IP addresses on the network. It touches every port on every host and reports back what's listening -- web servers, e-mail, anything. It catalogues unfamiliar networks from the outside.
 
-Somewhere in the Ants' /24 there is a host that shouldn't be there. Their fragrance compounder computor runs on isolated infrastructure -- by policy. But people get tired. People make exceptions. They slip up. They forget they slipped up. A staging box left up from a sprint three years ago. A test environment someone "temporarily" exposed for a vendor demo and forgot. A back-office service that was supposed to live inside their VPN but escaped through a misconfigured firewall.
+Somewhere in the Ants' /24 there is a host that shouldn't be there. By policy, their fragrance compounder computor runs on isolated infrastructure. But people get tired. People make exceptions. They slip up. They forget they slipped up. A staging box left up from a sprint three years ago. A back-office service that was supposed to live inside their VPN but escaped through a misconfigured firewall.
 
 ${DIM}What we're looking for:${R} not vulnerabilities -- ${WHITE_B}carelessness${R}. The host that's visible from outside but was clearly not meant for someone outside the company to see. The back office.
 `);
     io.write("\r\n");
     io.write(`  ${DIM}Type the following in the terminal:${R}\r\n\r\n`);
     io.write(`  ${CYAN_B}nmap 10.4.12.0/24${R}\r\n\r\n`);
-    io.write(`  ${DIM}That's it. The scan surfaces the careless host on its${R}\r\n`);
-    io.write(`  ${DIM}own and walks you straight into the next phase.${R}\r\n\r\n`);
+    io.write(`  ${DIM}A handful of hosts answer. Most belong on the public${R}\r\n`);
+    io.write(`  ${DIM}internet; one doesn't. Type that host's IP or name to${R}\r\n`);
+    io.write(`  ${DIM}advance.${R}\r\n\r\n`);
   }
 
   // ── help ──────────────────────────────────────────────────────────
@@ -348,6 +379,12 @@ ${DIM}────────────────────────�
       completed: { 1: false, 2: false, 3: false },
       exit: false,
     };
+
+    // Seed the phase-1 scan layout up front so a guess is checkable even
+    // before the player runs nmap.
+    if (window.M0useNmap && window.M0useNmap.generate) {
+      window.M0useNmap.generate(state);
+    }
 
     phase1Intro(io);
 

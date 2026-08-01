@@ -3,7 +3,7 @@
 // session sub-REPL, and the IC memo gated payoff that auto-submits
 // the flag and cascades out of the tool.
 //
-// Player flow: msfconsole → set RHOSTS 10.4.12.1 → exploit
+// Player flow: msfconsole → set RHOSTS jenkins-old.internal.crazy.ants → exploit
 //                        → cat /mnt/exec/ic-memo.txt
 //                        → press Enter through three screens
 //                        → back at the m0usunet prompt, phase 3 done.
@@ -168,7 +168,7 @@ ${DIM}How Mouse Bites took the contra side:${R}
     io.write(`\r\n  ${DIM}Press ${WHITE_B}Enter${R}${DIM} for the Mouse Bites debrief.${R}`);
     await io.waitEnter();
     io.write(asTermLines(DEBRIEF));
-    io.write(`\r\n  ${DIM}Press ${WHITE_B}Enter${R}${DIM} to leave m0usunet and report to HQ.${R}`);
+    io.write(`\r\n  ${DIM}Press ${WHITE_B}Enter${R}${DIM} to leave m0usunet.${R}`);
     await io.waitEnter();
   }
 
@@ -340,25 +340,18 @@ Compatible Payloads
   function targetIsReal(rhost) { return VALID_RHOSTS.has(rhost); }
 
   // Player-friendly nudge when RHOSTS is set to something that won't
-  // work. Catches the common 10.4.12 ↔ 10.12.4 digit transposition
-  // explicitly; otherwise falls back to "wrong subnet" guidance.
+  // work (e.g. a stale/roamed IP). Points them at the stable hostname,
+  // which is always a valid target.
   function suggestRhostFix(rhost) {
-    const m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(rhost);
-    if (m && m[1] === "10" && m[2] === "12" && m[3] === "4") {
-      return `    ${GOLD_B}[!]${R} digits transposed -- the Crazy Ants subnet is ` +
-             `${CYAN_B}10.4.12.0/24${R}, not 10.12.4.0/24.\r\n` +
-             `    Did you mean  ${CYAN_B}set RHOSTS 10.4.12.1${R} ?\r\n`;
-    }
-    return `    ${DIM}[!] RHOSTS must be in the${R} ${CYAN_B}10.4.12.0/24${R} ` +
-           `${DIM}subnet. The Jenkins box is${R} ${CYAN_B}10.4.12.1${R} ` +
-           `${DIM}(also valid:${R} ${CYAN_B}gw.crazy.ants${R}${DIM}).${R}\r\n`;
+    return `    ${GOLD_B}[!]${R} ${DIM}that target isn't answering. Aim at the Jenkins box${R}\r\n` +
+           `    ${DIM}by name:${R}  ${CYAN_B}set RHOSTS jenkins-old.internal.crazy.ants${R}\r\n`;
   }
 
   async function doCheck(io, state) {
     if (!state.module) { io.write("[-] No module selected.\r\n"); return; }
     const missing = requiredUnset(state);
     if (missing.includes("RHOSTS")) {
-      io.write(`[-] ${RED_B}RHOSTS not set.${R} Try: set RHOSTS 10.4.12.1\r\n`);
+      io.write(`[-] ${RED_B}RHOSTS not set.${R} Try: set RHOSTS jenkins-old.internal.crazy.ants\r\n`);
       return;
     }
     const rhost = state.options.RHOSTS.value;
@@ -383,7 +376,7 @@ Compatible Payloads
     const missing = requiredUnset(state);
     if (missing.length) {
       io.write(`[-] ${RED_B}Missing required options:${R} ${missing.join(", ")}\r\n`);
-      if (missing.includes("RHOSTS")) io.write("    Try: set RHOSTS 10.4.12.1\r\n");
+      if (missing.includes("RHOSTS")) io.write("    Try: set RHOSTS jenkins-old.internal.crazy.ants\r\n");
       if (missing.includes("LHOST"))  io.write("    Try: set LHOST 10.4.12.99   (your callback address)\r\n");
       return;
     }
@@ -416,8 +409,9 @@ Compatible Payloads
     const now = new Date().toISOString().replace("T", " ").slice(0, 19) + " +0000";
     io.write(`[*] ${GREEN_B}Command shell session 1 opened${R} (${lhost}:${lport} -> ${rhost}:${rport}) at ${now}\r\n\r\n`);
     state.session = 1;
-    io.write(`${DIM}you are now executing commands as the jenkins service account on the target.${R}\r\n`);
-    io.write(`${DIM}try:${R}  ${CYAN_B}cat /mnt/exec/ic-memo.txt${R}   ${DIM}(that's the goal)${R}\r\n\r\n`);
+    io.write(`${GREEN_B}You're in.${R} ${DIM}The blank prompt means every command you type now${R}\r\n`);
+    io.write(`${DIM}runs on THEIR machine -- the Jenkins box -- as the jenkins user.${R}\r\n`);
+    io.write(`${DIM}Grab the memo:${R}  ${CYAN_B}cat /mnt/exec/ic-memo.txt${R}   ${DIM}(that's the win)${R}\r\n\r\n`);
   }
 
   function doSessions(io, state) {
@@ -518,9 +512,10 @@ Active sessions
 
     banner(io);
     io.write(
-      `${DIM}[*] Engagement preloaded:${R} ${CYAN_B}${MODULE.path}${R}\r\n` +
-      `${DIM}[*] LHOST auto-set to ${WHITE_B}10.4.12.99${R}${DIM} (your callback)${R}\r\n` +
-      `${DIM}[*] You need:${R}  ${CYAN_B}set RHOSTS <target>${R}   ${DIM}then${R}   ${CYAN_B}exploit${R}\r\n\r\n`
+      `${DIM}[*] Attack preloaded:${R} ${CYAN_B}${MODULE.path}${R}\r\n` +
+      `${DIM}[*] Callback set to ${WHITE_B}10.4.12.99${R}${DIM} (our machine -- where the target reports back)${R}\r\n` +
+      `${DIM}[*] Two steps left. Aim:${R}  ${CYAN_B}set RHOSTS jenkins-old.internal.crazy.ants${R}\r\n` +
+      `${DIM}[*] Then fire:${R}  ${CYAN_B}exploit${R}\r\n\r\n`
     );
 
     while (true) {

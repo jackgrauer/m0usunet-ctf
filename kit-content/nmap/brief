@@ -8,13 +8,18 @@ Type the following in the terminal:
 
     nmap 10.4.12.0/24
 
-That's the only command you need. The scan will surface the
-careless host and advance you to the next phase on its own.
+A handful of hosts answer. Read their names. Most are public by
+design; one is not. Type that host's IP or hostname at the prompt
+to advance -- the scan won't do it for you.
+
+Guess wrong and the network re-addresses itself (the IPs all
+change), so you can't just try each one in turn. Read the names,
+not the numbers.
 
 
 What recon is actually for
 ──────────────────────────
-Recon isn't about "vulnerabilities." It's about human carelessness.
+Recon isn't about "vulnerabilities." It's about carelessness.
 Somebody at this company did something they didn't think anybody
 would notice -- and left a trace.
 

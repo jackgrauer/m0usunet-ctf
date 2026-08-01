@@ -21,6 +21,17 @@
        the player can swipe up to reveal what's hidden. -->
   <div id="scroll-buffer"></div>
 
+  <!-- Register the offline service worker. One online visit precaches
+       the whole game; after that it runs with no connection. Guarded
+       and fire-and-forget so a failure never blocks boot. -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () {});
+      });
+    }
+  </script>
+
   <!-- xterm.js + addons self-hosted under vendor/ so the page works on
        phones that can't reach unpkg.com (captive portals, dead TLS,
        slow CDN edges). -->

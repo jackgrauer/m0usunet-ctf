@@ -3,5 +3,4 @@
   [OK] m0usunet phase complete.
   ═══════════════════════════════════════════════════════════════════
 
-  Mouse Bites Inc. HQ is expecting you. Type   continue   at the
-  prompt below to leave m0usunet and proceed to TASK 3.
+  Type   continue   at the prompt below to close out m0usunet.

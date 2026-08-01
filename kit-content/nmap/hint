@@ -3,24 +3,29 @@ HINT -- phase 1 (nmap)
 
 WHAT TO LOOK FOR
 ────────────────
-The giveaway is usually in the language. Words in a hostname that
-mark something as staff-only:
+Companies name their public servers after what the public uses --
+the website (www), email (mail), the online store (shop). Those are
+supposed to be out there.
+
+Internal machines get different names. Words that mean "staff only,"
+"not for customers," or "we forgot this was here":
 
     internal     private      staging     legacy
     admin        old          backup      test
 
-If any of those words show up on a host that's visible from the
-outside, somebody screwed up. That's your target.
-
-WHERE TO LOOK
-─────────────
-Scan hostnames -- but also the lines right under each hostname.
-Most hosts here have nothing between their name and their port
-list. One does. That's the giveaway.
+Exactly one host in the scan wears a name like that. It's a box that
+was never meant to face the outside -- and someone left it facing
+the outside anyway. That's the back office. That's your target.
 
 HOW TO SUBMIT
 ─────────────
-Type the hostname or the IP at the prompt, hit Enter:
+Type that host's IP or its hostname at the prompt and hit Enter --
+for example:
 
-    10.4.12.88
     jenkins-old
+
+HEADS UP
+────────
+Guess wrong and the Ants' network renews its addresses: every IP
+changes. Re-run  nmap 10.4.12.0/24  and read the names again. The
+names don't move even when the numbers do.

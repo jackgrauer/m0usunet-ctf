@@ -1,44 +1,52 @@
-PHASE 3 -- OPERATIONS
-════════════════════
-tool:  msfconsole
+PHASE 3 -- BREAK IN AND GRAB THE FILE
+═════════════════════════════════════
+tool:  metasploit   (you open it by typing: msfconsole)
 
-You found the bug in phase 2: CVE-2018-1000861, unauth RCE in
-Jenkins 2.121.1. Now we walk through it.
+Recap: phase 1 found the way in (the exposed jenkins-old box).
+Phase 2 confirmed it's unlocked (CVE-2018-1000861 -- a hole that
+lets you in with no password). This step actually climbs through
+and takes what we came for.
 
-The Ants' back-office Jenkins box has the executive fileshare
-mounted at /mnt/exec/. The IC memo we want is at:
+The file we want is the IC memo, sitting on a drive mounted to the
+Jenkins box:
 
     /mnt/exec/ic-memo.txt
+
+metasploit is the break-in tool. It keeps a ready-made attack for
+almost every known hole; you tell it which machine to hit and it
+does the break-in for you. We've already loaded the attack for our
+hole -- you just aim it and fire.
 
 
 ─── do this ──────────────────────────────────────────────────────
 
-Type the following in the terminal, one line at a time:
+Type these one line at a time:
 
     msfconsole
-    set RHOSTS 10.4.12.1
+    set RHOSTS jenkins-old.internal.crazy.ants
     exploit
     cat /mnt/exec/ic-memo.txt
 
-Module and callback are preloaded; you point and fire. After
-`exploit`, the prompt goes blank -- you're on the Jenkins box,
-typing as the jenkins user. `cat /mnt/exec/ic-memo.txt` is the
-win. The narrative takes over from there; press Enter through the
-screens, then `continue` at the m0usunet prompt to leave for TASK 3.
+In plain terms: open the tool, aim it at the Jenkins box, break in,
+then read the memo. After `exploit` the prompt goes blank -- that's
+the break-in working. Every command you type now runs directly on
+the Jenkins box, as the jenkins user. `cat /mnt/exec/ic-memo.txt`
+opens the memo and the story takes over. Press Enter through the
+screens, then type `continue` to close out m0usunet.
 
 
-─── the full pattern, for next time ──────────────────────────────
+─── for next time: the full pattern ──────────────────────────────
 
-Every metasploit walk, for any CVE you'll ever exploit with it:
+Every metasploit break-in is the same six steps:
 
-    search        find the module by CVE id
+    search        find the ready-made attack by its CVE id
     use           select it
-    show options  see what params it needs
-    set           fill in params (target, callback, etc.)
-    check         confirm vulnerability before firing
-    exploit       fire it; if it works, you get a shell
+    show options  see what it needs from you
+    set           fill those in (which machine, where to call back)
+    check         make sure the target is really vulnerable
+    exploit       fire; if it works, you're in
 
-We did search/use/show/check for you. You did set + exploit. Same
-muscles, fewer reps.
+We did search / use / show / check for you. You did set + exploit.
+Same muscles, fewer reps.
 
 Stuck?  cat hint  -- no penalty.

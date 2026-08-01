@@ -7,7 +7,7 @@ Module and callback are preloaded. Type the following in the
 terminal, one line at a time:
 
     msfconsole
-    set RHOSTS 10.4.12.1
+    set RHOSTS jenkins-old.internal.crazy.ants
     exploit
     cat /mnt/exec/ic-memo.txt
 
@@ -21,4 +21,4 @@ through three screens (memo, analysis, debrief). No flag to type;
 the game advances on its own.
 
 When it drops you back at the m0usunet prompt, type `continue`
-to leave and report to HQ.
+to close out m0usunet.
