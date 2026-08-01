@@ -276,9 +276,6 @@ ${DIM}What we're looking for:${R} not vulnerabilities -- ${WHITE_B}carelessness$
     io.write("\r\n");
     io.write(`  ${DIM}Type the following in the terminal:${R}\r\n\r\n`);
     io.write(`  ${CYAN_B}nmap 10.4.12.0/24${R}\r\n\r\n`);
-    io.write(`  ${DIM}A handful of hosts answer. Most belong on the public${R}\r\n`);
-    io.write(`  ${DIM}internet; one doesn't. Type that host's IP or name to${R}\r\n`);
-    io.write(`  ${DIM}advance.${R}\r\n\r\n`);
   }
 
   // ── help ──────────────────────────────────────────────────────────

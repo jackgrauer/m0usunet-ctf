@@ -19,7 +19,7 @@
 
 "use strict";
 
-const CACHE_VERSION = "m0usunet-v9";
+const CACHE_VERSION = "m0usunet-v10";
 
 // Build the numbered content families the same way vfs.js does, so
 // the list scales by editing a count instead of pasting paths.
